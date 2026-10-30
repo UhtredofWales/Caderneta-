@@ -3,173 +3,255 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Caderneta Financeira</title>
+  <title>Caderneta Pro | Wealth Management</title>
+  <!-- Chart.js para Gráficos Dinâmicos -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
-      --primary: #2563eb;
-      --primary-dark: #1d4ed8;
-      --success: #10b981;
+      --bg-app: #0b0f19;
+      --sidebar-bg: #111827;
+      --card-bg: #1f2937;
+      --card-border: #374151;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --accent: #10b981;
       --danger: #ef4444;
-      --bg-color: #f8fafc;
-      --card-bg: #ffffff;
-      --text-main: #1e293b;
-      --text-muted: #64748b;
-      --border: #e2e8f0;
+      --warning: #f59e0b;
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
     body {
-      background-color: var(--bg-color);
+      background-color: var(--bg-app);
       color: var(--text-main);
       display: flex;
       min-height: 100vh;
     }
 
-    /* Sidebar Navigation */
+    /* Sidebar Estilo Private */
     aside {
-      width: 260px;
-      background: var(--card-bg);
-      border-right: 1px solid var(--border);
+      width: 280px;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--card-border);
       display: flex;
       flex-direction: column;
       padding: 24px;
     }
 
-    aside h2 {
-      font-size: 1.25rem;
-      color: var(--primary);
-      margin-bottom: 32px;
+    .brand {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
+      margin-bottom: 36px;
     }
 
-    .nav-links {
+    .brand h2 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: var(--text-main);
+    }
+
+    .brand span {
+      background: linear-gradient(135deg, #3b82f6, #10b981);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-menu {
       list-style: none;
       display: flex;
       flex-direction: column;
       gap: 8px;
     }
 
-    .nav-links button {
+    .nav-menu button {
       width: 100%;
       text-align: left;
-      background: none;
+      background: transparent;
       border: none;
       padding: 12px 16px;
-      border-radius: 8px;
-      font-size: 0.95rem;
+      border-radius: 10px;
+      font-size: 0.92rem;
       font-weight: 500;
       color: var(--text-muted);
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
-    .nav-links button:hover, .nav-links button.active {
-      background: #eff6ff;
+    .nav-menu button:hover, .nav-menu button.active {
+      background: rgba(59, 130, 246, 0.12);
       color: var(--primary);
     }
 
     /* Main Container */
     main {
       flex: 1;
-      padding: 32px;
+      padding: 32px 40px;
       overflow-y: auto;
-      max-width: 1200px;
+      max-width: 1400px;
     }
 
     header {
-      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
     }
 
     header h1 {
-      font-size: 1.75rem;
+      font-size: 1.6rem;
       font-weight: 600;
     }
 
     header p {
       color: var(--text-muted);
-      font-size: 0.9rem;
+      font-size: 0.88rem;
+      margin-top: 4px;
     }
 
-    /* Tabs Content Visibility */
     .tab-content {
       display: none;
     }
 
     .tab-content.active {
       display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     /* Cards Grid */
-    .summary-grid {
+    .grid-metrics {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 20px;
-      margin-bottom: 24px;
+      margin-bottom: 28px;
     }
 
     .card {
       background: var(--card-bg);
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-      border: 1px solid var(--border);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 22px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
     }
 
     .card-label {
-      font-size: 0.85rem;
+      font-size: 0.78rem;
       color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.8px;
+      font-weight: 600;
     }
 
     .card h3 {
-      font-size: 1.6rem;
-      margin-top: 8px;
-      color: var(--text-main);
+      font-size: 1.55rem;
+      margin-top: 10px;
+      font-weight: 700;
     }
 
-    .card.success h3 { color: var(--success); }
+    .card.success h3 { color: var(--accent); }
     .card.danger h3 { color: var(--danger); }
+    .card.warning h3 { color: var(--warning); }
 
-    /* Forms & Inputs */
-    .form-card {
-      margin-bottom: 24px;
+    /* Layout duas colunas para Gráficos e Insights */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+      margin-bottom: 28px;
     }
 
-    .form-card h4 {
+    @media (max-width: 1024px) {
+      .dashboard-grid { grid-template-columns: 1fr; }
+      body { flex-direction: column; }
+      aside { width: 100%; padding: 16px; }
+      main { padding: 20px; }
+    }
+
+    .chart-container {
+      position: relative;
+      height: 280px;
+      width: 100%;
+    }
+
+    /* Agente Especialista / Insights Box */
+    .agent-box {
+      background: linear-gradient(145deg, #1e293b, #0f172a);
+      border: 1px solid #3b82f655;
+      border-radius: 14px;
+      padding: 20px;
+    }
+
+    .agent-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
       margin-bottom: 14px;
-      font-size: 1rem;
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .insight-item {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      padding-left: 12px;
+      border-left: 2px solid var(--primary);
+      line-height: 1.4;
+    }
+
+    .insight-item strong { color: var(--text-main); }
+
+    /* Forms & Tabelas */
+    .form-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 22px;
+      margin-bottom: 28px;
+    }
+
+    .form-box h4 {
+      margin-bottom: 16px;
+      font-size: 1.05rem;
     }
 
     .inline-form {
-      display: flex;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)) auto;
       gap: 12px;
-      flex-wrap: wrap;
     }
 
     .inline-form input, .inline-form select {
+      background: #0b0f19;
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
       padding: 10px 14px;
-      border: 1px solid var(--border);
       border-radius: 8px;
+      font-size: 0.9rem;
       outline: none;
-      flex: 1;
-      min-width: 150px;
-      font-size: 0.95rem;
     }
 
     .inline-form input:focus, .inline-form select:focus {
       border-color: var(--primary);
     }
 
-    .btn-primary {
+    .btn-action {
       background: var(--primary);
       color: white;
       border: none;
@@ -180,47 +262,37 @@
       transition: background 0.2s;
     }
 
-    .btn-primary:hover {
-      background: var(--primary-dark);
-    }
+    .btn-action:hover { background: var(--primary-hover); }
 
-    /* Tables */
-    .table-card {
-      margin-bottom: 24px;
+    .table-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      overflow: hidden;
     }
 
     .table-header-flex {
+      padding: 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
-      gap: 10px;
+      border-bottom: 1px solid var(--card-border);
     }
 
-    .filter-group {
-      display: flex;
-      gap: 6px;
-    }
-
-    .btn-filter {
-      background: none;
-      border: 1px solid var(--border);
+    .filter-group button {
+      background: transparent;
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
       padding: 6px 12px;
       border-radius: 6px;
-      font-size: 0.85rem;
       cursor: pointer;
-      color: var(--text-muted);
+      font-size: 0.8rem;
     }
 
-    .btn-filter.active, .btn-filter:hover {
+    .filter-group button.active, .filter-group button:hover {
       background: var(--primary);
       color: white;
       border-color: var(--primary);
-    }
-
-    .table-responsive {
-      overflow-x: auto;
     }
 
     table {
@@ -230,51 +302,42 @@
     }
 
     th, td {
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--border);
-      font-size: 0.95rem;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--card-border);
+      font-size: 0.9rem;
     }
 
     th {
-      font-weight: 600;
       color: var(--text-muted);
-      background: #f8fafc;
+      font-weight: 600;
+      background: rgba(255,255,255,0.02);
     }
 
     .badge {
       padding: 4px 10px;
       border-radius: 20px;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 600;
       cursor: pointer;
-      display: inline-block;
     }
 
-    .badge-pago { background: #d1fae5; color: #065f46; }
-    .badge-pendente { background: #fee2e2; color: #991b1b; }
-
-    .tag-cat {
-      background: #f1f5f9;
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-size: 0.85rem;
-    }
-
-    @media (max-width: 768px) {
-      body { flex-direction: column; }
-      aside { width: 100%; padding: 16px; }
-      main { padding: 16px; }
-    }
+    .badge-pago { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+    .badge-pendente { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+    .tag { background: rgba(59, 130, 246, 0.15); color: #60a5fa; padding: 3px 8px; border-radius: 6px; font-size: 0.8rem; }
   </style>
 </head>
 <body>
 
   <!-- Sidebar / Navegação -->
   <aside>
-    <h2>💼 Caderneta</h2>
-    <ul class="nav-links">
-      <li><button onclick="mudarAba('gastos', event)" class="active">📊 Gastos Mensais</button></li>
-      <li><button onclick="mudarAba('investimentos', event)">📈 Investimentos</button></li>
+    <div class="brand">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      <h2>Caderneta <span>Pro</span></h2>
+    </div>
+    <ul class="nav-menu">
+      <li><button onclick="mudarAba('gastos', event)" class="active">📊 Gastos & Orçamento</button></li>
+      <li><button onclick="mudarAba('mei', event)">🏢 Faturamento MEI</button></li>
+      <li><button onclick="mudarAba('investimentos', event)">📈 Investimentos & Ativos</button></li>
     </ul>
   </aside>
 
@@ -284,92 +347,167 @@
     <!-- ABA 1: GASTOS MENSAIS -->
     <section id="aba-gastos" class="tab-content active">
       <header>
-        <h1>Gastos Mensais</h1>
-        <p>Controle organizado de despesas fixas, variáveis e cartões.</p>
+        <div>
+          <h1>Gestão de Gastos Mensais</h1>
+          <p>Visão executiva e planeamento inteligente do orçamento familiar.</p>
+        </div>
       </header>
 
-      <!-- Cartões de Resumo -->
-      <div class="summary-grid">
+      <!-- Métricas de Resumo -->
+      <div class="grid-metrics">
         <div class="card">
-          <span class="card-label">Renda Mensal</span>
-          <h3 id="gasto-renda">R$ 3.950,00</h3>
+          <span class="card-label">Renda Operacional</span>
+          <h3 id="g-renda">R$ 3.950,00</h3>
         </div>
         <div class="card danger">
-          <span class="card-label">Total de Gastos</span>
-          <h3 id="gasto-total">R$ 0,00</h3>
-          <small id="gasto-pago-label" style="color:var(--text-muted)">Pago: R$ 0,00</small>
+          <span class="card-label">Gastos Totais</span>
+          <h3 id="g-total">R$ 0,00</h3>
+          <small id="g-pago-lbl" style="color:var(--text-muted)">Pago: R$ 0,00</small>
         </div>
         <div class="card success">
-          <span class="card-label">Saldo Restante</span>
-          <h3 id="gasto-saldo">R$ 0,00</h3>
+          <span class="card-label">Saldo Livre (Caixa)</span>
+          <h3 id="g-saldo">R$ 0,00</h3>
         </div>
       </div>
 
-      <!-- Formulário para Adicionar -->
-      <div class="card form-card">
-        <h4>+ Novo Lançamento</h4>
+      <!-- Gráfico e Insights do Agente -->
+      <div class="dashboard-grid">
+        <div class="card">
+          <div class="table-header-flex" style="padding:0 0 16px 0;">
+            <h4 style="font-size: 1rem;">Distribuição de Despesas</h4>
+            <span style="font-size:0.75rem; color:var(--text-muted);">Clique nas legendas para filtrar</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="graficoGastos"></canvas>
+          </div>
+        </div>
+
+        <div class="agent-box">
+          <div class="agent-header">
+            <span>🤖</span> Agente Especialista IA
+          </div>
+          <div id="agent-insights">
+            <div class="insight-item">A carregar análise preditiva de fluxo de caixa...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formulário de Nova Despesa (Com Parcelamento Automático e Recorrência) -->
+      <div class="form-box">
+        <h4>+ Novo Lançamento Inteligente</h4>
         <form id="form-despesa" onsubmit="adicionarDespesa(event)" class="inline-form">
-          <input type="text" id="despesa-nome" placeholder="Descrição (ex: Energia, PUC)" required>
-          <input type="number" step="0.01" id="despesa-valor" placeholder="Valor (R$)" required>
-          <select id="despesa-categoria" required>
+          <input type="text" id="d-nome" placeholder="Descrição (ex: Aluguel, Cartão)" required>
+          <input type="number" step="0.01" id="d-valor" placeholder="Valor (R$)" required>
+          <select id="d-cat" required>
             <option value="Fixa">Conta Fixa</option>
             <option value="Variavel">Conta Variável</option>
             <option value="Cartao">Cartão de Crédito</option>
             <option value="Outros">Outros / Pessoal</option>
           </select>
-          <input type="text" id="despesa-parcela" placeholder="Parcela (ex: 1/5)">
-          <button type="submit" class="btn-primary">Adicionar</button>
+          <input type="number" id="d-parcelas" placeholder="Qtd Parcelas (ex: 5)" min="1" value="1">
+          <select id="d-recorrente">
+            <option value="nao">Recorrência: Não</option>
+            <option value="sim">Recorrência Mensal</option>
+          </select>
+          <button type="submit" class="btn-action">Lançar</button>
         </form>
       </div>
 
-      <!-- Tabela Dinâmica de Despesas -->
-      <div class="card table-card">
+      <!-- Tabela Dinâmica -->
+      <div class="table-box">
         <div class="table-header-flex">
-          <h4>Detalhamento</h4>
+          <h4>Extrato Detalhado do Mês</h4>
           <div class="filter-group">
-            <button class="btn-filter active" onclick="filtrarGastos('Todas', event)">Todas</button>
-            <button class="btn-filter" onclick="filtrarGastos('Fixa', event)">Fixas</button>
-            <button class="btn-filter" onclick="filtrarGastos('Variavel', event)">Variáveis</button>
-            <button class="btn-filter" onclick="filtrarGastos('Cartao', event)">Cartões</button>
+            <button class="active" onclick="filtrar('Todas', event)">Todas</button>
+            <button onclick="filtrar('Fixa', event)">Fixas</button>
+            <button onclick="filtrar('Variavel', event)">Variáveis</button>
+            <button onclick="filtrar('Cartao', event)">Cartões</button>
           </div>
         </div>
-
-        <div class="table-responsive">
-          <table>
-            <thead>
-              <tr>
-                <th>Descrição</th>
-                <th>Categoria</th>
-                <th>Parcela</th>
-                <th>Valor</th>
-                <th>Status</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody id="tabela-gastos-body">
-              <!-- Preenchido via JavaScript -->
-            </tbody>
-          </table>
-        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Descrição</th>
+              <th>Categoria</th>
+              <th>Parcela</th>
+              <th>Valor</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tabela-corpo"></tbody>
+        </table>
       </div>
     </section>
 
-    <!-- ABA 2: INVESTIMENTOS -->
-    <section id="aba-investimentos" class="tab-content">
+    <!-- ABA 2: FATURAMENTO MEI (Dinâmica) -->
+    <section id="aba-mei" class="tab-content">
       <header>
-        <h1>Investimentos</h1>
-        <p>Acompanhamento de CDB, FIIs, Ações e Poupança.</p>
+        <div>
+          <h1>Gestão de Faturamento MEI</h1>
+          <p>Controle dinâmico de receitas, emissão de DAS-MEI e apuração de limite.</p>
+        </div>
       </header>
 
-      <div class="summary-grid">
+      <div class="grid-metrics">
+        <div class="card success">
+          <span class="card-label">Faturamento Acumulado</span>
+          <h3 id="mei-faturado">R$ 0,00</h3>
+        </div>
         <div class="card">
-          <span class="card-label">Patrimônio Total</span>
-          <h3 id="inv-total">R$ 0,00</h3>
+          <span class="card-label">Limite Anual MEI</span>
+          <h3>R$ 81.000,00</h3>
+        </div>
+        <div class="card warning">
+          <span class="card-label">DAS-MEI Mensal</span>
+          <h3>R$ 70,60</h3>
         </div>
       </div>
 
+      <div class="form-box">
+        <h4>+ Registar Recebimento MEI</h4>
+        <form onsubmit="adicionarMei(event)" class="inline-form">
+          <input type="text" id="m-cliente" placeholder="Cliente / Projeto" required>
+          <input type="number" step="0.01" id="m-valor" placeholder="Valor Recebido (R$)" required>
+          <input type="date" id="m-data" required>
+          <button type="submit" class="btn-action">Adicionar Receita</button>
+        </form>
+      </div>
+
+      <div class="table-box">
+        <div class="table-header-flex">
+          <h4>Histórico de Entradas MEI</h4>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Cliente / Descrição</th>
+              <th>Data</th>
+              <th>Valor Bruto</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="mei-corpo"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ABA 3: INVESTIMENTOS -->
+    <section id="aba-investimentos" class="tab-content">
+      <header>
+        <div>
+          <h1>Painel de Investimentos</h1>
+          <p>Acompanhamento de CDB, FIIs, Ações e Poupança com cotações em tempo real.</p>
+        </div>
+      </header>
+      <div class="grid-metrics">
+        <div class="card">
+          <span class="card-label">Patrimônio Consolidado</span>
+          <h3 id="inv-patrimonio">R$ 0,00</h3>
+        </div>
+      </div>
       <div class="card">
-        <p style="color:var(--text-muted)">Os seus ativos de Ações e FIIs continuam integrados com a busca em tempo real via Brapi API.</p>
+        <p style="color:var(--text-muted)">Os seus ativos de Renda Variável mantêm a ligação automática com a API Brapi para cotações instantâneas.</p>
       </div>
     </section>
 
@@ -377,25 +515,240 @@
 
   <script>
     /* Lógica de Abas */
-    function mudarAba(abaId, event) {
+    function mudarAba(id, event) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.nav-links button').forEach(el => el.classList.remove('active'));
-      
-      document.getElementById('aba-' + abaId).classList.add('active');
+      document.querySelectorAll('.nav-menu button').forEach(el => el.classList.remove('active'));
+      document.getElementById('aba-' + id).classList.add('active');
       event.currentTarget.classList.add('active');
+      if(id === 'gastos') atualizarGrafico();
     }
 
-    /* Lógica da Aba de Gastos / Orçamento */
+    /* Dados e LocalStorage */
     let rendaMensal = 3950.00;
     let filtroAtual = 'Todas';
 
-    let despesas = JSON.parse(localStorage.getItem('caderneta_gastos')) || [
+    let despesas = JSON.parse(localStorage.getItem('cad_pro_gastos')) || [
       { id: 1, nome: "PUC", valor: 300, categoria: "Fixa", parcela: "-", pago: true },
       { id: 2, nome: "Claro", valor: 30, categoria: "Fixa", parcela: "-", pago: true },
-      { id: 3, nome: "Empréstimo", valor: 1000, categoria: "Fixa", parcela: "1/5", pago: false },
+      { id: 3, nome: "Empréstimo Lê", valor: 1000, categoria: "Fixa", parcela: "1/5", pago: false },
       { id: 4, nome: "Cartão C6", valor: 480, categoria: "Cartao", parcela: "-", pago: false },
       { id: 5, nome: "Energia", valor: 256, categoria: "Variavel", parcela: "-", pago: false }
     ];
 
-    function salvarEGestao() {
-      localStorage.setItem('caderneta_gastos', JSON.stringify
+    let meiReceitas = JSON.parse(localStorage.getItem('cad_pro_mei')) || [
+      { id: 1, cliente: "Consultoria Projeto Alpha", valor: 2500, data: "2026-08-10" }
+    ];
+
+    let chartGastosInstance = null;
+
+    function salvarTudo() {
+      localStorage.setItem('cad_pro_gastos', JSON.stringify(despesas));
+      localStorage.setItem('cad_pro_mei', JSON.stringify(meiReceitas));
+      renderizarTudo();
+    }
+
+    function renderizarTudo() {
+      renderizarGastos();
+      renderizarMei();
+      atualizarGrafico();
+      gerarInsightsIA();
+    }
+
+    /* Gestão de Gastos com Parcelamento Automático */
+    function renderizarGastos() {
+      const tbody = document.getElementById('tabela-corpo');
+      tbody.innerHTML = '';
+
+      let total = 0;
+      let pago = 0;
+
+      despesas.forEach(item => {
+        total += item.valor;
+        if (item.pago) pago += item.valor;
+
+        if (filtroAtual !== 'Todas' && item.categoria !== filtroAtual) return;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${item.nome}</strong></td>
+          <td><span class="tag">${item.categoria}</span></td>
+          <td>${item.parcela || '-'}</td>
+          <td>R$ ${item.valor.toFixed(2)}</td>
+          <td>
+            <span class="badge ${item.pago ? 'badge-pago' : 'badge-pendente'}" onclick="toggleStatus(${item.id})">
+              ${item.pago ? 'Pago' : 'Pendente'}
+            </span>
+          </td>
+          <td>
+            <button onclick="removerDespesa(${item.id})" style="background:none; border:none; color:var(--danger); cursor:pointer;">✕</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById('g-renda').innerText = `R$ ${rendaMensal.toFixed(2)}`;
+      document.getElementById('g-total').innerText = `R$ ${total.toFixed(2)}`;
+      document.getElementById('g-pago-lbl').innerText = `Pago: R$ ${pago.toFixed(2)}`;
+      document.getElementById('g-saldo').innerText = `R$ ${(rendaMensal - total).toFixed(2)}`;
+    }
+
+    function adicionarDespesa(e) {
+      e.preventDefault();
+      const nome = document.getElementById('d-nome').value;
+      const valorTotal = parseFloat(document.getElementById('d-valor').value);
+      const categoria = document.getElementById('d-cat').value;
+      const qtdParcelas = parseInt(document.getElementById('d-parcelas').value) || 1;
+      const recorrente = document.getElementById('d-recorrente').value === 'sim';
+
+      const valorParcela = valorTotal / qtdParcelas;
+
+      if (qtdParcelas > 1) {
+        for (let i = 1; i <= qtdParcelas; i++) {
+          despesas.push({
+            id: Date.now() + i,
+            nome: `${nome} (${i}/${qtdParcelas})`,
+            valor: valorParcela,
+            categoria: categoria,
+            parcela: `${i}/${qtdParcelas}`,
+            pago: false
+          });
+        }
+      } else {
+        despesas.push({
+          id: Date.now(),
+          nome: nome + (recorrente ? ' (Recorrente)' : ''),
+          valor: valorTotal,
+          categoria: categoria,
+          parcela: '-',
+          pago: false
+        });
+      }
+
+      document.getElementById('form-despesa').reset();
+      salvarTudo();
+    }
+
+    function toggleStatus(id) {
+      despesas = despesas.map(i => i.id === id ? { ...i, pago: !i.pago } : i);
+      salvarTudo();
+    }
+
+    function removerDespesa(id) {
+      despesas = despesas.filter(i => i.id !== id);
+      salvarTudo();
+    }
+
+    function filtrar(cat, event) {
+      filtroAtual = cat;
+      document.querySelectorAll('.filter-group button').forEach(b => b.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+      renderizarGastos();
+    }
+
+    /* Gestão MEI Dinâmica */
+    function renderizarMei() {
+      const tbody = document.getElementById('mei-corpo');
+      tbody.innerHTML = '';
+      let totalMei = 0;
+
+      meiReceitas.forEach(m => {
+        totalMei += m.valor;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${m.cliente}</strong></td>
+          <td>${m.data}</td>
+          <td>R$ ${m.valor.toFixed(2)}</td>
+          <td><button onclick="removerMei(${m.id})" style="background:none; border:none; color:var(--danger); cursor:pointer;">✕</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById('mei-faturado').innerText = `R$ ${totalMei.toFixed(2)}`;
+    }
+
+    function adicionarMei(e) {
+      e.preventDefault();
+      meiReceitas.push({
+        id: Date.now(),
+        cliente: document.getElementById('m-cliente').value,
+        valor: parseFloat(document.getElementById('m-valor').value),
+        data: document.getElementById('m-data').value
+      });
+      document.querySelector('#aba-mei form').reset();
+      salvarTudo();
+    }
+
+    function removerMei(id) {
+      meiReceitas = meiReceitas.filter(m => m.id !== id);
+      salvarTudo();
+    }
+
+    /* Gráfico Editável e Clicável com Chart.js */
+    function atualizarGrafico() {
+      const ctx = document.getElementById('graficoGastos').getContext('2d');
+      
+      const totaisCat = { Fixa: 0, Variavel: 0, Cartao: 0, Outros: 0 };
+      despesas.forEach(d => { if(totaisCat[d.categoria] !== undefined) totaisCat[d.categoria] += d.valor; });
+
+      if (chartGastosInstance) chartGastosInstance.destroy();
+
+      chartGastosInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Contas Fixas', 'Contas Variáveis', 'Cartão de Crédito', 'Outros'],
+          datasets: [{
+            data: [totaisCat.Fixa, totaisCat.Variavel, totaisCat.Cartao, totaisCat.Outros],
+            backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', labels: { color: '#9ca3af', font: { size: 12 } } }
+          },
+          onClick: (e, elements) => {
+            if (elements.length > 0) {
+              const index = elements[0].index;
+              const categorias = ['Fixa', 'Variavel', 'Cartao', 'Outros'];
+              filtrarAtivoPorGrafico(categorias[index]);
+            }
+          }
+        }
+      });
+    }
+
+    function filtrarAtivoPorGrafico(cat) {
+      filtroAtual = cat;
+      renderizarGastos();
+    }
+
+    /* Agente Especialista IA & Alertas */
+    function gerarInsightsIA() {
+      const box = document.getElementById('agent-insights');
+      let totalGastos = despesas.reduce((acc, i) => acc + i.valor, 0);
+      let comprometimento = (totalGastos / rendaMensal) * 100;
+
+      let html = `<div class="insight-item">Comprometimento da renda atual: <strong>${comprometimento.toFixed(1)}%</strong></div>`;
+      
+      if (comprometimento > 85) {
+        html += `<div class="insight-item" style="border-color:var(--danger)">⚠️ <strong>Alerta Crítico:</strong> Seus gastos estão acima de 85% da renda. Recomenda-se rever despesas variáveis.</div>`;
+      } else {
+        html += `<div class="insight-item" style="border-color:var(--accent)">✅ <strong>Saúde Financeira Saudável:</strong> Margem de caixa sob controlo para investimentos.</div>`;
+      }
+
+      let cartao = despesas.filter(d => d.categoria === 'Cartao').reduce((a, b) => a + b.valor, 0);
+      if (cartao > 1000) {
+        html += `<div class="insight-item" style="border-color:var(--warning)">💡 <strong>Dica do Especialista:</strong> Fatura de cartão elevada detetada. Evite novas parcelas este mês.</div>`;
+      }
+
+      box.innerHTML = html;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderizarTudo();
+    });
+  </script>
+</body>
+</html>
