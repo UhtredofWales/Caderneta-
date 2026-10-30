@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Painel Financeiro Inteligente</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #070f1c;
+      --card: #0c1a2e;
+      --line: #1f2e48;
+      --tx: #e9edf5;
+      --mut: #8593ad;
+      --ok: #3fb68b;
+      --bad: #e07a7a;
+      --ac: #c9a96e;
+      --accent-blue: #3b82f6;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--tx);
+      font: 14px Inter, system-ui, sans-serif;
+      font-feature-settings: 'tnum', 'cv11';
+      padding: max(20px, env(safe-area-inset-top)) 20px 40px;
+    }
+    main { max-width: 960px; margin: 0 auto; }
+    h1, h2, b { font-family: 'Libre Baskerville', Georgia, serif; font-weight: 700; }
+    h1 { font-size: 23px; margin: 0 0 4px; letter-spacing: -.01em; }
+    .sub { color: var(--mut); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
+    
+    /* Navegação por Abas */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin: 18px 0;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 8px;
+      overflow-x: auto;
+    }
+    .tab-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--mut);
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 13px;
+      transition: all 0.2s ease;
+    }
+    .tab-btn:hover { color: var(--tx); background: rgba(255, 255, 255, 0.03); }
+    .tab-btn.active {
+      background: var(--card);
+      color: var(--ac);
+      border-color: var(--line);
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    h2 {
+      font-family: Inter, sans-serif;
+      font-weight: 600;
+      font-size: 11px;
+      letter-spacing: .2em;
+      color: var(--ac);
+      text-transform: uppercase;
+      margin: 24px 0 10px;
+    }
+    
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-top: 10px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 14px; }
+    .card small { color: var(--mut); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+    .card b { display: block; font-size: 20px; margin-top: 6px; }
+
+    .ins {
+      padding: 12px 14px;
+      margin: 8px 0;
+      background: var(--card);
+      border-left: 3px solid var(--ok);
+      border-radius: 0 4px 4px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .ins span { color: var(--mut); font-size: 13px; }
+    .crit { border-color: var(--bad); }
+    .warn { border-color: var(--ac); }
+    .info { border-color: var(--accent-blue); }
+
+    .form-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      background: var(--card);
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      margin-bottom: 16px;
+      align-items: center;
+    }
+    input, select, button {
+      background: var(--bg);
+      color: var(--tx);
+      border: 1px solid var(--line);
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-family: inherit;
+    }
+    button {
+      background: var(--ac);
+      color: #000;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    button:hover { opacity: 0.85; }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--line); font-size: 13px; }
+    th { color: var(--mut); font-size: 11px; text-transform: uppercase; }
+
+    .bars { display: flex; align-items: flex-end; gap: 14px; height: 180px; padding-top: 10px; }
+    .bar { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 6px; cursor: pointer; height: 100%; }
+    .bar i { width: 100%; background: var(--ac); opacity: .55; transition: .2s; display: block; border-radius: 2px 2px 0 0; }
+    .bar:hover i, .bar.on i { opacity: 1; }
+    .bar span { color: var(--mut); font-size: 11px; }
+
+    .row { display: flex; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid var(--line); }
+    .ok { color: var(--ok); }
+    .bad { color: var(--bad); }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="sub">Gestão Financeira Pessoal</div>
+    <h1>Painel de Controle</h1>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('dashboard')">Painel Geral</button>
+      <button class="tab-btn" onclick="switchTab('investimentos')">Investimentos</button>
+      <button class="tab-btn" onclick="switchTab('entradas')">Entradas</button>
+      <button class="tab-btn" onclick="switchTab('gastos')">Gastos</button>
+    </div>
+
+    <!-- ABA 1: PAINEL GERAL -->
+    <div id="tab-dashboard" class="tab-content active">
+      <div class="grid">
+        <div class="card"><small>Entradas do Mês</small><b id="dash-entradas">R$ 0,00</b></div>
+        <div class="card"><small>Gastos do Mês</small><b id="dash-gastos">R$ 0,00</b></div>
+        <div class="card"><small>Saldo do Mês</small><b id="dash-saldo" class="ok">R$ 0,00</b></div>
+        <div class="card"><small>Total Investido</small><b id="dash-investido">R$ 0,00</b></div>
+      </div>
+
+      <h2>Insights Inteligentes</h2>
+      <div id="insights-container"></div>
+
+      <h2>Evolução <select id="m" onchange="drawChart()"><option value="g">Gastos</option><option value="e">Entradas</option></select></h2>
+      <div class="card"><div class="bars" id="bars"></div></div>
+      <h2 id="dt">Detalhes</h2>
+      <div id="list"></div>
+    </div>
+
+    <!-- ABA 2: INVESTIMENTOS -->
+    <div id="tab-investimentos" class="tab-content">
+      <h2>Novo Investimento</h2>
+      <div class="form-group">
+        <select id="inv-tipo">
+          <option value="Ação">Ação (B3)</option>
+          <option value="FII">FII (B3)</option>
+          <option value="CDB">CDB</option>
+          <option value="Poupança">Poupança</option>
+        </select>
+        <input type="text" id="inv-ticker" placeholder="Código / Nome (ex: PETR4, MCCI11, CDB 100%)">
+        <input type="number" id="inv-valor" placeholder="Valor Investido (R$)">
+        <input type="number" id="inv-qtd" placeholder="Qtd (opcional para Ação/FII)" value="1">
+        <input type="date" id="inv-data">
+        <button onclick="addInvestimento()">Adicionar</button>
+      </div>
+
+      <div class="grid">
+        <div class="card"><small>Valor Investido</small><b id="inv-total-investido">R$ 0,00</b></div>
+        <div class="card"><small>Valor Atual Est.</small><b id="inv-total-atual">R$ 0,00</b></div>
+        <div class="card"><small>Lucro / Perda</small><b id="inv-total-lucro">R$ 0,00</b></div>
+      </div>
+
+      <h2>Carteira de Ativos</h2>
+      <div class="card" style="overflow-x: auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Tipo</th>
+              <th>Ativo</th>
+              <th>Data</th>
+              <th>Investido</th>
+              <th>Cotação/Atual</th>
+              <th>Retorno (R$)</th>
+              <th>Retorno (%)</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="inv-table"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ABA 3: ENTRADAS -->
+    <div id="tab-entradas" class="tab-content">
+      <h2>Nova Entrada</h2>
+      <div class="form-group">
+        <input type="text" id="ent-desc" placeholder="Descrição (ex: Salário)">
+        <input type="number" id="ent-valor" placeholder="Valor (R$)">
+        <input type="date" id="ent-data">
+        <button onclick="addEntrada()">Adicionar</button>
+      </div>
+
+      <h2>Histórico de Entradas</h2>
+      <div class="card">
+        <div id="entradas-list"></div>
+      </div>
+    </div>
+
+    <!-- ABA 4: GASTOS -->
+    <div id="tab-gastos" class="tab-content">
+      <h2>Novo Gasto</h2>
+      <div class="form-group">
+        <input type="text" id="gasto-desc" placeholder="Descrição (ex: Cartão de Crédito)">
+        <input type="number" id="gasto-valor" placeholder="Valor (R$)">
+        <input type="date" id="gasto-data">
+        <button onclick="addGasto()">Adicionar</button>
+      </div>
+
+      <h2>Histórico de Gastos</h2>
+      <div class="card">
+        <div id="gastos-list"></div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const brl = v => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+    // Estado da aplicação
+    let state = {
+      investimentos: JSON.parse(localStorage.getItem('fin_inv') || '[]'),
+      entradas: JSON.parse(localStorage.getItem('fin_ent') || '[]'),
+      gastos: JSON.parse(localStorage.getItem('fin_gastos') || '[]')
+    };
+
+    function saveState() {
+      localStorage.setItem('fin_inv', JSON.stringify(state.investimentos));
+      localStorage.setItem('fin_ent', JSON.stringify(state.entradas));
+      localStorage.setItem('fin_gastos', JSON.stringify(state.gastos));
+      renderAll();
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      
+      event.target.classList.add('active');
+      document.getElementById('tab-' + tabId).classList.add('active');
+    }
+
+    // CRUD Investimentos
+    function addInvestimento() {
+      const tipo = document.getElementById('inv-tipo').value;
+      const ticker = document.getElementById('inv-ticker').value.toUpperCase().trim();
+      const valor = parseFloat(document.getElementById('inv-valor').value);
+      const qtd = parseFloat(document.getElementById('inv-qtd').value) || 1;
+      const data = document.getElementById('inv-data').value;
+
+      if (!ticker || isNaN(valor) || !data) return alert('Preencha os campos corretamente.');
+
+      state.investimentos.push({ id: Date.now(), tipo, ticker, valor, qtd, data, cotacaoAtual: valor / qtd });
+      saveState();
+      
+      // Limpa formulário
+      document.getElementById('inv-ticker').value = '';
+      document.getElementById('inv-valor').value = '';
+    }
+
+    function deleteInv(id) {
+      state.investimentos = state.investimentos.filter(x => x.id !== id);
+      saveState();
+    }
+
+    // Buscar cotações reais da B3 via API pública Brapi
+    async function fetchQuotes() {
+      const b3Items = state.investimentos.filter(x => x.tipo === 'Ação' || x.tipo === 'FII');
+      if (b3Items.length === 0) return;
+
+      const tickers = [...new Set(b3Items.map(x => x.ticker))].join(',');
+      try {
+        const res = await fetch(`https://brapi.dev/api/quote/${tickers}?token=`);
+        const data = await res.json();
+        
+        if (data && data.results) {
+          data.results.forEach(quote => {
+            state.investimentos.forEach(inv => {
+              if (inv.ticker === quote.symbol) {
+                inv.cotacaoAtual = quote.regularMarketPrice;
+              }
+            });
+          });
+          renderInvestimentos();
+        }
+      } catch (err) {
+        console.log('Não foi possível buscar cotações B3 em tempo real no momento.');
+      }
+    }
+
+    // CRUD Entradas / Gastos
+    function addEntrada() {
+      const desc = document.getElementById('ent-desc').value.trim();
+      const valor = parseFloat(document.getElementById('ent-valor').value);
+      const data = document.getElementById('ent-data').value;
+      if (!desc || isNaN(valor) || !data) return;
+
+      state.entradas.push({ id: Date.now(), desc, valor, data });
+      saveState();
+      document.getElementById('ent-desc').value = '';
+      document.getElementById('ent-valor').value = '';
+    }
+
+    function addGasto() {
+      const desc = document.getElementById('gasto-desc').value.trim();
+      const valor = parseFloat(document.getElementById('gasto-valor').value);
+      const data = document.getElementById('gasto-data').value;
+      if (!desc || isNaN(valor) || !data) return;
+
+      state.gastos.push({ id: Date.now(), desc, valor, data });
+      saveState();
+      document.getElementById('gasto-desc').value = '';
+      document.getElementById('gasto-valor').value = '';
+    }
+
+    // Renderização da interface
+    function renderInvestimentos() {
+      const tbody = document.getElementById('inv-table');
+      let totalInv = 0, totalAtual = 0;
+
+      tbody.innerHTML = state.investimentos.map(inv => {
+        let valAtual = inv.valor;
+        
+        if (inv.tipo === 'Ação' || inv.tipo === 'FII') {
+          valAtual = inv.cotacaoAtual * inv.qtd;
+        } else if (inv.tipo === 'CDB') {
+          // Estimativa genérica CDB ~10.5% ao ano simples para projeção visual local
+          const dias = Math.max(1, (new Date() - new Date(inv.data)) / (1000 * 60 * 60 * 24));
+          valAtual = inv.valor * (1 + (0.105 * (dias / 365)));
+        } else if (inv.tipo === 'Poupança') {
+          const dias = Math.max(1, (new Date() - new Date(inv.data)) / (1000 * 60 * 60 * 24));
+          valAtual = inv.valor * (1 + (0.06 * (dias / 365)));
+        }
+
+        const lucro = valAtual - inv.valor;
+        const perc = (lucro / inv.valor) * 100;
+
+        totalInv += inv.valor;
+        totalAtual += valAtual;
+
+        return `
+          <tr>
+            <td>${inv.tipo}</td>
+            <td><b>${inv.ticker}</b></td>
+            <td>${inv.data}</td>
+            <td>${brl(inv.valor)}</td>
+            <td>${brl(valAtual)}</td>
+            <td class="${lucro >= 0 ? 'ok' : 'bad'}">${brl(lucro)}</td>
+            <td class="${perc >= 0 ? 'ok' : 'bad'}">${perc.toFixed(2)}%</td>
+            <td><button style="background:var(--bad);color:#fff;padding:4px 8px;" onclick="deleteInv(${inv.id})">X</button></td>
+          </tr>
+        `;
+      }).join('');
+
+      document.getElementById('inv-total-investido').textContent = brl(totalInv);
+      document.getElementById('inv-total-atual').textContent = brl(totalAtual);
+      const totalLucro = totalAtual - totalInv;
+      const elLucro = document.getElementById('inv-total-lucro');
+      elLucro.textContent = brl(totalLucro);
+      elLucro.className = totalLucro >= 0 ? 'ok' : 'bad';
+    }
+
+    function renderDashboard() {
+      const totEntradas = state.entradas.reduce((a, b) => a + b.valor, 0);
+      const totGastos = state.gastos.reduce((a, b) => a + b.valor, 0);
+      const saldo = totEntradas - totGastos;
+      const totInvestido = state.investimentos.reduce((a, b) => a + b.valor, 0);
+
+      document.getElementById('dash-entradas').textContent = brl(totEntradas);
+      document.getElementById('dash-gastos').textContent = brl(totGastos);
+      document.getElementById('dash-saldo').textContent = brl(saldo);
+      document.getElementById('dash-investido').textContent = brl(totInvestido);
+
+      // Gerador de Insights Automático
+      const container = document.getElementById('insights-container');
+      let html = '';
+
+      if (totEntradas > 0) {
+        const comp = (totGastos / totEntradas) * 100;
+        if (comp > 80) {
+          html += `<div class="ins crit"><b>Renda comprometida alta</b><span>Suas despesas ocupam ${comp.toFixed(1)}% das entradas. Tente manter abaixo de 70%.</span></div>`;
+        } else {
+          html += `<div class="ins ok"><b>Balanço saudável</b><span>Seus gastos correspondem a ${comp.toFixed(1)}% da sua receita do mês.</span></div>`;
+        }
+      }
+
+      if (totInvestido === 0) {
+        html += `<div class="ins warn"><b>Sem investimentos registrados</b><span>Comece adicionando CDBs ou ativos para rentabilizar seu saldo sobressalente.</span></div>`;
+      } else {
+        html += `<div class="ins info"><b>Aporte em Ativos</b><span>Sua carteira de investimentos possui ${state.investimentos.length} ativo(s) cadastrados.</span></div>`;
+      }
+
+      container.innerHTML = html || '<div class="ins info"><span>Cadastre suas despesas e entradas para visualizar dados consolidados.</span></div>';
+    }
+
+    function renderLists() {
+      document.getElementById('entradas-list').innerHTML = state.entradas.map(e => 
+        `<div class="row"><span>${e.desc} (${e.data})</span><span class="ok">${brl(e.valor)}</span></div>`
+      ).join('');
+
+      document.getElementById('gastos-list').innerHTML = state.gastos.map(g => 
+        `<div class="row"><span>${g.desc} (${g.data})</span><span class="bad">${brl(g.valor)}</span></div>`
+      ).join('');
+    }
+
+    function renderAll() {
+      renderInvestimentos();
+      renderDashboard();
+      renderLists();
+    }
+
+    // Inicialização e preenchimento com datas padrão
+    const hoje = new Date().toISOString().split('T')[0];
+    document.getElementById('inv-data').value = hoje;
+    document.getElementById('ent-data').value = hoje;
+    document.getElementById('gasto-data').value = hoje;
+
+    renderAll();
+    fetchQuotes();
+  </script>
+</body>
+</html>
