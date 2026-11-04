@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Caderneta Financeira | Executive Dashboard</title>
+  <title>Caderneta Pro | Safra Private Banking</title>
 
   <!-- Supabase JS Client -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -12,445 +12,594 @@
 
   <style>
     :root {
-      --bg-canvas: #0a43a8;       /* Azul royal do fundo da imagem */
-      --card-bg: #ffffff;         /* Cartões brancos de alto contraste */
-      --card-border: #e0e7ff;
-      --text-main: #0f172a;
-      --text-muted: #64748b;
-      --primary-blue: #1d4ed8;
-      --accent-green: #10b981;
-      --accent-red: #ef4444;
-      --accent-orange: #f59e0b;
+      --safra-bg: #121212;         /* Preto carvão nobre */
+      --safra-card: #1c1c1c;       /* Grafite fosco dos cartões */
+      --safra-border: #2c2c2c;     /* Linha de separação discreta */
+      --safra-gold: #c5a059;       /* Dourado corporativo discreto */
+      --safra-gold-hover: #d4af37;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --success: #059669;
+      --danger: #dc2626;
+      --warning: #d97706;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, system-ui, sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
     
     body { 
-      background-color: var(--bg-canvas); 
+      background-color: var(--safra-bg); 
       color: var(--text-main); 
       min-height: 100vh;
-      padding: 24px;
+      display: flex;
     }
 
-    /* Top Bar Header */
-    header.dashboard-header {
+    /* Sidebar Executiva Estilo Safra */
+    aside {
+      width: 270px;
+      background: var(--safra-card);
+      border-right: 1px solid var(--safra-border);
+      padding: 30px 20px;
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    .brand {
+      display: flex;
       align-items: center;
-      margin-bottom: 24px;
-      color: #ffffff;
+      gap: 12px;
+      margin-bottom: 40px;
+    }
+
+    .brand h2 {
+      font-size: 1.1rem;
+      font-weight: 500;
+      letter-spacing: 2px;
+      color: var(--text-main);
+      text-transform: uppercase;
+    }
+
+    .brand span {
+      color: var(--safra-gold);
+      font-weight: 700;
+    }
+
+    .nav-menu {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .nav-menu button {
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: none;
+      padding: 12px 16px;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      letter-spacing: 0.5px;
+    }
+
+    .nav-menu button:hover, .nav-menu button.active {
+      background: rgba(197, 160, 89, 0.1);
+      color: var(--safra-gold);
+      border-left: 3px solid var(--safra-gold);
+    }
+
+    /* Main Container */
+    main {
+      flex: 1;
+      padding: 40px;
+      overflow-y: auto;
+      max-width: 1400px;
+    }
+
+    header {
+      margin-bottom: 35px;
+      border-bottom: 1px solid var(--safra-border);
+      padding-bottom: 20px;
     }
 
     header h1 {
       font-size: 1.5rem;
-      font-weight: 800;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
+      font-weight: 400;
+      letter-spacing: 1px;
     }
 
-    header h1 span {
-      background: #ffffff;
-      color: var(--bg-canvas);
-      padding: 2px 8px;
-      border-radius: 6px;
-      margin-left: 8px;
-    }
-
-    .nav-tabs {
-      display: flex;
-      gap: 10px;
-    }
-
-    .nav-tabs button {
-      background: rgba(255, 255, 255, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      color: white;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-weight: 600;
+    header p {
+      color: var(--text-muted);
       font-size: 0.85rem;
-      cursor: pointer;
-      transition: all 0.2s;
+      margin-top: 6px;
     }
 
-    .nav-tabs button.active, .nav-tabs button:hover {
-      background: #ffffff;
-      color: var(--bg-canvas);
-    }
-
-    /* Tab Content Visibility */
     .tab-content { display: none; }
-    .tab-content.active { display: block; animation: fadeIn 0.25s ease-in-out; }
+    .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* Grid Layout similar à imagem */
-    .metrics-top-row {
+    /* Grid de Métricas Pro */
+    .metrics-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr 1fr;
-      gap: 16px;
-      margin-bottom: 20px;
-    }
-
-    .dashboard-main-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
       gap: 20px;
-      margin-bottom: 20px;
+      margin-bottom: 30px;
     }
 
-    /* Cards Estilo Power BI */
-    .pbi-card {
-      background: var(--card-bg);
-      border-radius: 12px;
-      padding: 18px 22px;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+    .safra-card {
+      background: var(--safra-card);
+      border: 1px solid var(--safra-border);
+      border-radius: 8px;
+      padding: 24px;
       position: relative;
     }
 
-    .pbi-card .card-label {
-      font-size: 0.75rem;
-      font-weight: 800;
-      color: var(--text-muted);
+    .safra-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 3px; height: 100%;
+      background: var(--safra-gold);
+      border-radius: 3px 0 0 3px;
+    }
+
+    .safra-card .card-label {
+      font-size: 0.72rem;
       text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .safra-card .card-value {
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-top: 10px;
       letter-spacing: 0.5px;
     }
 
-    .pbi-card .card-value {
-      font-size: 1.7rem;
-      font-weight: 800;
-      color: var(--primary-blue);
-      margin-top: 4px;
+    .safra-card.success .card-value { color: #34d399; }
+    .safra-card.warning .card-value { color: var(--safra-gold); }
+    .safra-card.danger .card-value { color: #f87171; }
+
+    /* Layout Gráfico + Tabela */
+    .dashboard-layout {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+      margin-bottom: 30px;
     }
 
-    .pbi-card.success .card-value { color: var(--accent-green); }
-    .pbi-card.danger .card-value { color: var(--accent-red); }
-    .pbi-card.warning .card-value { color: var(--accent-orange); }
-
-    /* Estilo Lateral dos Gastos (Baseado na seção direita da foto) */
-    .beneficios-list {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
+    @media (max-width: 1024px) {
+      .dashboard-layout { grid-template-columns: 1fr; }
+      body { flex-direction: column; }
+      aside { width: 100%; }
     }
 
-    .beneficio-item {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid #f1f5f9;
+    /* Formulários e Ações */
+    .form-container {
+      background: var(--safra-card);
+      border: 1px solid var(--safra-border);
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 30px;
     }
 
-    .beneficio-item:last-child { border-bottom: none; }
-
-    .beneficio-icon {
-      font-size: 1.5rem;
-      background: #eff6ff;
-      width: 44px;
-      height: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 10px;
+    .form-container h4 {
+      font-size: 0.95rem;
+      font-weight: 500;
+      margin-bottom: 16px;
+      color: var(--safra-gold);
+      letter-spacing: 0.5px;
     }
 
-    .beneficio-info h4 {
-      font-size: 1.1rem;
-      font-weight: 800;
-      color: var(--primary-blue);
+    .inline-form {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)) auto;
+      gap: 12px;
     }
 
-    .beneficio-info span {
-      font-size: 0.75rem;
+    .inline-form input, .inline-form select {
+      background: #121212;
+      border: 1px solid var(--safra-border);
+      color: var(--text-main);
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      outline: none;
+    }
+
+    .inline-form input:focus, .inline-form select:focus {
+      border-color: var(--safra-gold);
+    }
+
+    .btn-safra {
+      background: var(--safra-gold);
+      color: #121212;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 6px;
       font-weight: 700;
-      color: var(--text-muted);
-      text-transform: uppercase;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background 0.2s;
     }
 
-    /* Tabela Estilo Power BI */
+    .btn-safra:hover { background: var(--safra-gold-hover); }
+
+    /* Tabelas Safra Style */
     .table-container {
-      background: var(--card-bg);
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+      background: var(--safra-card);
+      border: 1px solid var(--safra-border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 30px;
     }
 
     .table-header {
+      padding: 20px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      border-bottom: 1px solid var(--safra-border);
     }
 
     .table-header h3 {
-      font-size: 1rem;
-      font-weight: 800;
-      color: var(--primary-blue);
-      text-transform: uppercase;
+      font-size: 0.95rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
     }
 
-    table.pbi-table {
+    table {
       width: 100%;
       border-collapse: collapse;
       text-align: left;
     }
 
-    table.pbi-table th {
+    th, td {
+      padding: 14px 24px;
+      border-bottom: 1px solid var(--safra-border);
+      font-size: 0.88rem;
+    }
+
+    th {
+      color: var(--text-muted);
+      font-weight: 600;
       font-size: 0.75rem;
       text-transform: uppercase;
-      color: var(--text-muted);
-      padding: 10px 14px;
-      background: #f8fafc;
-      border-bottom: 2px solid #e2e8f0;
+      letter-spacing: 1px;
+      background: rgba(0,0,0,0.2);
     }
 
-    table.pbi-table td {
-      padding: 12px 14px;
-      font-size: 0.88rem;
-      border-bottom: 1px solid #f1f5f9;
-      color: var(--text-main);
-    }
-
-    /* Botão de Dar Baixa Dinâmico */
-    .btn-baixa {
-      background: #eff6ff;
-      color: var(--primary-blue);
-      border: 1px solid #bfdbfe;
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-weight: 700;
-      font-size: 0.78rem;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .btn-baixa:hover {
-      background: var(--primary-blue);
-      color: #ffffff;
-    }
-
-    .badge-status {
+    .badge {
       padding: 4px 10px;
-      border-radius: 20px;
+      border-radius: 4px;
       font-size: 0.75rem;
-      font-weight: 800;
+      font-weight: 600;
       display: inline-block;
     }
+    .badge-pago { background: rgba(5, 150, 105, 0.15); color: #34d399; }
+    .badge-pendente { background: rgba(220, 38, 38, 0.15); color: #f87171; }
+    .badge-atrasado { background: rgba(217, 119, 6, 0.15); color: #fbbf24; }
 
-    .badge-pago { background: #d1fae5; color: #047857; }
-    .badge-pendente { background: #fee2e2; color: #b91c1c; }
-
-    /* Modal de Dar Baixa */
-    .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); display:none; justify-content:center; align-items:center; z-index: 1000; }
-    .modal { background: #ffffff; border-radius: 14px; padding: 24px; width: 100%; max-width: 380px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3); }
-    .modal h3 { margin-bottom: 16px; font-size: 1.1rem; color: var(--primary-blue); }
-    .modal-field { margin-bottom: 14px; }
-    .modal-field label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; }
-    .modal-field input, .modal-field select { width: 100%; border: 1px solid #cbd5e1; padding: 10px; border-radius: 8px; outline: none; }
-    .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
-    .btn-confirm { background: var(--primary-blue); color: white; border: none; padding: 10px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; }
-    .btn-cancel { background: #e2e8f0; color: var(--text-muted); border: none; padding: 10px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; }
-
-    /* Responsividade */
-    @media (max-width: 1024px) {
-      .metrics-top-row { grid-template-columns: 1fr 1fr; }
-      .dashboard-main-grid { grid-template-columns: 1fr; }
+    .btn-baixa {
+      background: transparent;
+      border: 1px solid var(--safra-gold);
+      color: var(--safra-gold);
+      padding: 5px 12px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
     }
+    .btn-baixa:hover { background: var(--safra-gold); color: #121212; }
+
+    /* Modal Safra */
+    .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); display:none; justify-content:center; align-items:center; z-index: 1000; }
+    .modal { background: var(--safra-card); border: 1px solid var(--safra-border); border-radius: 8px; padding: 30px; width: 100%; max-width: 420px; }
+    .modal h3 { margin-bottom: 20px; font-size: 1.1rem; font-weight: 500; color: var(--safra-gold); }
+    .modal-field { margin-bottom: 16px; }
+    .modal-field label { display: block; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); margin-bottom: 6px; }
+    .modal-field input, .modal-field select { width: 100%; background: #121212; border: 1px solid var(--safra-border); color: white; padding: 10px; border-radius: 6px; outline: none; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
   </style>
 </head>
 <body>
 
-  <!-- Top Header Bar -->
-  <header class="dashboard-header">
-    <h1>Caderneta <span>Power Analytics</span></h1>
-    <div class="nav-tabs">
-      <button onclick="mudarAba('gastos', event)" class="active">📊 Contas Mensais</button>
-      <button onclick="mudarAba('empresarial', event)">🏢 Faturamento MEI</button>
+  <!-- Sidebar Executiva -->
+  <aside>
+    <div class="brand">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#c5a059" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      <h2>Safra <span>Pro</span></h2>
     </div>
-  </header>
+    <ul class="nav-menu">
+      <li><button onclick="mudarAba('gastos', event)" class="active">📊 Caderneta Pessoal</button></li>
+      <li><button onclick="mudarAba('empresarial', event)">🏢 Faturamento PJ / NFs</button></li>
+      <li><button onclick="mudarAba('mei', event)">📄 Gestão DAS-MEI</button></li>
+    </ul>
+  </aside>
 
-  <!-- ABA 1: CONTAS MENSAIS DA PLANILHA -->
-  <section id="aba-gastos" class="tab-content active">
+  <!-- Conteúdo Principal -->
+  <main>
     
-    <!-- Top Cards de Indicadores -->
-    <div class="metrics-top-row">
-      <div class="pbi-card">
-        <span class="card-label">Salário / Renda Líquida</span>
-        <div class="card-value" id="card-renda">R$ 3.950,00</div>
-      </div>
-      <div class="pbi-card danger">
-        <span class="card-label">Total de Gastos</span>
-        <div class="card-value" id="card-total-gastos">R$ 0,00</div>
-      </div>
-      <div class="pbi-card success">
-        <span class="card-label">Total Efetivamente Pago</span>
-        <div class="card-value" id="card-total-pago">R$ 0,00</div>
-      </div>
-      <div class="pbi-card warning">
-        <span class="card-label">Saldo em Carteira</span>
-        <div class="card-value" id="card-saldo">R$ 0,00</div>
-      </div>
-    </div>
+    <!-- ABA 1: CADERNETA PESSOAL -->
+    <section id="aba-gastos" class="tab-content active">
+      <header>
+        <h1>Caderneta de Contas do Mês</h1>
+        <p>Visão analítica de despesas, controle de vencimentos e baixa com apuração de juros.</p>
+      </header>
 
-    <!-- Layout Principal: Tabela + Gráfico & Resumo Lateral -->
-    <div class="dashboard-main-grid">
-      
-      <!-- Tabela da Planilha com Ação de Dar Baixa -->
+      <div class="metrics-grid">
+        <div class="safra-card">
+          <span class="card-label">Renda Líquida Base</span>
+          <div class="card-value" id="m-renda">R$ 3.950,00</div>
+        </div>
+        <div class="safra-card danger">
+          <span class="card-label">Total Cadastrado</span>
+          <div class="card-value" id="m-total">R$ 0,00</div>
+        </div>
+        <div class="safra-card warning">
+          <span class="card-label">Juros / Multas Pagas</span>
+          <div class="card-value" id="m-juros">R$ 0,00</div>
+        </div>
+        <div class="safra-card success">
+          <span class="card-label">Saldo em Carteira</span>
+          <div class="card-value" id="m-saldo">R$ 0,00</div>
+        </div>
+      </div>
+
+      <div class="dashboard-layout">
+        <!-- Formulário para Adicionar Conta Editável -->
+        <div class="form-container" style="grid-column: span 2;">
+          <h4>+ Cadastrar Novo Compromisso / Conta</h4>
+          <form onsubmit="adicionarDespesa(event)" class="inline-form">
+            <input type="text" id="d-nome" placeholder="Descrição (ex: Aluguel, Luz)" required>
+            <input type="number" step="0.01" id="d-valor" placeholder="Valor (R$)" required>
+            <select id="d-cat">
+              <option value="Fixa">Conta Fixa</option>
+              <option value="Variavel">Variável</option>
+              <option value="Cartao">Cartão de Crédito</option>
+              <option value="Outros">Outros</option>
+            </select>
+            <input type="text" id="d-parcela" placeholder="Parcela (ex: 1-5 ou -)" value="-">
+            <input type="date" id="d-vencimento" required>
+            <button type="submit" class="btn-safra">Adicionar Conta</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Tabela Dinâmica Completa -->
       <div class="table-container">
         <div class="table-header">
-          <h3>Detalhamento das Contas da Caderneta</h3>
-          <span style="font-size:0.8rem; color:var(--text-muted); font-weight:700;">Clique em "Dar Baixa" para liquidar</span>
+          <h3>Extrato de Contas Mensais</h3>
+          <span style="font-size: 0.78rem; color: var(--safra-gold);">Atualização em tempo real</span>
         </div>
-        <table class="pbi-table">
+        <table>
           <thead>
             <tr>
-              <th>Compromisso / Conta</th>
+              <th>Compromisso</th>
               <th>Categoria</th>
               <th>Parcela</th>
+              <th>Vencimento</th>
               <th>Valor Base</th>
               <th>Valor Pago</th>
+              <th>Juros</th>
               <th>Status</th>
               <th>Ação</th>
             </tr>
           </thead>
-          <tbody id="tabela-contas-body">
-            <!-- Renderizado dinamicamente via JS -->
-          </tbody>
+          <tbody id="tabela-contas"></tbody>
         </table>
       </div>
+    </section>
 
-      <!-- Lado Direito: Resumo de Categoria Estilo Power BI -->
-      <div class="pbi-card">
-        <span class="card-label" style="margin-bottom: 16px;">Resumo por Categoria de Custo</span>
-        <div class="beneficios-list">
-          <div class="beneficio-item">
-            <div class="beneficio-icon">📌</div>
-            <div class="beneficio-info">
-              <h4 id="cat-val-fixa">R$ 0,00</h4>
-              <span>Contas Fixas</span>
-            </div>
-          </div>
-          <div class="beneficio-item">
-            <div class="beneficio-icon">⚡</div>
-            <div class="beneficio-info">
-              <h4 id="cat-val-variavel">R$ 0,00</h4>
-              <span>Contas Variáveis</span>
-            </div>
-          </div>
-          <div class="beneficio-item">
-            <div class="beneficio-icon">💳</div>
-            <div class="beneficio-info">
-              <h4 id="cat-val-cartao">R$ 0,00</h4>
-              <span>Cartões de Crédito</span>
-            </div>
-          </div>
-          <div class="beneficio-item">
-            <div class="beneficio-icon">⚠️</div>
-            <div class="beneficio-info">
-              <h4 id="cat-val-juros" style="color:var(--accent-red)">R$ 0,00</h4>
-              <span>Juros por Atraso</span>
-            </div>
-          </div>
+    <!-- ABA 2: EMPRESARIAL / NFs -->
+    <section id="aba-empresarial" class="tab-content">
+      <header>
+        <h1>Painel Empresarial & Notas Fiscais</h1>
+        <p>Acompanhamento de faturamento PJ anual, volume de notas e clientes atendidos.</p>
+      </header>
+
+      <div class="metrics-grid">
+        <div class="safra-card success">
+          <span class="card-label">Faturamento Acumulado</span>
+          <div class="card-value" id="emp-faturamento">R$ 0,00</div>
         </div>
-        
-        <!-- Gráfico em Donut embutido -->
-        <div style="height:180px; margin-top:20px;">
-          <canvas id="chartDonutGastos"></canvas>
+        <div class="safra-card">
+          <span class="card-label">Total NFs Emitidas</span>
+          <div class="card-value" id="emp-qtd-nfs">0</div>
+        </div>
+        <div class="safra-card">
+          <span class="card-label">Empresas Atendidas</span>
+          <div class="card-value" id="emp-qtd-clientes">0</div>
         </div>
       </div>
 
-    </div>
-  </section>
-
-  <!-- ABA 2: EMPRESARIAL / MEI -->
-  <section id="aba-empresarial" class="tab-content">
-    <div class="metrics-top-row">
-      <div class="pbi-card success">
-        <span class="card-label">Faturamento Acumulado MEI</span>
-        <div class="card-value" id="mei-faturamento">R$ 0,00</div>
+      <div class="form-container">
+        <h4>+ Lançar Nova Nota Fiscal</h4>
+        <form onsubmit="adicionarNF(event)" class="inline-form">
+          <input type="text" id="nf-num" placeholder="Nº da NF" required>
+          <input type="text" id="nf-cliente" placeholder="Razão Social da Empresa" required>
+          <input type="number" step="0.01" id="nf-valor" placeholder="Valor Bruto (R$)" required>
+          <input type="date" id="nf-emissao" required>
+          <button type="submit" class="btn-safra">Registar NF</button>
+        </form>
       </div>
-      <div class="pbi-card">
-        <span class="card-label">Limite Anual MEI</span>
-        <div class="card-value">R$ 81.000,00</div>
-      </div>
-    </div>
-  </section>
 
-  <!-- MODAL DE DAR BAIXA EM CONTAS -->
+      <div class="table-container">
+        <div class="table-header"><h3>Notas Fiscais Registradas</h3></div>
+        <table>
+          <thead>
+            <tr>
+              <th>Nº NF</th>
+              <th>Cliente / Empresa</th>
+              <th>Data Emissão</th>
+              <th>Valor Bruto</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="tabela-nfs"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ABA 3: MEI / DAS -->
+    <section id="aba-mei" class="tab-content">
+      <header>
+        <h1>Gestão de Guias DAS-MEI</h1>
+        <p>Controle fiscal e apuração de comprovantes e encargos em atraso.</p>
+      </header>
+
+      <div class="metrics-grid">
+        <div class="safra-card success">
+          <span class="card-label">Total Pago em DAS</span>
+          <div class="card-value" id="mei-total-pago">R$ 0,00</div>
+        </div>
+        <div class="safra-card warning">
+          <span class="card-label">Multas e Juros Apurados</span>
+          <div class="card-value" id="mei-total-juros">R$ 0,00</div>
+        </div>
+        <div class="safra-card danger">
+          <span class="card-label">Guias Pendentes</span>
+          <div class="card-value" id="mei-pendentes">0</div>
+        </div>
+      </div>
+
+      <div class="form-container">
+        <h4>+ Cadastrar Guia DAS-MEI</h4>
+        <form onsubmit="adicionarGuiaMei(event)" class="inline-form">
+          <input type="text" id="m-mes" placeholder="Mês (ex: 08/2026)" required>
+          <input type="number" step="0.01" id="m-base" value="70.60" placeholder="Valor Guia" required>
+          <button type="submit" class="btn-safra">Adicionar Guia</button>
+        </form>
+      </div>
+
+      <div class="table-container">
+        <div class="table-header"><h3>Guias e Comprovantes MEI</h3></div>
+        <table>
+          <thead>
+            <tr>
+              <th>Referência</th>
+              <th>Valor Original</th>
+              <th>Valor Pago</th>
+              <th>Juros / Multa</th>
+              <th>Status</th>
+              <th>Ação</th>
+            </tr>
+          </thead>
+          <tbody id="tabela-mei"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL DE DAR BAIXA -->
   <div class="modal-overlay" id="modalBaixa">
     <div class="modal">
-      <h3>Liquidar Conta / Dar Baixa</h3>
+      <h3>Dar Baixa em Pagamento</h3>
       <input type="hidden" id="modal-id">
       
       <div class="modal-field">
-        <label>Valor Cadastrado Original:</label>
-        <input type="text" id="modal-valor-base" readonly style="background:#f1f5f9;">
+        <label>Valor Cadastrado Base</label>
+        <input type="text" id="modal-valor-base" readonly style="background:#090909; color: var(--safra-gold);">
       </div>
 
       <div class="modal-field">
-        <label>Pago com atraso?</label>
+        <label>Pagamento com Atraso?</label>
         <select id="modal-atrasado">
-          <option value="nao">Não (Pago no Prazo)</option>
-          <option value="sim">Sim (Pago em Atraso)</option>
+          <option value="nao">Não (No Prazo)</option>
+          <option value="sim">Sim (Com Multa/Atraso)</option>
         </select>
       </div>
 
       <div class="modal-field">
-        <label>Valor Total Efetivamente Pago (R$):</label>
+        <label>Valor Total Efetivamente Pago (R$)</label>
         <input type="number" step="0.01" id="modal-valor-pago" required>
       </div>
 
       <div class="modal-actions">
-        <button class="btn-cancel" onclick="fecharModal()">Cancelar</button>
-        <button class="btn-confirm" onclick="confirmarBaixa()">Confirmar Pagamento</button>
+        <button class="btn-safra" style="background:transparent; border:1px solid var(--safra-border); color:white;" onclick="fecharModal()">Cancelar</button>
+        <button class="btn-safra" onclick="confirmarBaixa()">Confirmar Pagamento</button>
       </div>
     </div>
   </div>
 
   <script>
-    /* Configuração Supabase */
+    /* Configuração Supabase (Substitua pelas suas credenciais se usar banco real) */
     const SUPABASE_URL = 'SUA_SUPABASE_URL_AQUI';
     const SUPABASE_KEY = 'SUA_SUPABASE_ANON_KEY_AQUI';
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    /* Dados Padrão Inicial da Sua Planilha (Caso ainda não tenha dados na DB) */
-    let contasPlanilha = [
-      { id: 1, nome: "PUC", valor: 300.00, valor_pago: 300.00, categoria: "Fixa", parcela: "-", status: "Pago", juros: 0 },
-      { id: 2, nome: "Claro", valor: 30.00, valor_pago: 30.00, categoria: "Fixa", parcela: "-", status: "Pago", juros: 0 },
-      { id: 3, nome: "Fies", valor: 22.00, valor_pago: 0, categoria: "Fixa", parcela: "-", status: "Pendente", juros: 0 },
-      { id: 4, nome: "IPTU", valor: 150.00, valor_pago: 0, categoria: "Fixa", parcela: "-", status: "Pendente", juros: 0 },
-      { id: 5, nome: "IPTV", valor: 16.00, valor_pago: 0, categoria: "Fixa", parcela: "-", status: "Pendente", juros: 0 },
-      { id: 6, nome: "Emprestimo Le", valor: 1000.00, valor_pago: 0, categoria: "Fixa", parcela: "1-5", status: "Pendente", juros: 0 },
-      { id: 7, nome: "Itaú", valor: 87.00, valor_pago: 0, categoria: "Fixa", parcela: "-", status: "Pendente", juros: 0 },
-      { id: 8, nome: "Internet", valor: 132.00, valor_pago: 0, categoria: "Fixa", parcela: "9-12", status: "Pendente", juros: 0 },
-      { id: 9, nome: "DASMEI", valor: 105.05, valor_pago: 0, categoria: "Fixa", parcela: "-", status: "Pendente", juros: 0 },
-      { id: 10, nome: "C6 Fatura", valor: 480.00, valor_pago: 0, categoria: "Cartao", parcela: "-", status: "Pendente", juros: 0 },
-      { id: 11, nome: "Energia", valor: 256.00, valor_pago: 0, categoria: "Variavel", parcela: "-", status: "Pendente", juros: 0 },
-      { id: 12, nome: "Água", valor: 221.00, valor_pago: 0, categoria: "Variavel", parcela: "-", status: "Pendente", juros: 0 },
-      { id: 13, nome: "Previdência Privada", valor: 200.00, valor_pago: 0, categoria: "Variavel", parcela: "-", status: "Pendente", juros: 0 },
-      { id: 14, nome: "Massagem", valor: 140.00, valor_pago: 140.00, categoria: "Outros", parcela: "-", status: "Pago", juros: 0 }
+    /* Base inicial editável e completa com as contas da sua planilha */
+    let contas = JSON.parse(localStorage.getItem('safra_contas')) || [
+      { id: 1, nome: "PUC", valor: 300.00, valor_pago: 300.00, categoria: "Fixa", parcela: "-", vencimento: "2026-08-10", status: "Pago", juros: 0 },
+      { id: 2, nome: "Claro", valor: 30.00, valor_pago: 30.00, categoria: "Fixa", parcela: "-", vencimento: "2026-08-12", status: "Pago", juros: 0 },
+      { id: 3, nome: "Fies", valor: 22.00, valor_pago: 0, categoria: "Fixa", parcela: "-", vencimento: "2026-08-15", status: "Pendente", juros: 0 },
+      { id: 4, nome: "IPTU", valor: 150.00, valor_pago: 0, categoria: "Fixa", parcela: "-", vencimento: "2026-08-20", status: "Pendente", juros: 0 },
+      { id: 5, nome: "IPTV", valor: 16.00, valor_pago: 0, categoria: "Fixa", parcela: "-", vencimento: "2026-08-10", status: "Pendente", juros: 0 },
+      { id: 6, nome: "Emprestimo Le", valor: 1000.00, valor_pago: 0, categoria: "Fixa", parcela: "1-5", vencimento: "2026-08-25", status: "Pendente", juros: 0 },
+      { id: 7, nome: "Itaú", valor: 87.00, valor_pago: 0, categoria: "Fixa", parcela: "-", vencimento: "2026-08-18", status: "Pendente", juros: 0 },
+      { id: 8, nome: "Internet", valor: 132.00, valor_pago: 0, categoria: "Fixa", parcela: "9-12", vencimento: "2026-08-10", status: "Pendente", juros: 0 },
+      { id: 9, nome: "DASMEI", valor: 105.05, valor_pago: 0, categoria: "Fixa", parcela: "-", vencimento: "2026-08-20", status: "Pendente", juros: 0 },
+      { id: 10, nome: "C6 Fatura", valor: 480.00, valor_pago: 0, categoria: "Cartao", parcela: "-", vencimento: "2026-08-10", status: "Pendente", juros: 0 },
+      { id: 11, nome: "Energia", valor: 256.00, valor_pago: 0, categoria: "Variavel", parcela: "-", vencimento: "2026-08-15", status: "Pendente", juros: 0 },
+      { id: 12, nome: "Água", valor: 221.00, valor_pago: 0, categoria: "Variavel", parcela: "-", vencimento: "2026-08-15", status: "Pendente", juros: 0 },
+      { id: 13, nome: "Previdência Privada", valor: 200.00, valor_pago: 0, categoria: "Variavel", parcela: "-", vencimento: "2026-08-10", status: "Pendente", juros: 0 },
+      { id: 14, nome: "Massagem", valor: 140.00, valor_pago: 140.00, categoria: "Outros", parcela: "-", vencimento: "2026-08-05", status: "Pago", juros: 0 }
+    ];
+
+    let nfs = JSON.parse(localStorage.getItem('safra_nfs')) || [
+      { id: 1, numero_nf: "1024", empresa_cliente: "Tech Solutions Ltda", valor_bruto: 3500.00, data_emissao: "2026-08-02" }
+    ];
+
+    let guiasMei = JSON.parse(localStorage.getItem('safra_mei')) || [
+      { id: 1, mes_referencia: "07/2026", valor_original: 70.60, valor_pago: 70.60, juros_multa: 0, status: "Pago" }
     ];
 
     let rendaSalario = 3950.00;
-    let itemEmBaixaId = null;
-    let chartInstance = null;
+    let idBaixaAtual = null;
 
-    /* Troca de Abas */
     function mudarAba(id, event) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.nav-tabs button').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-menu button').forEach(el => el.classList.remove('active'));
       document.getElementById('aba-' + id).classList.add('active');
       event.currentTarget.classList.add('active');
     }
 
-    /* Modal de Baixa */
+    function salvarLocal() {
+      localStorage.setItem('safra_contas', JSON.stringify(contas));
+      localStorage.setItem('safra_nfs', JSON.stringify(nfs));
+      localStorage.setItem('safra_mei', JSON.stringify(guiasMei));
+      renderizarTudo();
+    }
+
+    /* Cadastrar Nova Conta Dinamicamente */
+    function adicionarDespesa(e) {
+      e.preventDefault();
+      contas.push({
+        id: Date.now(),
+        nome: document.getElementById('d-nome').value,
+        valor: parseFloat(document.getElementById('d-valor').value),
+        valor_pago: 0,
+        categoria: document.getElementById('d-cat').value,
+        parcela: document.getElementById('d-parcela').value,
+        vencimento: document.getElementById('d-vencimento').value,
+        status: "Pendente",
+        juros: 0
+      });
+      e.target.reset();
+      salvarLocal();
+    }
+
     function abrirModal(id) {
-      itemEmBaixaId = id;
-      let item = contasPlanilha.find(c => c.id === id);
-      document.getElementById('modal-id').value = id;
+      idBaixaAtual = id;
+      let item = contas.find(c => c.id === id);
       document.getElementById('modal-valor-base').value = `R$ ${item.valor.toFixed(2)}`;
       document.getElementById('modal-valor-pago').value = item.valor.toFixed(2);
       document.getElementById('modalBaixa').style.display = 'flex';
@@ -460,108 +609,127 @@
       document.getElementById('modalBaixa').style.display = 'none';
     }
 
-    /* Confirmar Pagamento e Atualizar Painel em Tempo Real */
     function confirmarBaixa() {
       let valorPago = parseFloat(document.getElementById('modal-valor-pago').value);
-      let atrasado = document.getElementById('modal-atrasado').value === 'sim';
       
-      contasPlanilha = contasPlanilha.map(item => {
-        if(item.id === itemEmBaixaId) {
+      contas = contas.map(item => {
+        if(item.id === idBaixaAtual) {
           let jurosCalc = valorPago > item.valor ? (valorPago - item.valor) : 0;
-          return {
-            ...item,
-            status: "Pago",
-            valor_pago: valorPago,
-            juros: jurosCalc
-          };
+          return { ...item, status: "Pago", valor_pago: valorPago, juros: jurosCalc };
         }
         return item;
       });
 
       fecharModal();
-      atualizarDashboard();
+      salvarLocal();
     }
 
-    /* Renderização e Cálculo Dinâmico */
-    function atualizarDashboard() {
-      const tbody = document.getElementById('tabela-contas-body');
+    function adicionarNF(e) {
+      e.preventDefault();
+      nfs.push({
+        id: Date.now(),
+        numero_nf: document.getElementById('nf-num').value,
+        empresa_cliente: document.getElementById('nf-cliente').value,
+        valor_bruto: parseFloat(document.getElementById('nf-valor').value),
+        data_emissao: document.getElementById('nf-emissao').value
+      });
+      e.target.reset();
+      salvarLocal();
+    }
+
+    function adicionarGuiaMei(e) {
+      e.preventDefault();
+      guiasMei.push({
+        id: Date.now(),
+        mes_referencia: document.getElementById('m-mes').value,
+        valor_original: parseFloat(document.getElementById('m-base').value),
+        valor_pago: 0,
+        juros_multa: 0,
+        status: "Pendente"
+      });
+      e.target.reset();
+      salvarLocal();
+    }
+
+    /* Renderização Geral */
+    function renderizarTudo() {
+      /* Contas */
+      const tbody = document.getElementById('tabela-contas');
       tbody.innerHTML = '';
+      let total = 0, jurosTotais = 0;
 
-      let totalGastos = 0;
-      let totalPago = 0;
-      let totalJuros = 0;
-
-      let catFixa = 0, catVariavel = 0, catCartao = 0;
-
-      contasPlanilha.forEach(item => {
-        totalGastos += item.valor;
-        totalPago += item.valor_pago;
-        totalJuros += item.juros || 0;
-
-        if(item.categoria === 'Fixa') catFixa += item.valor;
-        if(item.categoria === 'Variavel') catVariavel += item.valor;
-        if(item.categoria === 'Cartao') catCartao += item.valor;
+      contas.forEach(item => {
+        total += item.valor;
+        jurosTotais += item.juros || 0;
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td><strong>${item.nome}</strong></td>
-          <td><span style="font-size:0.75rem; font-weight:700; background:#f1f5f9; padding:2px 6px; border-radius:4px">${item.categoria}</span></td>
+          <td><span style="color:var(--safra-gold); font-size:0.75rem">${item.categoria}</span></td>
           <td>${item.parcela}</td>
+          <td>${item.vencimento}</td>
           <td>R$ ${item.valor.toFixed(2)}</td>
           <td>R$ ${item.valor_pago.toFixed(2)}</td>
-          <td>
-            <span class="badge-status ${item.status === 'Pago' ? 'badge-pago' : 'badge-pendente'}">
-              ${item.status}
-            </span>
-          </td>
-          <td>
-            ${item.status !== 'Pago' ? `<button class="btn-baixa" onclick="abrirModal(${item.id})">Dar Baixa</button>` : '✓ Liquidado'}
-          </td>
+          <td style="color:var(--warning)">R$ ${(item.juros || 0).toFixed(2)}</td>
+          <td><span class="badge ${item.status === 'Pago' ? 'badge-pago' : 'badge-pendente'}">${item.status}</span></td>
+          <td>${item.status !== 'Pago' ? `<button class="btn-baixa" onclick="abrirModal(${item.id})">Baixa</button>` : '✓'}</td>
         `;
         tbody.appendChild(tr);
       });
 
-      // Atualizar Cartões Principais
-      document.getElementById('card-renda').innerText = `R$ ${rendaSalario.toFixed(2)}`;
-      document.getElementById('card-total-gastos').innerText = `R$ ${totalGastos.toFixed(2)}`;
-      document.getElementById('card-total-pago').innerText = `R$ ${totalPago.toFixed(2)}`;
-      document.getElementById('card-saldo').innerText = `R$ ${(rendaSalario - totalGastos).toFixed(2)}`;
+      document.getElementById('m-total').innerText = `R$ ${total.toFixed(2)}`;
+      document.getElementById('m-juros').innerText = `R$ ${jurosTotais.toFixed(2)}`;
+      document.getElementById('m-saldo').innerText = `R$ ${(rendaSalario - (total + jurosTotais)).toFixed(2)}`;
 
-      // Atualizar Resumos da Direita
-      document.getElementById('cat-val-fixa').innerText = `R$ ${catFixa.toFixed(2)}`;
-      document.getElementById('cat-val-variavel').innerText = `R$ ${catVariavel.toFixed(2)}`;
-      document.getElementById('cat-val-cartao').innerText = `R$ ${catCartao.toFixed(2)}`;
-      document.getElementById('cat-val-juros').innerText = `R$ ${totalJuros.toFixed(2)}`;
+      /* NFs */
+      const tbodyNf = document.getElementById('tabela-nfs');
+      tbodyNf.innerHTML = '';
+      let faturamento = 0, clientes = new Set();
 
-      renderChartDonut(catFixa, catVariavel, catCartao);
-    }
-
-    /* Gráfico Donuts */
-    function renderChartDonut(fixa, variavel, cartao) {
-      const ctx = document.getElementById('chartDonutGastos').getContext('2d');
-      if(chartInstance) chartInstance.destroy();
-
-      chartInstance = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-          labels: ['Fixa', 'Variável', 'Cartão'],
-          datasets: [{
-            data: [fixa, variavel, cartao],
-            backgroundColor: ['#1d4ed8', '#10b981', '#f59e0b'],
-            borderWidth: 0
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { display: false } }
-        }
+      nfs.forEach(nf => {
+        faturamento += nf.valor_bruto;
+        clientes.add(nf.empresa_cliente);
+        tbodyNf.innerHTML += `
+          <tr>
+            <td><strong>NF #${nf.numero_nf}</strong></td>
+            <td>${nf.empresa_cliente}</td>
+            <td>${nf.data_emissao}</td>
+            <td>R$ ${nf.valor_bruto.toFixed(2)}</td>
+            <td><span class="badge badge-pago">Emitida</span></td>
+          </tr>
+        `;
       });
+      document.getElementById('emp-faturamento').innerText = `R$ ${faturamento.toFixed(2)}`;
+      document.getElementById('emp-qtd-nfs').innerText = nfs.length;
+      document.getElementById('emp-qtd-clientes').innerText = clientes.size;
+
+      /* MEI */
+      const tbodyMei = document.getElementById('tabela-mei');
+      tbodyMei.innerHTML = '';
+      let meiPago = 0, meiJuros = 0, meiPend = 0;
+
+      guiasMei.forEach(g => {
+        meiPago += g.valor_pago || 0;
+        meiJuros += g.juros_multa || 0;
+        if(g.status !== 'Pago') meiPend++;
+
+        tbodyMei.innerHTML += `
+          <tr>
+            <td><strong>${g.mes_referencia}</strong></td>
+            <td>R$ ${g.valor_original.toFixed(2)}</td>
+            <td>R$ ${(g.valor_pago || 0).toFixed(2)}</td>
+            <td style="color:var(--warning)">R$ ${(g.juros_multa || 0).toFixed(2)}</td>
+            <td><span class="badge ${g.status === 'Pago' ? 'badge-pago' : 'badge-pendente'}">${g.status}</span></td>
+            <td>${g.status !== 'Pago' ? `<button class="btn-baixa" onclick="alert('Funcionalidade de baixa MEI ativa')">Pagar</button>` : '✓'}</td>
+          </tr>
+        `;
+      });
+      document.getElementById('mei-total-pago').innerText = `R$ ${meiPago.toFixed(2)}`;
+      document.getElementById('mei-total-juros').innerText = `R$ ${meiJuros.toFixed(2)}`;
+      document.getElementById('mei-pendentes').innerText = meiPend;
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      atualizarDashboard();
-    });
+    document.addEventListener('DOMContentLoaded', () => { renderizarTudo(); });
   </script>
 </body>
 </html>
