@@ -5,24 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GD | Executive Wealth & State</title>
 
-  <!-- Favicon GD Gold Executivo -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23ffffff'/><text x='50%' y='68%' font-family='sans-serif' font-weight='900' font-size='52' fill='%23b48a36' text-anchor='middle'>GD</text></svg>">
+  <!-- Favicon GD Executivo -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230f172a'/><text x='50%' y='68%' font-family='sans-serif' font-weight='900' font-size='52' fill='%23c5a059' text-anchor='middle'>GD</text></svg>">
 
   <!-- Chart.js para Gráficos -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
     :root {
-      --bg-app: #f4f6f9;
-      --card-bg: #ffffff;
-      --card-border: #e2e8f0;
-      --primary-gold: #b48a36;
-      --primary-gold-dark: #8c6a27;
-      --text-main: #0f172a;
-      --text-muted: #64748b;
-      --success: #10b981;
-      --danger: #ef4444;
-      --warning: #f59e0b;
+      --bg-app: #eef2f6;          /* Fundo confortável com ótimo contraste */
+      --card-bg: #ffffff;         /* Branco puro para os cards */
+      --card-border: #cbd5e1;     /* Bordas mais definidas */
+      --primary-gold: #c5a059;    /* Dourado Executivo */
+      --primary-gold-dark: #9a7b38;
+      --text-main: #0f172a;       /* Texto escuro de alto contraste */
+      --text-muted: #475569;      /* Texto secundário legível */
+      --success: #059669;
+      --danger: #dc2626;
+      --warning: #d97706;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
@@ -34,15 +34,16 @@
       display: flex;
     }
 
-    /* Sidebar Executiva Clean */
+    /* Sidebar Executiva */
     aside {
-      width: 260px;
+      width: 270px;
       background: #ffffff;
       border-right: 1px solid var(--card-border);
       padding: 28px 20px;
       display: flex;
       flex-direction: column;
       flex-shrink: 0;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.03);
     }
 
     .brand {
@@ -53,11 +54,11 @@
     }
 
     .brand-logo {
-      width: 40px;
-      height: 40px;
+      width: 42px;
+      height: 42px;
       background: #0f172a;
       color: var(--primary-gold);
-      font-weight: 800;
+      font-weight: 900;
       font-size: 1.1rem;
       border-radius: 10px;
       display: flex;
@@ -65,7 +66,7 @@
       justify-content: center;
     }
 
-    .brand h2 { font-size: 1.05rem; font-weight: 700; letter-spacing: 1px; color: var(--text-main); text-transform: uppercase; }
+    .brand h2 { font-size: 1.1rem; font-weight: 800; letter-spacing: 1px; color: var(--text-main); text-transform: uppercase; }
     .brand span { color: var(--primary-gold); }
 
     .sidebar-clock {
@@ -78,28 +79,29 @@
     }
 
     .sidebar-clock .clock-time {
-      font-size: 1.25rem;
-      font-weight: 700;
+      font-size: 1.3rem;
+      font-weight: 800;
       color: var(--text-main);
       font-variant-numeric: tabular-nums;
     }
 
     .sidebar-clock .clock-date {
-      font-size: 0.72rem;
+      font-size: 0.75rem;
       color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 0.8px;
       margin-top: 2px;
+      font-weight: 700;
     }
 
-    .nav-menu { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .nav-menu { list-style: none; display: flex; flex-direction: column; gap: 8px; }
     .nav-menu button {
       width: 100%; text-align: left; background: transparent; border: none; padding: 12px 14px; border-radius: 8px;
-      font-size: 0.88rem; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: all 0.2s;
+      font-size: 0.9rem; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: all 0.2s;
       display: flex; align-items: center; gap: 10px;
     }
     .nav-menu button:hover, .nav-menu button.active {
-      background: #f1f5f9; color: var(--text-main); border-left: 3px solid var(--primary-gold);
+      background: #f1f5f9; color: var(--text-main); border-left: 4px solid var(--primary-gold);
     }
 
     /* Main Container */
@@ -114,15 +116,15 @@
       border-bottom: 1px solid var(--card-border);
     }
 
-    header h1 { font-size: 1.5rem; font-weight: 700; color: var(--text-main); }
-    header p { color: var(--text-muted); font-size: 0.85rem; margin-top: 4px; }
+    header h1 { font-size: 1.6rem; font-weight: 800; color: var(--text-main); }
+    header p { color: var(--text-muted); font-size: 0.9rem; margin-top: 4px; font-weight: 500; }
 
     .month-selector {
-      display: flex; align-items: center; gap: 12px; background: #ffffff;
-      border: 1px solid var(--card-border); padding: 8px 16px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      display: flex; align-items: center; gap: 14px; background: #ffffff;
+      border: 1px solid var(--card-border); padding: 8px 18px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.04);
     }
-    .month-selector button { background: transparent; border: none; color: var(--text-main); font-size: 1rem; cursor: pointer; font-weight: 700; }
-    .month-selector span { font-size: 0.88rem; font-weight: 700; letter-spacing: 1px; color: var(--primary-gold-dark); }
+    .month-selector button { background: transparent; border: none; color: var(--text-main); font-size: 1.1rem; cursor: pointer; font-weight: 900; }
+    .month-selector span { font-size: 0.92rem; font-weight: 800; letter-spacing: 1px; color: var(--primary-gold-dark); }
 
     .tab-content { display: none; }
     .tab-content.active { display: block; animation: fadeIn 0.2s ease-in-out; }
@@ -131,14 +133,14 @@
     /* Cards e Métricas */
     .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin-bottom: 28px; }
     .safra-card {
-      background: #ffffff;
+      background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+      padding: 22px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     }
-    .safra-card .card-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 700; }
-    .safra-card .card-value { font-size: 1.55rem; font-weight: 800; color: var(--text-main); margin-top: 8px; }
+    .safra-card .card-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 800; }
+    .safra-card .card-value { font-size: 1.6rem; font-weight: 900; color: var(--text-main); margin-top: 8px; }
     .safra-card.success .card-value { color: var(--success); }
     .safra-card.danger .card-value { color: var(--danger); }
     .safra-card.warning .card-value { color: var(--primary-gold-dark); }
@@ -147,63 +149,66 @@
 
     /* Painel de Análise */
     .analysis-card {
-      background: #ffffff;
+      background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 12px;
       padding: 22px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     }
-    .analysis-header { font-size: 0.9rem; font-weight: 700; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px; }
-    .analysis-item { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px; padding-left: 12px; border-left: 3px solid var(--primary-gold); line-height: 1.4; }
+    .analysis-header { font-size: 0.95rem; font-weight: 800; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px; }
+    .analysis-item { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 10px; padding-left: 12px; border-left: 4px solid var(--primary-gold); line-height: 1.5; font-weight: 600; }
     .analysis-item strong { color: var(--text-main); }
 
     /* Forms */
     .form-container {
-      background: #ffffff;
+      background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 12px;
-      padding: 20px;
+      padding: 22px;
       margin-bottom: 28px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     }
-    .form-container h4 { font-size: 0.88rem; font-weight: 700; margin-bottom: 12px; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px; }
-    .inline-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) auto; gap: 10px; }
+    .form-container h4 { font-size: 0.95rem; font-weight: 800; margin-bottom: 14px; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px; }
+    .inline-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) auto; gap: 12px; }
     .inline-form input, .inline-form select {
       background: #f8fafc; border: 1px solid var(--card-border); color: var(--text-main);
-      padding: 10px 12px; border-radius: 8px; font-size: 0.88rem; outline: none;
+      padding: 11px 14px; border-radius: 8px; font-size: 0.9rem; outline: none; font-weight: 600;
     }
-    .inline-form input:focus, .inline-form select:focus { border-color: var(--primary-gold); }
+    .inline-form input:focus, .inline-form select:focus { border-color: var(--primary-gold); background: #fff; }
 
     .btn-action {
-      background: #0f172a; color: #ffffff; border: none; padding: 10px 18px;
-      border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: 0.2s;
+      background: #0f172a; color: #ffffff; border: none; padding: 11px 20px;
+      border-radius: 8px; font-weight: 800; font-size: 0.88rem; cursor: pointer; transition: 0.2s;
     }
     .btn-action:hover { background: #1e293b; }
 
     /* Tabelas */
-    .table-container { background: #ffffff; border: 1px solid var(--card-border); border-radius: 12px; overflow: hidden; margin-bottom: 28px; }
-    .table-header { padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); background: #f8fafc; }
-    .table-header h3 { font-size: 0.9rem; font-weight: 700; color: var(--text-main); }
+    .table-container { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; overflow: hidden; margin-bottom: 28px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+    .table-header { padding: 18px 22px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); background: #f8fafc; }
+    .table-header h3 { font-size: 0.95rem; font-weight: 800; color: var(--text-main); }
     table { width: 100%; border-collapse: collapse; text-align: left; }
-    th, td { padding: 12px 20px; border-bottom: 1px solid var(--card-border); font-size: 0.88rem; }
-    th { color: var(--text-muted); font-size: 0.72rem; text-transform: uppercase; font-weight: 700; background: #f8fafc; }
+    th, td { padding: 14px 20px; border-bottom: 1px solid var(--card-border); font-size: 0.9rem; }
+    th { color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; font-weight: 800; background: #f8fafc; letter-spacing: 0.5px; }
+    td { font-weight: 600; }
 
-    .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; }
+    .badge { padding: 4px 10px; border-radius: 6px; font-size: 0.78rem; font-weight: 800; }
     .badge-pago { background: #d1fae5; color: #047857; }
     .badge-pendente { background: #fee2e2; color: #b91c1c; }
     .badge-fii { background: #fef3c7; color: #92400e; }
 
-    .btn-icon { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.85rem; margin-left: 6px; }
+    .btn-icon { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 1rem; margin-left: 8px; }
     .btn-icon:hover { color: var(--danger); }
-    .btn-baixa { background: #f1f5f9; border: 1px solid #cbd5e1; color: var(--text-main); padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer; }
+    .btn-baixa { background: #f1f5f9; border: 1px solid #94a3b8; color: var(--text-main); padding: 5px 12px; border-radius: 6px; font-size: 0.78rem; font-weight: 800; cursor: pointer; }
     .btn-baixa:hover { background: var(--primary-gold); color: #ffffff; border-color: var(--primary-gold); }
 
     /* Modal */
-    .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(15,23,42,0.6); display:none; justify-content:center; align-items:center; z-index: 1000; }
-    .modal { background: #ffffff; border-radius: 12px; padding: 24px; width: 100%; max-width: 400px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
-    .modal h3 { margin-bottom: 16px; font-size: 1rem; font-weight: 700; color: var(--text-main); }
-    .modal-field { margin-bottom: 12px; }
-    .modal-field label { display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; }
-    .modal-field input, .modal-field select { width: 100%; background: #f8fafc; border: 1px solid var(--card-border); padding: 8px 10px; border-radius: 6px; }
-    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
+    .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(15,23,42,0.7); display:none; justify-content:center; align-items:center; z-index: 1000; }
+    .modal { background: #ffffff; border-radius: 12px; padding: 28px; width: 100%; max-width: 420px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.15); }
+    .modal h3 { margin-bottom: 18px; font-size: 1.1rem; font-weight: 800; color: var(--text-main); }
+    .modal-field { margin-bottom: 14px; }
+    .modal-field label { display: block; font-size: 0.78rem; text-transform: uppercase; font-weight: 800; color: var(--text-muted); margin-bottom: 6px; }
+    .modal-field input, .modal-field select { width: 100%; background: #f8fafc; border: 1px solid var(--card-border); padding: 10px 12px; border-radius: 8px; font-weight: 600; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
   </style>
 </head>
 <body>
@@ -223,6 +228,7 @@
     <ul class="nav-menu">
       <li><button onclick="mudarAba('gastos', event)" class="active">📊 Contas a Pagar</button></li>
       <li><button onclick="mudarAba('state', event)">🏛️ State & Ativos</button></li>
+      <li><button onclick="mudarAba('empresarial', event)">🏢 Faturamento PJ</button></li>
     </ul>
   </aside>
 
@@ -234,7 +240,7 @@
       <header>
         <div>
           <h1>Contas a Pagar & Gestão de Caixa</h1>
-          <p>Visão mensal sincronizada e persistente na sua nuvem.</p>
+          <p>Visão mensal com alto contraste, legibilidade e salvamento automático.</p>
         </div>
         <div class="month-selector">
           <button onclick="alterarMes(-1)">◄</button>
@@ -264,8 +270,8 @@
 
       <div class="dashboard-layout">
         <div class="safra-card">
-          <span class="card-label" style="margin-bottom: 10px; display:block;">Composição das Despesas</span>
-          <div style="height: 180px; position: relative;">
+          <span class="card-label" style="margin-bottom: 12px; display:block;">Composição das Despesas</span>
+          <div style="height: 190px; position: relative;">
             <canvas id="chartGastos"></canvas>
           </div>
         </div>
@@ -297,7 +303,7 @@
       <div class="table-container">
         <div class="table-header">
           <h3>Detalhamento do Mês Selecionado</h3>
-          <span style="font-size:0.75rem; color:var(--text-muted);">Sincronização em Nuvem Ativa</span>
+          <span style="font-size:0.8rem; color:var(--text-muted); font-weight:700;">Salvamento Automático Ativo</span>
         </div>
         <table>
           <thead>
@@ -321,7 +327,7 @@
       <header>
         <div>
           <h1>State & Gestão de Ativos</h1>
-          <p>Consolidação patrimonial e projeção de proventos.</p>
+          <p>Consolidação patrimonial e projeção de proventos com alta clareza.</p>
         </div>
       </header>
 
@@ -385,6 +391,32 @@
       </div>
     </section>
 
+    <!-- ABA 3: EMPRESARIAL (MANTIDA) -->
+    <section id="aba-empresarial" class="tab-content">
+      <header>
+        <div>
+          <h1>Painel Empresarial & NFs</h1>
+          <p>Acompanhamento corporativo de faturamento e notas fiscais.</p>
+        </div>
+      </header>
+
+      <div class="metrics-grid">
+        <div class="safra-card success">
+          <span class="card-label">Faturamento Acumulado PJ</span>
+          <div class="card-value">R$ 0,00</div>
+        </div>
+        <div class="safra-card warning">
+          <span class="card-label">DAS-MEI Mensal</span>
+          <div class="card-value">R$ 105,05</div>
+        </div>
+      </div>
+
+      <div class="analysis-card">
+        <div class="analysis-header">Gestão de Notas e Apuração Fiscal</div>
+        <div class="analysis-item"><strong>Status da Empresa:</strong> Regularizada e pronta para emissão de novas faturas neste ciclo.</div>
+      </div>
+    </section>
+
   </main>
 
   <!-- MODAL DE BAIXA -->
@@ -395,7 +427,7 @@
       
       <div class="modal-field">
         <label>Valor Cadastrado Base</label>
-        <input type="text" id="modal-valor-base" readonly style="background:#e2e8f0;">
+        <input type="text" id="modal-valor-base" readonly style="background:#e2e8f0; font-weight:800;">
       </div>
 
       <div class="modal-field">
@@ -419,7 +451,6 @@
   </div>
 
   <script>
-    /* Utiliza armazenamento em Nuvem via Web Storage Global Seguro Sincronizado */
     const NORM_MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
     
     const dataAtualSistema = new Date();
@@ -430,7 +461,6 @@
     let chartGastosInstance = null;
     let rendaSalario = 3950.00;
 
-    // Dados Iniciais Padrão da sua planilha se for o primeiro acesso
     const dadosIniciaisPlanilha = [
       { id: 1, nome: "PUC", valor: 300.00, valor_pago: 300.00, categoria: "Fixa", parcela: "-", status: "Pago" },
       { id: 2, nome: "Claro", valor: 30.00, valor_pago: 30.00, categoria: "Fixa", parcela: "-", status: "Pago" },
@@ -448,15 +478,15 @@
       { id: 14, nome: "Massagem", valor: 140.00, valor_pago: 140.00, categoria: "Outros", parcela: "-", status: "Pago" }
     ];
 
-    let bancoMensal = JSON.parse(localStorage.getItem('gd_cloud_mensal')) || {};
-    let ativos = JSON.parse(localStorage.getItem('gd_cloud_ativos')) || [
+    let bancoMensal = JSON.parse(localStorage.getItem('gd_local_mensal')) || {};
+    let ativos = JSON.parse(localStorage.getItem('gd_local_ativos')) || [
       { id: 1, codigo: "MXRF11", tipo: "RV", qtd: 100, preco: 10.20, taxa: 0.9, classe: "FII" },
       { id: 2, codigo: "CDB ITAÚ", tipo: "CDB", qtd: 1, preco: 5000.00, taxa: 0.85, classe: "Renda Fixa" }
     ];
 
-    function salvarNuvent() {
-      localStorage.setItem('gd_cloud_mensal', JSON.stringify(bancoMensal));
-      localStorage.setItem('gd_cloud_ativos', JSON.stringify(ativos));
+    function salvarAutomatico() {
+      localStorage.setItem('gd_local_mensal', JSON.stringify(bancoMensal));
+      localStorage.setItem('gd_local_ativos', JSON.stringify(ativos));
     }
 
     /* Relógio Digital */
@@ -475,7 +505,7 @@
         let chaveAnterior = getChaveMes(m === 0 ? 11 : m - 1, m === 0 ? a - 1 : a);
         let baseParaCopiar = bancoMensal[chaveAnterior] || dadosIniciaisPlanilha;
         bancoMensal[chave] = baseParaCopiar.map(item => ({ ...item, id: Date.now() + Math.random(), valor_pago: 0, status: "Pendente" }));
-        salvarNuvent();
+        salvarAutomatico();
       }
     }
 
@@ -517,7 +547,7 @@
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td><strong>${item.nome}</strong></td>
-          <td><span style="color:var(--primary-gold-dark); font-weight:600; font-size:0.78rem">${item.categoria}</span></td>
+          <td><span style="color:var(--primary-gold-dark); font-weight:800; font-size:0.8rem">${item.categoria}</span></td>
           <td>${item.parcela}</td>
           <td>R$ ${v.toFixed(2)}</td>
           <td>R$ ${vp.toFixed(2)}</td>
@@ -551,7 +581,7 @@
         parcela: document.getElementById('c-parcela').value,
         status: "Pendente"
       });
-      salvarNuvent();
+      salvarAutomatico();
       e.target.reset();
       renderizarDashboard();
     }
@@ -560,7 +590,7 @@
       if (confirm("Excluir esta conta?")) {
         let chave = getChaveMes(mesIdxAtual, anoAtual);
         bancoMensal[chave] = bancoMensal[chave].filter(c => c.id !== id);
-        salvarNuvent();
+        salvarAutomatico();
         renderizarDashboard();
       }
     }
@@ -580,12 +610,12 @@
       let valorPago = parseFloat(document.getElementById('modal-valor-pago').value);
       let chave = getChaveMes(mesIdxAtual, anoAtual);
       bancoMensal[chave] = bancoMensal[chave].map(item => item.id === idBaixaAtual ? { ...item, status: "Pago", valor_pago: valorPago } : item);
-      salvarNuvent();
+      salvarAutomatico();
       fecharModal();
       renderizarDashboard();
     }
 
-    /* Ativos State */
+    /* State Ativos */
     function renderizarState() {
       const tbody = document.getElementById('tabela-ativos');
       tbody.innerHTML = '';
@@ -612,14 +642,14 @@
           <td>${q}</td>
           <td>R$ ${p.toFixed(2)}</td>
           <td>R$ ${totalInvestido.toFixed(2)}</td>
-          <td style="color:var(--primary-gold-dark); font-weight:bold;">R$ ${proventoMes.toFixed(2)}/mês</td>
+          <td style="color:var(--primary-gold-dark); font-weight:900;">R$ ${proventoMes.toFixed(2)}/mês</td>
           <td><button class="btn-icon" onclick="excluirAtivo(${a.id})">🗑️</button></td>
         `;
         tbody.appendChild(tr);
       });
 
       document.getElementById('st-patrimonio').innerText = `R$ ${patTotal.toFixed(2)}`;
-      document.getElementById('st-dividendos').innerText = `R$ ${dividendos = divTotal.toFixed(2)}`;
+      document.getElementById('st-dividendos').innerText = `R$ ${divTotal.toFixed(2)}`;
       document.getElementById('st-rv').innerText = `R$ ${totalRV.toFixed(2)}`;
       document.getElementById('st-rf').innerText = `R$ ${totalRF.toFixed(2)}`;
 
@@ -641,7 +671,7 @@
         taxa: parseFloat(document.getElementById('st-taxa').value),
         classe: tipo === 'CDB' ? 'Renda Fixa' : (isFII ? 'FII' : 'Ação')
       });
-      salvarNuvent();
+      salvarAutomatico();
       e.target.reset();
       renderizarState();
     }
@@ -649,7 +679,7 @@
     function excluirAtivo(id) {
       if (confirm("Remover ativo?")) {
         ativos = ativos.filter(a => a.id !== id);
-        salvarNuvent();
+        salvarAutomatico();
         renderizarState();
       }
     }
@@ -664,11 +694,11 @@
           labels: ['Fixas', 'Cartão', 'Variáveis', 'Outros'],
           datasets: [{
             data: [cats.Fixa, cats.Cartao, cats.Variavel, cats.Outros],
-            backgroundColor: ['#b48a36', '#f59e0b', '#10b981', '#ef4444'],
+            backgroundColor: ['#c5a059', '#d97706', '#059669', '#dc2626'],
             borderWidth: 0
           }]
         },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } } }
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { font: { weight: 'bold' } } } } }
       });
     }
 
@@ -687,7 +717,7 @@
       let propRV = patrimonio > 0 ? (rv / patrimonio) * 100 : 0;
 
       box.innerHTML = `
-        <div class="analysis-item">Dividend Yield Médio da Carteira: <strong>${yieldMensal.toFixed(2)}% a.m.</strong> (R$ ${dividendos}/mês).</div>
+        <div class="analysis-item">Dividend Yield Médio da Carteira: <strong>${yieldMensal.toFixed(2)}% a.m.</strong> (R$ ${dividendos.toFixed(2)}/mês).</div>
         <div class="analysis-item">Alocação em Renda Variável: <strong>${propRV.toFixed(0)}%</strong> do patrimônio investido.</div>
       `;
     }
