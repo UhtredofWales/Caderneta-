@@ -3,26 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Caderneta Pro | Private Wealth & State</title>
+  <title>GD | Private Banking & State</title>
+
+  <!-- Favicon GD Dinâmico (Logo do Browser) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23121212'/><text x='50%' y='65%' font-family='sans-serif' font-weight='900' font-size='52' fill='%23c5a059' text-anchor='middle'>GD</text></svg>">
 
   <!-- Supabase JS Client -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Chart.js para Gráficos Executivos -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
     :root {
-      --safra-bg: #121212;
-      --safra-card: #1c1c1c;
-      --safra-border: #2c2c2c;
+      --safra-bg: #0b0e14;
+      --safra-card: rgba(23, 27, 38, 0.7);
+      --safra-card-solid: #171b26;
+      --safra-border: rgba(197, 160, 89, 0.15);
       --safra-gold: #c5a059;
       --safra-gold-hover: #d4af37;
-      --text-main: #f3f4f6;
-      --text-muted: #9ca3af;
-      --success: #059669;
-      --danger: #dc2626;
-      --warning: #d97706;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     
     body { 
       background-color: var(--safra-bg); 
@@ -31,9 +37,10 @@
       display: flex;
     }
 
+    /* Sidebar Executiva */
     aside {
-      width: 270px;
-      background: var(--safra-card);
+      width: 260px;
+      background: #0f131d;
       border-right: 1px solid var(--safra-border);
       padding: 30px 20px;
       display: flex;
@@ -48,24 +55,35 @@
       margin-bottom: 40px;
     }
 
-    .brand h2 {
+    .brand-logo {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #c5a059, #9a7b38);
+      color: #0b0e14;
+      font-weight: 900;
       font-size: 1.1rem;
-      font-weight: 500;
-      letter-spacing: 2px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      letter-spacing: -1px;
+    }
+
+    .brand h2 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: 1.5px;
       color: var(--text-main);
       text-transform: uppercase;
     }
 
-    .brand span {
-      color: var(--safra-gold);
-      font-weight: 700;
-    }
+    .brand span { color: var(--safra-gold); font-weight: 700; }
 
     .nav-menu {
       list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
 
     .nav-menu button {
@@ -74,23 +92,27 @@
       background: transparent;
       border: none;
       padding: 12px 16px;
-      border-radius: 6px;
+      border-radius: 8px;
       font-size: 0.88rem;
       font-weight: 500;
       color: var(--text-muted);
       cursor: pointer;
       transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     .nav-menu button:hover, .nav-menu button.active {
-      background: rgba(197, 160, 89, 0.1);
+      background: rgba(197, 160, 89, 0.08);
       color: var(--safra-gold);
       border-left: 3px solid var(--safra-gold);
     }
 
+    /* Main Container */
     main {
       flex: 1;
-      padding: 40px;
+      padding: 36px 40px;
       overflow-y: auto;
       max-width: 1400px;
     }
@@ -104,14 +126,17 @@
       align-items: center;
     }
 
+    header h1 { font-size: 1.4rem; font-weight: 500; letter-spacing: 0.5px; }
+    header p { color: var(--text-muted); font-size: 0.85rem; margin-top: 4px; }
+
     .month-selector {
       display: flex;
       align-items: center;
       gap: 12px;
-      background: var(--safra-card);
+      background: var(--safra-card-solid);
       border: 1px solid var(--safra-border);
-      padding: 6px 14px;
-      border-radius: 6px;
+      padding: 8px 16px;
+      border-radius: 8px;
     }
 
     .month-selector button {
@@ -120,40 +145,28 @@
       color: var(--safra-gold);
       font-size: 1.1rem;
       cursor: pointer;
-      padding: 0 6px;
     }
 
-    .month-selector span {
-      font-size: 0.9rem;
-      font-weight: 600;
-      letter-spacing: 1px;
-    }
+    .month-selector span { font-size: 0.88rem; font-weight: 600; letter-spacing: 1px; }
 
     .tab-content { display: none; }
     .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
+    /* Cards & Grid */
     .metrics-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 20px;
-      margin-bottom: 30px;
+      margin-bottom: 28px;
     }
 
     .safra-card {
-      background: var(--safra-card);
+      background: var(--safra-card-solid);
       border: 1px solid var(--safra-border);
-      border-radius: 8px;
-      padding: 24px;
-      position: relative;
-    }
-
-    .safra-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; width: 3px; height: 100%;
-      background: var(--safra-gold);
-      border-radius: 3px 0 0 3px;
+      border-radius: 12px;
+      padding: 22px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
     }
 
     .safra-card .card-label {
@@ -166,27 +179,73 @@
 
     .safra-card .card-value {
       font-size: 1.5rem;
-      font-weight: 600;
+      font-weight: 700;
       color: var(--text-main);
-      margin-top: 10px;
+      margin-top: 8px;
     }
 
-    .safra-card.success .card-value { color: #34d399; }
-    .safra-card.danger .card-value { color: #f87171; }
+    .safra-card.success .card-value { color: var(--success); }
+    .safra-card.danger .card-value { color: var(--danger); }
+    .safra-card.warning .card-value { color: var(--safra-gold); }
 
+    /* Layout Gráficos e Insights */
+    .dashboard-layout {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    @media (max-width: 1024px) {
+      .dashboard-layout { grid-template-columns: 1fr; }
+      body { flex-direction: column; }
+      aside { width: 100%; }
+    }
+
+    /* Caixa do Agente de IA */
+    .agent-box {
+      background: linear-gradient(145deg, #131824, #0b0e14);
+      border: 1px solid rgba(197, 160, 89, 0.3);
+      border-radius: 12px;
+      padding: 22px;
+    }
+
+    .agent-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      color: var(--safra-gold);
+      font-weight: 600;
+      font-size: 0.92rem;
+    }
+
+    .insight-item {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      padding-left: 12px;
+      border-left: 2px solid var(--safra-gold);
+      line-height: 1.5;
+    }
+    .insight-item strong { color: var(--text-main); }
+
+    /* Forms */
     .form-container {
-      background: var(--safra-card);
+      background: var(--safra-card-solid);
       border: 1px solid var(--safra-border);
-      border-radius: 8px;
-      padding: 24px;
-      margin-bottom: 30px;
+      border-radius: 12px;
+      padding: 22px;
+      margin-bottom: 28px;
     }
 
     .form-container h4 {
-      font-size: 0.95rem;
-      font-weight: 500;
-      margin-bottom: 16px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 14px;
       color: var(--safra-gold);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
     }
 
     .inline-form {
@@ -196,128 +255,95 @@
     }
 
     .inline-form input, .inline-form select {
-      background: #121212;
+      background: #0b0e14;
       border: 1px solid var(--safra-border);
       color: var(--text-main);
       padding: 10px 14px;
-      border-radius: 6px;
+      border-radius: 8px;
       font-size: 0.88rem;
       outline: none;
     }
 
     .btn-safra {
       background: var(--safra-gold);
-      color: #121212;
+      color: #0b0e14;
       border: none;
-      padding: 10px 22px;
-      border-radius: 6px;
+      padding: 10px 20px;
+      border-radius: 8px;
       font-weight: 700;
       font-size: 0.85rem;
       cursor: pointer;
+      transition: background 0.2s;
     }
-
     .btn-safra:hover { background: var(--safra-gold-hover); }
 
+    /* Tabelas */
     .table-container {
-      background: var(--safra-card);
+      background: var(--safra-card-solid);
       border: 1px solid var(--safra-border);
-      border-radius: 8px;
+      border-radius: 12px;
       overflow: hidden;
-      margin-bottom: 30px;
+      margin-bottom: 28px;
     }
 
     .table-header {
-      padding: 20px 24px;
+      padding: 18px 22px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid var(--safra-border);
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-    }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th, td { padding: 14px 20px; border-bottom: 1px solid var(--safra-border); font-size: 0.88rem; }
+    th { color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; background: rgba(0,0,0,0.2); }
 
-    th, td {
-      padding: 14px 24px;
-      border-bottom: 1px solid var(--safra-border);
-      font-size: 0.88rem;
-    }
+    .badge { padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+    .badge-pago { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+    .badge-pendente { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+    .badge-fii { background: rgba(197, 160, 89, 0.15); color: var(--safra-gold); }
 
-    th {
-      color: var(--text-muted);
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      background: rgba(0,0,0,0.2);
-    }
-
-    .badge {
-      padding: 4px 10px;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
-    .badge-pago { background: rgba(5, 150, 105, 0.15); color: #34d399; }
-    .badge-pendente { background: rgba(220, 38, 38, 0.15); color: #f87171; }
-    .badge-fii { background: rgba(197, 160, 89, 0.2); color: var(--safra-gold); }
-
-    .btn-action-icon {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      cursor: pointer;
-      font-size: 0.9rem;
-      margin-left: 6px;
-    }
+    .btn-action-icon { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.9rem; margin-left: 6px; }
     .btn-action-icon:hover { color: var(--safra-gold); }
 
-    .btn-baixa {
-      background: transparent;
-      border: 1px solid var(--safra-gold);
-      color: var(--safra-gold);
-      padding: 4px 10px;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      cursor: pointer;
-    }
-    .btn-baixa:hover { background: var(--safra-gold); color: #121212; }
+    .btn-baixa { background: transparent; border: 1px solid var(--safra-gold); color: var(--safra-gold); padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; cursor: pointer; }
+    .btn-baixa:hover { background: var(--safra-gold); color: #0b0e14; }
 
+    /* Modal */
     .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); display:none; justify-content:center; align-items:center; z-index: 1000; }
-    .modal { background: var(--safra-card); border: 1px solid var(--safra-border); border-radius: 8px; padding: 30px; width: 100%; max-width: 420px; }
-    .modal h3 { margin-bottom: 20px; font-size: 1.1rem; color: var(--safra-gold); }
-    .modal-field { margin-bottom: 16px; }
+    .modal { background: var(--safra-card-solid); border: 1px solid var(--safra-border); border-radius: 12px; padding: 28px; width: 100%; max-width: 420px; }
+    .modal h3 { margin-bottom: 18px; font-size: 1.05rem; color: var(--safra-gold); }
+    .modal-field { margin-bottom: 14px; }
     .modal-field label { display: block; font-size: 0.78rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
-    .modal-field input, .modal-field select { width: 100%; background: #121212; border: 1px solid var(--safra-border); color: white; padding: 10px; border-radius: 6px; outline: none; }
-    .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
+    .modal-field input, .modal-field select { width: 100%; background: #0b0e14; border: 1px solid var(--safra-border); color: white; padding: 10px; border-radius: 8px; outline: none; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
   </style>
 </head>
 <body>
 
-  <!-- Sidebar -->
+  <!-- Sidebar com Logo GD -->
   <aside>
     <div class="brand">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#c5a059" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-      <h2>Safra <span>Wealth</span></h2>
+      <div class="brand-logo">GD</div>
+      <h2>Caderneta <span>Pro</span></h2>
     </div>
     <ul class="nav-menu">
-      <li><button onclick="mudarAba('gastos', event)" class="active">📊 Caderneta de Contas</button></li>
+      <li><button onclick="mudarAba('gastos', event)" class="active">📊 Contas a Pagar</button></li>
       <li><button onclick="mudarAba('state', event)">🏛️ State & Ativos</button></li>
       <li><button onclick="mudarAba('empresarial', event)">🏢 Faturamento PJ</button></li>
       <li><button onclick="mudarAba('mei', event)">📄 Gestão MEI</button></li>
     </ul>
   </aside>
 
-  <!-- Main View -->
+  <!-- Conteúdo Principal -->
   <main>
     
-    <!-- ABA 1: CADERNETA DE CONTAS MENSAIS -->
+    <!-- ABA 1: CONTAS A PAGAR & ANALYTICS -->
     <section id="aba-gastos" class="tab-content active">
       <header>
         <div>
-          <h1>Caderneta de Contas Mensais</h1>
-          <p>Acompanhamento e programação financeira ciclo a ciclo.</p>
+          <h1>Contas a Pagar & Visão Mensal</h1>
+          <p>Visão limpa, programável e analítica do fluxo de caixa.</p>
         </div>
         <div class="month-selector">
           <button onclick="alterarMes(-1)">◄</button>
@@ -328,27 +354,47 @@
 
       <div class="metrics-grid">
         <div class="safra-card">
-          <span class="card-label">Renda do Mês</span>
+          <span class="card-label">Renda Mensal Base</span>
           <div class="card-value" id="m-renda">R$ 3.950,00</div>
         </div>
         <div class="safra-card danger">
-          <span class="card-label">Gastos Totais</span>
+          <span class="card-label">Total a Pagar</span>
           <div class="card-value" id="m-total">R$ 0,00</div>
         </div>
         <div class="safra-card success">
           <span class="card-label">Total Liquidado</span>
           <div class="card-value" id="m-pago">R$ 0,00</div>
         </div>
-        <div class="safra-card">
-          <span class="card-label">Saldo em Carteira</span>
+        <div class="safra-card warning">
+          <span class="card-label">Saldo Restante</span>
           <div class="card-value" id="m-saldo">R$ 0,00</div>
         </div>
       </div>
 
+      <!-- Layout com Gráfico e Alertas -->
+      <div class="dashboard-layout">
+        <div class="safra-card">
+          <span class="card-label" style="margin-bottom: 12px; display:block;">Distribuição dos Gastos por Categoria</span>
+          <div style="height: 220px; position: relative;">
+            <canvas id="chartGastos"></canvas>
+          </div>
+        </div>
+
+        <div class="agent-box">
+          <div class="agent-header">
+            <span>🤖</span> Agente Analista de Contas
+          </div>
+          <div id="agent-gastos-insights">
+            <div class="insight-item">Analisando padrão de vencimentos e compromissos...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Lançamento -->
       <div class="form-container">
-        <h4>+ Lançar Conta no Mês Atual</h4>
+        <h4>+ Lançar Novo Compromisso no Mês</h4>
         <form onsubmit="adicionarConta(event)" class="inline-form">
-          <input type="text" id="c-nome" placeholder="Compromisso / Conta" required>
+          <input type="text" id="c-nome" placeholder="Descrição (ex: Aluguel, Luz)" required>
           <input type="number" step="0.01" id="c-valor" placeholder="Valor (R$)" required>
           <select id="c-cat">
             <option value="Fixa">Contas Fixas</option>
@@ -357,14 +403,15 @@
             <option value="Variavel">Variáveis</option>
           </select>
           <input type="text" id="c-parcela" placeholder="Parcela (ex: 1-5)" value="-">
-          <button type="submit" class="btn-safra">Adicionar</button>
+          <button type="submit" class="btn-safra">Cadastrar Conta</button>
         </form>
       </div>
 
+      <!-- Tabela de Contas -->
       <div class="table-container">
         <div class="table-header">
-          <h3>Detalhamento do Mês Selecionado</h3>
-          <span style="font-size:0.78rem; color:var(--safra-gold);" id="sub-info-mes">Duplicação automática ativa</span>
+          <h3>Detalhamento das Contas a Pagar</h3>
+          <span style="font-size:0.75rem; color:var(--safra-gold);">Clique em "Baixa" para liquidar</span>
         </div>
         <table>
           <thead>
@@ -383,17 +430,17 @@
       </div>
     </section>
 
-    <!-- ABA 2: STATE & ATIVOS (NOVA) -->
+    <!-- ABA 2: STATE & AGENTE DE IA DEDICADO -->
     <section id="aba-state" class="tab-content">
       <header>
         <div>
           <h1>State & Gestão de Ativos</h1>
-          <p>Monitoramento de Renda Variável, FIIs e Posições em CDB.</p>
+          <p>Monitoramento de patrimônio, ações, FIIs e carteira de rendimentos.</p>
         </div>
       </header>
 
       <div class="metrics-grid">
-        <div class="safra-card">
+        <div class="safra-card warning">
           <span class="card-label">Patrimônio Alocado</span>
           <div class="card-value" id="st-patrimonio">R$ 0,00</div>
         </div>
@@ -402,25 +449,34 @@
           <div class="card-value" id="st-dividendos">R$ 0,00</div>
         </div>
         <div class="safra-card">
-          <span class="card-label">Total em FIIs & Ações</span>
+          <span class="card-label">Renda Variável (FIIs/Ações)</span>
           <div class="card-value" id="st-rv">R$ 0,00</div>
         </div>
         <div class="safra-card">
-          <span class="card-label">Total em Renda Fixa / CDB</span>
+          <span class="card-label">Renda Fixa / CDB</span>
           <div class="card-value" id="st-rf">R$ 0,00</div>
         </div>
       </div>
 
-      <!-- Formulário de Ativos -->
+      <!-- Agente de IA Dedicado a Investimentos -->
+      <div class="agent-box" style="margin-bottom: 28px;">
+        <div class="agent-header">
+          <span>🏛️</span> Agente Dedicado de Investimentos & Alocação
+        </div>
+        <div id="agent-state-insights">
+          <div class="insight-item">Gerando análise preditiva de dividendos e risco da carteira...</div>
+        </div>
+      </div>
+
       <div class="form-container">
-        <h4>+ Cadastrar Posição em Ativos</h4>
+        <h4>+ Cadastrar Ativo na Carteira</h4>
         <form onsubmit="adicionarAtivo(event)" class="inline-form">
-          <select id="st-tipo" onchange="alternarCamposAtivo()">
+          <select id="st-tipo">
             <option value="RV">Renda Variável (Ação / FII)</option>
             <option value="CDB">Renda Fixa (CDB)</option>
           </select>
           <input type="text" id="st-codigo" placeholder="Ticker (ex: MXRF11, PETR4)" required>
-          <input type="number" id="st-qtd" placeholder="Qtd / Cotas" required>
+          <input type="number" id="st-qtd" placeholder="Quantidade / Cotas" required>
           <input type="number" step="0.01" id="st-preco" placeholder="Preço Médio (R$)" required>
           <input type="number" step="0.01" id="st-taxa" placeholder="Yield/Taxa % a.m" value="0.8">
           <button type="submit" class="btn-safra">Registar Ativo</button>
@@ -429,7 +485,7 @@
 
       <div class="table-container">
         <div class="table-header">
-          <h3>Carteira de Ativos & Dividendos Inteligentes</h3>
+          <h3>Carteira Consolidada de Ativos</h3>
         </div>
         <table>
           <thead>
@@ -439,7 +495,7 @@
               <th>Quantidade</th>
               <th>Preço Médio</th>
               <th>Total Investido</th>
-              <th>Rendimento / Provento Mês</th>
+              <th>Provento / Mês</th>
               <th>Ações</th>
             </tr>
           </thead>
@@ -450,45 +506,34 @@
 
     <!-- ABA 3: EMPRESARIAL -->
     <section id="aba-empresarial" class="tab-content">
-      <header>
-        <div>
-          <h1>Painel Empresarial PJ</h1>
-          <p>Acompanhamento de NFs e faturamento.</p>
-        </div>
-      </header>
-      <div class="metrics-grid">
-        <div class="safra-card success"><span class="card-label">Faturamento Anual</span><div class="card-value">R$ 0,00</div></div>
-      </div>
+      <header><div><h1>Faturamento PJ</h1><p>Relatório de NFs emitidas.</p></div></header>
+      <div class="metrics-grid"><div class="safra-card success"><span class="card-label">Faturamento Anual</span><div class="card-value">R$ 0,00</div></div></div>
     </section>
 
     <!-- ABA 4: MEI -->
     <section id="aba-mei" class="tab-content">
-      <header>
-        <div><h1>Gestão DAS-MEI</h1><p>Apuração de impostos.</p></div>
-      </header>
-      <div class="metrics-grid">
-        <div class="safra-card warning"><span class="card-label">Guia Mensal</span><div class="card-value">R$ 105,05</div></div>
-      </div>
+      <header><div><h1>Guias DAS-MEI</h1><p>Apuração fiscal.</p></div></header>
+      <div class="metrics-grid"><div class="safra-card warning"><span class="card-label">DAS Mensal</span><div class="card-value">R$ 105,05</div></div></div>
     </section>
 
   </main>
 
-  <!-- MODAL DE BAIXA E EDIÇÃO -->
+  <!-- MODAL DE BAIXA -->
   <div class="modal-overlay" id="modalBaixa">
     <div class="modal">
-      <h3>Liquidação de Conta</h3>
+      <h3>Liquidar Conta</h3>
       <input type="hidden" id="modal-id">
       
       <div class="modal-field">
         <label>Valor Cadastrado Base</label>
-        <input type="text" id="modal-valor-base" readonly style="background:#090909; color: var(--safra-gold);">
+        <input type="text" id="modal-valor-base" readonly style="background:#0b0e14; color: var(--safra-gold);">
       </div>
 
       <div class="modal-field">
         <label>Pagamento com Atraso?</label>
         <select id="modal-atrasado">
-          <option value="nao">Não (Valor exato)</option>
-          <option value="sim">Sim (Com juros/multa)</option>
+          <option value="nao">Não (Pago no Prazo)</option>
+          <option value="sim">Sim (Com Multa/Atraso)</option>
         </select>
       </div>
 
@@ -505,15 +550,16 @@
   </div>
 
   <script>
-    /* Array de Meses para Navegação */
     const NORM_MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
     let anoAtual = 2026;
-    let mesIdxAtual = 7; // Agosto = Índice 7
+    let mesIdxAtual = 7;
 
-    /* Base de Dados Múltipla por Mês (LocalStorage) */
-    let bancoMensal = JSON.parse(localStorage.getItem('safra_banco_mensal')) || {};
+    let bancoMensal = JSON.parse(localStorage.getItem('gd_banco_mensal')) || {};
+    let ativos = JSON.parse(localStorage.getItem('gd_ativos')) || [
+      { id: 1, codigo: "MXRF11", tipo: "RV", qtd: 100, preco: 10.20, taxa: 0.9, classe: "FII" },
+      { id: 2, codigo: "CDB ITAÚ", tipo: "CDB", qtd: 1, preco: 5000.00, taxa: 0.85, classe: "Renda Fixa" }
+    ];
 
-    /* Base Inicial da Planilha para Agosto/2026 */
     const dadosIniciaisPlanilha = [
       { id: 1, nome: "PUC", valor: 300.00, valor_pago: 300.00, categoria: "Fixa", parcela: "-", status: "Pago" },
       { id: 2, nome: "Claro", valor: 30.00, valor_pago: 30.00, categoria: "Fixa", parcela: "-", status: "Pago" },
@@ -531,41 +577,29 @@
       { id: 14, nome: "Massagem", valor: 140.00, valor_pago: 140.00, categoria: "Outros", parcela: "-", status: "Pago" }
     ];
 
-    /* Base da Aba State (Ativos) */
-    let ativos = JSON.parse(localStorage.getItem('safra_ativos')) || [
-      { id: 1, codigo: "MXRF11", tipo: "RV", qtd: 100, preco: 10.20, taxa: 0.9, classe: "FII" },
-      { id: 2, nome: "CDB Liquidez Diária", codigo: "CDB Itaú 100% CDI", tipo: "CDB", qtd: 1, preco: 5000.00, taxa: 0.85, classe: "Renda Fixa" }
-    ];
-
     let rendaSalario = 3950.00;
     let idBaixaAtual = null;
+    let chartGastosInstance = null;
 
     function getChaveMes(m, a) { return `${m}_${a}`; }
 
     function inicializarMesSeNecessario(m, a) {
       let chave = getChaveMes(m, a);
       if (!bancoMensal[chave]) {
-        // Se for um novo mês, duplica as contas do mês anterior para programar
         let chaveAnterior = getChaveMes(m === 0 ? 11 : m - 1, m === 0 ? a - 1 : a);
         let baseParaCopiar = bancoMensal[chaveAnterior] || dadosIniciaisPlanilha;
-
-        bancoMensal[chave] = baseParaCopiar.map(item => ({
-          ...item,
-          id: Date.now() + Math.random(),
-          valor_pago: 0,
-          status: "Pendente"
-        }));
+        bancoMensal[chave] = baseParaCopiar.map(item => ({ ...item, id: Date.now() + Math.random(), valor_pago: 0, status: "Pendente" }));
         salvarBancoMensal();
       }
     }
 
     function salvarBancoMensal() {
-      localStorage.setItem('safra_banco_mensal', JSON.stringify(bancoMensal));
+      localStorage.setItem('gd_banco_mensal', JSON.stringify(bancoMensal));
       renderizarDashboard();
     }
 
     function salvarAtivos() {
-      localStorage.setItem('safra_ativos', JSON.stringify(ativos));
+      localStorage.setItem('gd_ativos', JSON.stringify(ativos));
       renderizarState();
     }
 
@@ -584,7 +618,6 @@
       renderizarDashboard();
     }
 
-    /* CRUD da Caderneta */
     function adicionarConta(e) {
       e.preventDefault();
       let chave = getChaveMes(mesIdxAtual, anoAtual);
@@ -606,7 +639,6 @@
       let item = bancoMensal[chave].find(c => c.id === id);
       let novoNome = prompt("Novo nome:", item.nome);
       let novoValor = prompt("Novo valor (R$):", item.valor);
-      
       if (novoNome && novoValor) {
         item.nome = novoNome;
         item.valor = parseFloat(novoValor);
@@ -615,7 +647,7 @@
     }
 
     function excluirConta(id) {
-      if (confirm("Tem certeza que deseja excluir esta conta?")) {
+      if (confirm("Excluir esta conta?")) {
         let chave = getChaveMes(mesIdxAtual, anoAtual);
         bancoMensal[chave] = bancoMensal[chave].filter(c => c.id !== id);
         salvarBancoMensal();
@@ -631,37 +663,17 @@
       document.getElementById('modalBaixa').style.display = 'flex';
     }
 
-    function fecharModal() {
-      document.getElementById('modalBaixa').style.display = 'none';
-    }
+    function fecharModal() { document.getElementById('modalBaixa').style.display = 'none'; }
 
     function confirmarBaixa() {
       let valorPago = parseFloat(document.getElementById('modal-valor-pago').value);
       let chave = getChaveMes(mesIdxAtual, anoAtual);
-      
-      bancoMensal[chave] = bancoMensal[chave].map(item => {
-        if(item.id === idBaixaAtual) {
-          return { ...item, status: "Pago", valor_pago: valorPago };
-        }
-        return item;
-      });
-
+      bancoMensal[chave] = bancoMensal[chave].map(item => item.id === idBaixaAtual ? { ...item, status: "Pago", valor_pago: valorPago } : item);
       fecharModal();
       salvarBancoMensal();
     }
 
-    /* Lógica da Aba State (Ativos) */
-    function alternarCamposAtivo() {
-      let tipo = document.getElementById('st-tipo').value;
-      if (tipo === 'CDB') {
-        document.getElementById('st-codigo').placeholder = "Nome do CDB (ex: CDB Itaú)";
-        document.getElementById('st-taxa').placeholder = "Rendimento % a.m (ex: 0.85)";
-      } else {
-        document.getElementById('st-codigo').placeholder = "Ticker (ex: MXRF11, PETR4)";
-        document.getElementById('st-taxa').placeholder = "Yield Est. % a.m";
-      }
-    }
-
+    /* Lógica da Aba State & Agente IA */
     function adicionarAtivo(e) {
       e.preventDefault();
       let codigo = document.getElementById('st-codigo').value.toUpperCase();
@@ -677,13 +689,12 @@
         taxa: parseFloat(document.getElementById('st-taxa').value),
         classe: tipo === 'CDB' ? 'Renda Fixa' : (isFII ? 'FII' : 'Ação')
       });
-
       e.target.reset();
       salvarAtivos();
     }
 
     function excluirAtivo(id) {
-      if (confirm("Remover este ativo da carteira?")) {
+      if (confirm("Remover ativo?")) {
         ativos = ativos.filter(a => a.id !== id);
         salvarAtivos();
       }
@@ -692,7 +703,6 @@
     function renderizarState() {
       const tbody = document.getElementById('tabela-ativos');
       tbody.innerHTML = '';
-
       let patTotal = 0, divTotal = 0, totalRV = 0, totalRF = 0;
 
       ativos.forEach(a => {
@@ -722,6 +732,24 @@
       document.getElementById('st-dividendos').innerText = `R$ ${divTotal.toFixed(2)}`;
       document.getElementById('st-rv').innerText = `R$ ${totalRV.toFixed(2)}`;
       document.getElementById('st-rf').innerText = `R$ ${totalRF.toFixed(2)}`;
+
+      gerarInsightsState(patTotal, divTotal, totalRV, totalRF);
+    }
+
+    function gerarInsightsState(patrimonio, dividendos, rv, rf) {
+      const box = document.getElementById('agent-state-insights');
+      let yieldMensal = patrimonio > 0 ? (dividendos / patrimonio) * 100 : 0;
+      let propRV = patrimonio > 0 ? (rv / patrimonio) * 100 : 0;
+
+      let html = `<div class="insight-item">Dividend Yield Médio da Carteira: <strong>${yieldMensal.toFixed(2)}% ao mês</strong> (R$ ${dividendos.toFixed(2)}/mês).</div>`;
+      
+      if (propRV > 70) {
+        html += `<div class="insight-item" style="border-color:var(--warning)">⚖️ <strong>Alocação Renda Variável High:</strong> Suas posições em FIIs/Ações representam ${propRV.toFixed(0)}% da carteira. Considere reforçar o caixa em CDB para liquidez de emergência.</div>`;
+      } else {
+        html += `<div class="insight-item" style="border-color:var(--success)">🛡️ <strong>Alocação Equilibrada:</strong> Excelente equilíbrio entre segurança da Renda Fixa e renda passiva de FIIs/Ações.</div>`;
+      }
+
+      box.innerHTML = html;
     }
 
     /* Renderizar Dashboard Principal */
@@ -735,11 +763,12 @@
       const tbody = document.getElementById('tabela-contas');
       tbody.innerHTML = '';
       
-      let totalGasto = 0;
-      let totalPagoEfetivo = 0;
+      let totalGasto = 0, totalPagoEfetivo = 0;
+      let cats = { Fixa: 0, Cartao: 0, Variavel: 0, Outros: 0 };
 
       listaContas.forEach(item => {
         totalGasto += item.valor;
+        if(cats[item.categoria] !== undefined) cats[item.categoria] += item.valor;
         if(item.status === 'Pago') totalPagoEfetivo += item.valor_pago;
 
         const tr = document.createElement('tr');
@@ -765,6 +794,42 @@
       document.getElementById('m-total').innerText = `R$ ${totalGasto.toFixed(2)}`;
       document.getElementById('m-pago').innerText = `R$ ${totalPagoEfetivo.toFixed(2)}`;
       document.getElementById('m-saldo').innerText = `R$ ${saldoEmCarteira.toFixed(2)}`;
+
+      renderChartGastos(cats);
+      gerarInsightsGastos(totalGasto, totalPagoEfetivo, listaContas);
+    }
+
+    function renderChartGastos(cats) {
+      const ctx = document.getElementById('chartGastos').getContext('2d');
+      if (chartGastosInstance) chartGastosInstance.destroy();
+
+      chartGastosInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Fixas', 'Cartão', 'Variáveis', 'Outros'],
+          datasets: [{
+            data: [cats.Fixa, cats.Cartao, cats.Variavel, cats.Outros],
+            backgroundColor: ['#c5a059', '#f59e0b', '#10b981', '#ef4444'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'right', labels: { color: '#94a3b8' } } }
+        }
+      });
+    }
+
+    function gerarInsightsGastos(total, pago, lista) {
+      const box = document.getElementById('agent-gastos-insights');
+      let pendentes = lista.filter(i => i.status !== 'Pago');
+      let percentualComprometido = (total / rendaSalario) * 100;
+
+      let html = `<div class="insight-item">Comprometimento da Renda: <strong>${percentualComprometido.toFixed(1)}%</strong> do salário mensal.</div>`;
+      html += `<div class="insight-item">Existem <strong>${pendentes.length} contas pendentes</strong> de liquidação neste ciclo.</div>`;
+
+      box.innerHTML = html;
     }
 
     document.addEventListener('DOMContentLoaded', () => {
