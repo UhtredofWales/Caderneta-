@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GD | Private Banking & State</title>
 
-  <!-- Favicon GD Dinâmico (Logo do Browser) -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23121212'/><text x='50%' y='65%' font-family='sans-serif' font-weight='900' font-size='52' fill='%23c5a059' text-anchor='middle'>GD</text></svg>">
+  <!-- Favicon GD Dinâmico -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230b0e14'/><text x='50%' y='65%' font-family='sans-serif' font-weight='900' font-size='52' fill='%23c5a059' text-anchor='middle'>GD</text></svg>">
 
   <!-- Supabase JS Client -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <!-- Chart.js para Gráficos Executivos -->
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
@@ -37,7 +37,7 @@
       display: flex;
     }
 
-    /* Sidebar Executiva */
+    /* Sidebar */
     aside {
       width: 260px;
       background: #0f131d;
@@ -52,7 +52,7 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      margin-bottom: 40px;
+      margin-bottom: 30px;
     }
 
     .brand-logo {
@@ -69,84 +69,55 @@
       letter-spacing: -1px;
     }
 
-    .brand h2 {
-      font-size: 1.05rem;
-      font-weight: 600;
-      letter-spacing: 1.5px;
-      color: var(--text-main);
-      text-transform: uppercase;
-    }
-
+    .brand h2 { font-size: 1.05rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; }
     .brand span { color: var(--safra-gold); font-weight: 700; }
 
-    .nav-menu {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+    /* Relógio Digital no Sidebar */
+    .sidebar-clock {
+      background: #0b0e14;
+      border: 1px solid var(--safra-border);
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+      margin-bottom: 24px;
     }
 
-    .nav-menu button {
-      width: 100%;
-      text-align: left;
-      background: transparent;
-      border: none;
-      padding: 12px 16px;
-      border-radius: 8px;
-      font-size: 0.88rem;
-      font-weight: 500;
-      color: var(--text-muted);
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .nav-menu button:hover, .nav-menu button.active {
-      background: rgba(197, 160, 89, 0.08);
+    .sidebar-clock .clock-time {
+      font-size: 1.25rem;
+      font-weight: 700;
       color: var(--safra-gold);
-      border-left: 3px solid var(--safra-gold);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .sidebar-clock .clock-date {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-top: 2px;
+    }
+
+    .nav-menu { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .nav-menu button {
+      width: 100%; text-align: left; background: transparent; border: none; padding: 12px 16px; border-radius: 8px;
+      font-size: 0.88rem; font-weight: 500; color: var(--text-muted); cursor: pointer; transition: all 0.2s ease;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .nav-menu button:hover, .nav-menu button.active {
+      background: rgba(197, 160, 89, 0.08); color: var(--safra-gold); border-left: 3px solid var(--safra-gold);
     }
 
     /* Main Container */
-    main {
-      flex: 1;
-      padding: 36px 40px;
-      overflow-y: auto;
-      max-width: 1400px;
-    }
-
-    header {
-      margin-bottom: 30px;
-      border-bottom: 1px solid var(--safra-border);
-      padding-bottom: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
+    main { flex: 1; padding: 36px 40px; overflow-y: auto; max-width: 1400px; }
+    header { margin-bottom: 30px; border-bottom: 1px solid var(--safra-border); padding-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
     header h1 { font-size: 1.4rem; font-weight: 500; letter-spacing: 0.5px; }
     header p { color: var(--text-muted); font-size: 0.85rem; margin-top: 4px; }
 
     .month-selector {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: var(--safra-card-solid);
-      border: 1px solid var(--safra-border);
-      padding: 8px 16px;
-      border-radius: 8px;
+      display: flex; align-items: center; gap: 12px; background: var(--safra-card-solid);
+      border: 1px solid var(--safra-border); padding: 8px 16px; border-radius: 8px;
     }
-
-    .month-selector button {
-      background: transparent;
-      border: none;
-      color: var(--safra-gold);
-      font-size: 1.1rem;
-      cursor: pointer;
-    }
-
+    .month-selector button { background: transparent; border: none; color: var(--safra-gold); font-size: 1.1rem; cursor: pointer; }
     .month-selector span { font-size: 0.88rem; font-weight: 600; letter-spacing: 1px; }
 
     .tab-content { display: none; }
@@ -154,146 +125,34 @@
     @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
     /* Cards & Grid */
-    .metrics-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-      margin-bottom: 28px;
-    }
-
-    .safra-card {
-      background: var(--safra-card-solid);
-      border: 1px solid var(--safra-border);
-      border-radius: 12px;
-      padding: 22px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
-    }
-
-    .safra-card .card-label {
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 1.2px;
-      color: var(--text-muted);
-      font-weight: 600;
-    }
-
-    .safra-card .card-value {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--text-main);
-      margin-top: 8px;
-    }
-
+    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 28px; }
+    .safra-card { background: var(--safra-card-solid); border: 1px solid var(--safra-border); border-radius: 12px; padding: 22px; box-shadow: 0 4px 20px rgba(0,0,0,0.25); }
+    .safra-card .card-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-muted); font-weight: 600; }
+    .safra-card .card-value { font-size: 1.5rem; font-weight: 700; color: var(--text-main); margin-top: 8px; }
     .safra-card.success .card-value { color: var(--success); }
     .safra-card.danger .card-value { color: var(--danger); }
     .safra-card.warning .card-value { color: var(--safra-gold); }
 
-    /* Layout Gráficos e Insights */
-    .dashboard-layout {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 24px;
-      margin-bottom: 28px;
-    }
+    .dashboard-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 28px; }
+    @media (max-width: 1024px) { .dashboard-layout { grid-template-columns: 1fr; } body { flex-direction: column; } aside { width: 100%; } }
 
-    @media (max-width: 1024px) {
-      .dashboard-layout { grid-template-columns: 1fr; }
-      body { flex-direction: column; }
-      aside { width: 100%; }
-    }
-
-    /* Caixa do Agente de IA */
-    .agent-box {
-      background: linear-gradient(145deg, #131824, #0b0e14);
-      border: 1px solid rgba(197, 160, 89, 0.3);
-      border-radius: 12px;
-      padding: 22px;
-    }
-
-    .agent-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 16px;
-      color: var(--safra-gold);
-      font-weight: 600;
-      font-size: 0.92rem;
-    }
-
-    .insight-item {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      margin-bottom: 12px;
-      padding-left: 12px;
-      border-left: 2px solid var(--safra-gold);
-      line-height: 1.5;
-    }
+    /* Agente AI Box */
+    .agent-box { background: linear-gradient(145deg, #131824, #0b0e14); border: 1px solid rgba(197, 160, 89, 0.3); border-radius: 12px; padding: 22px; }
+    .agent-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; color: var(--safra-gold); font-weight: 600; font-size: 0.92rem; }
+    .insight-item { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px; padding-left: 12px; border-left: 2px solid var(--safra-gold); line-height: 1.5; }
     .insight-item strong { color: var(--text-main); }
 
     /* Forms */
-    .form-container {
-      background: var(--safra-card-solid);
-      border: 1px solid var(--safra-border);
-      border-radius: 12px;
-      padding: 22px;
-      margin-bottom: 28px;
-    }
-
-    .form-container h4 {
-      font-size: 0.9rem;
-      font-weight: 600;
-      margin-bottom: 14px;
-      color: var(--safra-gold);
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-    }
-
-    .inline-form {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) auto;
-      gap: 12px;
-    }
-
-    .inline-form input, .inline-form select {
-      background: #0b0e14;
-      border: 1px solid var(--safra-border);
-      color: var(--text-main);
-      padding: 10px 14px;
-      border-radius: 8px;
-      font-size: 0.88rem;
-      outline: none;
-    }
-
-    .btn-safra {
-      background: var(--safra-gold);
-      color: #0b0e14;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
+    .form-container { background: var(--safra-card-solid); border: 1px solid var(--safra-border); border-radius: 12px; padding: 22px; margin-bottom: 28px; }
+    .form-container h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 14px; color: var(--safra-gold); text-transform: uppercase; letter-spacing: 0.8px; }
+    .inline-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) auto; gap: 12px; }
+    .inline-form input, .inline-form select { background: #0b0e14; border: 1px solid var(--safra-border); color: var(--text-main); padding: 10px 14px; border-radius: 8px; font-size: 0.88rem; outline: none; }
+    .btn-safra { background: var(--safra-gold); color: #0b0e14; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: background 0.2s; }
     .btn-safra:hover { background: var(--safra-gold-hover); }
 
-    /* Tabelas */
-    .table-container {
-      background: var(--safra-card-solid);
-      border: 1px solid var(--safra-border);
-      border-radius: 12px;
-      overflow: hidden;
-      margin-bottom: 28px;
-    }
-
-    .table-header {
-      padding: 18px 22px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid var(--safra-border);
-    }
-
+    /* Tables */
+    .table-container { background: var(--safra-card-solid); border: 1px solid var(--safra-border); border-radius: 12px; overflow: hidden; margin-bottom: 28px; }
+    .table-header { padding: 18px 22px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--safra-border); }
     table { width: 100%; border-collapse: collapse; text-align: left; }
     th, td { padding: 14px 20px; border-bottom: 1px solid var(--safra-border); font-size: 0.88rem; }
     th { color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; background: rgba(0,0,0,0.2); }
@@ -305,7 +164,6 @@
 
     .btn-action-icon { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.9rem; margin-left: 6px; }
     .btn-action-icon:hover { color: var(--safra-gold); }
-
     .btn-baixa { background: transparent; border: 1px solid var(--safra-gold); color: var(--safra-gold); padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; cursor: pointer; }
     .btn-baixa:hover { background: var(--safra-gold); color: #0b0e14; }
 
@@ -321,12 +179,19 @@
 </head>
 <body>
 
-  <!-- Sidebar com Logo GD -->
+  <!-- Sidebar com Logo GD e Relógio em Tempo Real -->
   <aside>
     <div class="brand">
       <div class="brand-logo">GD</div>
       <h2>Caderneta <span>Pro</span></h2>
     </div>
+
+    <!-- Relógio Digital -->
+    <div class="sidebar-clock">
+      <div class="clock-time" id="relogio-hora">00:00:00</div>
+      <div class="clock-date" id="relogio-data">Carregando...</div>
+    </div>
+
     <ul class="nav-menu">
       <li><button onclick="mudarAba('gastos', event)" class="active">📊 Contas a Pagar</button></li>
       <li><button onclick="mudarAba('state', event)">🏛️ State & Ativos</button></li>
@@ -335,7 +200,7 @@
     </ul>
   </aside>
 
-  <!-- Conteúdo Principal -->
+  <!-- Main View -->
   <main>
     
     <!-- ABA 1: CONTAS A PAGAR & ANALYTICS -->
@@ -343,7 +208,7 @@
       <header>
         <div>
           <h1>Contas a Pagar & Visão Mensal</h1>
-          <p>Visão limpa, programável e analítica do fluxo de caixa.</p>
+          <p>Visão limpa, programável e sincronizada com o ciclo atual.</p>
         </div>
         <div class="month-selector">
           <button onclick="alterarMes(-1)">◄</button>
@@ -371,7 +236,7 @@
         </div>
       </div>
 
-      <!-- Layout com Gráfico e Alertas -->
+      <!-- Layout com Gráfico e Agente -->
       <div class="dashboard-layout">
         <div class="safra-card">
           <span class="card-label" style="margin-bottom: 12px; display:block;">Distribuição dos Gastos por Categoria</span>
@@ -385,7 +250,7 @@
             <span>🤖</span> Agente Analista de Contas
           </div>
           <div id="agent-gastos-insights">
-            <div class="insight-item">Analisando padrão de vencimentos e compromissos...</div>
+            <div class="insight-item">Analisando ciclo financeiro atual...</div>
           </div>
         </div>
       </div>
@@ -430,12 +295,12 @@
       </div>
     </section>
 
-    <!-- ABA 2: STATE & AGENTE DE IA DEDICADO -->
+    <!-- ABA 2: STATE & AGENTE DE IA DEDICADO A INVESTIMENTOS -->
     <section id="aba-state" class="tab-content">
       <header>
         <div>
           <h1>State & Gestão de Ativos</h1>
-          <p>Monitoramento de patrimônio, ações, FIIs e carteira de rendimentos.</p>
+          <p>Monitoramento patrimonial avançado com orientação estratégica personalizada.</p>
         </div>
       </header>
 
@@ -458,13 +323,13 @@
         </div>
       </div>
 
-      <!-- Agente de IA Dedicado a Investimentos -->
+      <!-- Agente de IA Dedicado a Investimentos & Recomendações de Ações -->
       <div class="agent-box" style="margin-bottom: 28px;">
         <div class="agent-header">
-          <span>🏛️</span> Agente Dedicado de Investimentos & Alocação
+          <span>🏛️</span> Agente Especialista Private Wealth — Recomendações e Perfil
         </div>
         <div id="agent-state-insights">
-          <div class="insight-item">Gerando análise preditiva de dividendos e risco da carteira...</div>
+          <div class="insight-item">Processando métricas de rentabilidade e alocação...</div>
         </div>
       </div>
 
@@ -551,8 +416,11 @@
 
   <script>
     const NORM_MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
-    let anoAtual = 2026;
-    let mesIdxAtual = 7;
+    
+    // Inicialização automática com base na data real do relógio
+    const dataAtualSistema = new Date();
+    let anoAtual = dataAtualSistema.getFullYear();
+    let mesIdxAtual = dataAtualSistema.getMonth();
 
     let bancoMensal = JSON.parse(localStorage.getItem('gd_banco_mensal')) || {};
     let ativos = JSON.parse(localStorage.getItem('gd_ativos')) || [
@@ -580,6 +448,14 @@
     let rendaSalario = 3950.00;
     let idBaixaAtual = null;
     let chartGastosInstance = null;
+
+    /* Relógio em Tempo Real */
+    function atualizarRelogio() {
+      const agora = new Date();
+      document.getElementById('relogio-hora').innerText = agora.toLocaleTimeString('pt-BR');
+      document.getElementById('relogio-data').innerText = agora.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' });
+    }
+    setInterval(atualizarRelogio, 1000);
 
     function getChaveMes(m, a) { return `${m}_${a}`; }
 
@@ -673,7 +549,7 @@
       salvarBancoMensal();
     }
 
-    /* Lógica da Aba State & Agente IA */
+    /* Gestão de Ativos & Insights de IA Personalizados por Perfil */
     function adicionarAtivo(e) {
       e.preventDefault();
       let codigo = document.getElementById('st-codigo').value.toUpperCase();
@@ -733,20 +609,22 @@
       document.getElementById('st-rv').innerText = `R$ ${totalRV.toFixed(2)}`;
       document.getElementById('st-rf').innerText = `R$ ${totalRF.toFixed(2)}`;
 
-      gerarInsightsState(patTotal, divTotal, totalRV, totalRF);
+      gerarInsightsStatePerfil(patTotal, divTotal, totalRV, totalRF);
     }
 
-    function gerarInsightsState(patrimonio, dividendos, rv, rf) {
+    function gerarInsightsStatePerfil(patrimonio, dividendos, rv, rf) {
       const box = document.getElementById('agent-state-insights');
       let yieldMensal = patrimonio > 0 ? (dividendos / patrimonio) * 100 : 0;
       let propRV = patrimonio > 0 ? (rv / patrimonio) * 100 : 0;
 
-      let html = `<div class="insight-item">Dividend Yield Médio da Carteira: <strong>${yieldMensal.toFixed(2)}% ao mês</strong> (R$ ${dividendos.toFixed(2)}/mês).</div>`;
+      let html = `<div class="insight-item">💎 <strong>Performance de Caixa:</strong> Sua carteira gera um rendimento passivo médio de <strong>${yieldMensal.toFixed(2)}% ao mês</strong> (R$ ${dividendos.toFixed(2)} líquidos).</div>`;
       
-      if (propRV > 70) {
-        html += `<div class="insight-item" style="border-color:var(--warning)">⚖️ <strong>Alocação Renda Variável High:</strong> Suas posições em FIIs/Ações representam ${propRV.toFixed(0)}% da carteira. Considere reforçar o caixa em CDB para liquidez de emergência.</div>`;
+      if (propRV < 40) {
+        html += `<div class="insight-item" style="border-color:var(--warning)">🎯 <strong>Ação Recomendada (Perfil Crescimento):</strong> O seu perfil possui alta proporção em Renda Fixa (${(100-propRV).toFixed(0)}%). O Agente sugere oportunidades em FIIs de tijolo descontados para elevar o fluxo de proventos isentos.</div>`;
+      } else if (propRV > 80) {
+        html += `<div class="insight-item" style="border-color:var(--danger)">⚠️ <strong>Atenção ao Perfil (Volatilidade):</strong> Mais de 80% do seu capital está em Renda Variável. Considere aportes recorrentes em CDBs de liquidez para blindar o portfólio contra oscilações de mercado.</div>`;
       } else {
-        html += `<div class="insight-item" style="border-color:var(--success)">🛡️ <strong>Alocação Equilibrada:</strong> Excelente equilíbrio entre segurança da Renda Fixa e renda passiva de FIIs/Ações.</div>`;
+        html += `<div class="insight-item" style="border-color:var(--success)">🛡️ <strong>Alocação Ideal (Private Standard):</strong> O seu portfólio está perfeitamente balanceado entre a segurança do CDB e a geração de renda dos Fundos Imobiliários. Continue com os aportes programados.</div>`;
       }
 
       box.innerHTML = html;
@@ -833,6 +711,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      atualizarRelogio();
       renderizarDashboard();
       renderizarState();
     });
