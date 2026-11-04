@@ -10,6 +10,9 @@
 
   <!-- Chart.js para Gráficos -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
   <style>
     :root {
@@ -209,11 +212,69 @@
     .modal-field label { display: block; font-size: 0.78rem; text-transform: uppercase; font-weight: 800; color: var(--text-muted); margin-bottom: 6px; }
     .modal-field input, .modal-field select { width: 100%; background: #f8fafc; border: 1px solid var(--card-border); padding: 10px 12px; border-radius: 8px; font-weight: 600; }
     .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+
+    /* ===== Contas a Pagar PRO ===== */
+    .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px}
+    .toolbar input,.toolbar select{background:#fff;border:1px solid var(--card-border);border-radius:8px;padding:9px 12px;font-size:.86rem;font-weight:600;color:var(--text-main);outline:none}
+    .toolbar input[type=search]{flex:1;min-width:200px}
+    .toolbar label{font-size:.8rem;font-weight:700;color:var(--text-muted);display:flex;align-items:center;gap:6px;cursor:pointer}
+    .toolbar .sp{flex:1}
+    .dica{font-size:.8rem;font-weight:700;color:var(--primary-gold-dark);margin-top:10px;min-height:1em}
+    .tbl-contas td{vertical-align:top;padding:10px 14px}
+    .tbl-contas tr.grp td{background:#f1f5f9;padding:10px 14px;font-size:.78rem;text-transform:uppercase;letter-spacing:.6px;font-weight:800;color:var(--text-main);border-left:4px solid var(--primary-gold)}
+    .tbl-contas tr.grp td small{color:var(--text-muted);font-weight:700;margin-left:10px;text-transform:none;letter-spacing:0}
+    .tbl-contas tr.row:hover td{background:#fafbfd}
+    .tbl-contas tr.paga .g-nome{text-decoration:line-through;color:var(--text-muted)}
+    .ghost{background:transparent;border:1px solid transparent;border-radius:6px;padding:6px 8px;font-size:.9rem;font-weight:700;color:var(--text-main);width:100%;outline:none;transition:.15s}
+    .ghost:hover{border-color:var(--card-border);background:#fff}
+    .ghost:focus{border-color:var(--primary-gold);background:#fff;box-shadow:0 0 0 3px rgba(197,160,89,.18)}
+    .ghost.num{text-align:right;width:112px;font-variant-numeric:tabular-nums}
+    .ghost.par{width:84px}
+    select.ghost{cursor:pointer;color:var(--primary-gold-dark);font-weight:800;font-size:.8rem}
+    .tags{display:flex;flex-wrap:wrap;gap:5px;padding:2px 8px 0;align-items:center}
+    .tag{display:inline-flex;align-items:center;gap:4px;padding:2px 4px 2px 9px;border-radius:99px;font-size:.72rem;font-weight:800}
+    .tag button{background:none;border:none;cursor:pointer;color:inherit;opacity:.5;font-size:.85rem;line-height:1;padding:0 3px}
+    .tag button:hover{opacity:1}
+    .tag-add{border:1px dashed var(--card-border);background:transparent;border-radius:99px;padding:2px 9px;font-size:.72rem;font-weight:700;width:96px;outline:none;color:var(--text-muted)}
+    .tag-add:focus{border-color:var(--primary-gold);background:#fff}
+    .pbar{height:5px;background:#e2e8f0;border-radius:9px;overflow:hidden;margin:5px 8px 0;width:84px}
+    .pbar i{display:block;height:100%;background:var(--primary-gold)}
+    .pinfo{font-size:.7rem;color:var(--text-muted);font-weight:700;padding:3px 8px 0}
+    .badge-ultima{background:#fef3c7;color:#92400e;margin-left:6px}
+    .badge-ok{background:#d1fae5;color:#047857}
+    .acoes{white-space:nowrap;padding-top:14px !important}
+    .prog-wrap{display:flex;align-items:center;gap:10px;font-size:.8rem;font-weight:700;color:var(--text-muted)}
+    .prog-wrap .pbar{width:140px;margin:0}
+    .vazio{text-align:center;color:var(--text-muted);font-weight:700;padding:30px !important}
+    /* ===== Nuvem / Login ===== */
+    .sync{font-size:.72rem;font-weight:800;text-align:center;padding:7px 10px;border-radius:8px;margin:-10px 0 18px;background:#f1f5f9;color:var(--text-muted)}
+    .sync.ok{background:#d1fae5;color:#047857}.sync.erro{background:#fef3c7;color:#92400e}
+    .sync-out{background:none;border:none;font-size:.72rem;font-weight:800;color:var(--text-muted);cursor:pointer;text-decoration:underline;margin-left:6px}
+    #login-overlay{position:fixed;inset:0;background:#0f172a;display:none;justify-content:center;align-items:center;z-index:2000}
+    .login-box{background:#fff;border-radius:14px;padding:32px;width:100%;max-width:380px}
+    .login-box h3{font-size:1.2rem;font-weight:800;margin-bottom:4px}
+    .login-box p{font-size:.85rem;color:var(--text-muted);font-weight:600;margin-bottom:18px}
+    .login-box input{width:100%;background:#f8fafc;border:1px solid var(--card-border);padding:11px 14px;border-radius:8px;font-size:.92rem;font-weight:600;margin-bottom:10px;outline:none}
+    .login-box input:focus{border-color:var(--primary-gold)}
+    .login-box .btn-action{width:100%;margin-bottom:8px}
+    #login-erro{color:var(--danger);font-size:.82rem;font-weight:700;min-height:1.2em;margin-bottom:6px}
   </style>
 </head>
 <body>
 
   <!-- Sidebar com Logo GD e Relógio em Tempo Real -->
+  <div id="login-overlay">
+    <form class="login-box" onsubmit="entrar(event,false)">
+      <h3>GD · Caderneta Pro</h3>
+      <p>Entre para sincronizar seus dados em todos os aparelhos.</p>
+      <input type="email" id="l-email" placeholder="E-mail" autocomplete="email" required>
+      <input type="password" id="l-senha" placeholder="Senha (mín. 6 caracteres)" autocomplete="current-password" required>
+      <div id="login-erro"></div>
+      <button type="submit" class="btn-action">Entrar</button>
+      <button type="button" class="btn-action" style="background:#e2e8f0;color:#0f172a" onclick="entrar(event,true)">Criar conta</button>
+    </form>
+  </div>
+
   <aside>
     <div class="brand">
       <div class="brand-logo">GD</div>
@@ -224,6 +285,8 @@
       <div class="clock-time" id="relogio-hora">00:00:00</div>
       <div class="clock-date" id="relogio-data">--/--/----</div>
     </div>
+
+    <div class="sync" id="sync-status">💾 Salvo só neste aparelho</div>
 
     <ul class="nav-menu">
       <li><button onclick="mudarAba('gastos', event)" class="active">📊 Contas a Pagar</button></li>
@@ -287,35 +350,49 @@
       <div class="form-container">
         <h4>+ Lançar Nova Conta</h4>
         <form onsubmit="adicionarConta(event)" class="inline-form">
-          <input type="text" id="c-nome" placeholder="Descrição da Conta" required>
-          <input type="number" step="0.01" id="c-valor" placeholder="Valor (R$)" required>
+          <input type="text" id="c-nome" placeholder="Descrição da conta" required>
+          <input type="number" step="0.01" min="0" id="c-valor" placeholder="Valor (R$)" required>
           <select id="c-cat">
             <option value="Fixa">Contas Fixas</option>
             <option value="Cartao">Cartão de Crédito</option>
             <option value="Outros">Outros / Pessoal</option>
             <option value="Variavel">Variáveis</option>
           </select>
-          <input type="text" id="c-parcela" placeholder="Parcela (ex: 1-5)" value="-">
+          <input type="text" id="c-parcela" placeholder="Parcela (3/10, 10x...)" oninput="dicaParcela(this.value)">
+          <input type="text" id="c-tags" list="dl-tags" placeholder="Etiquetas (vírgula)">
           <button type="submit" class="btn-action">Cadastrar</button>
         </form>
+        <div class="dica" id="c-dica"></div>
+        <datalist id="dl-tags"></datalist>
+      </div>
+
+      <div class="toolbar">
+        <input type="search" id="f-busca" placeholder="🔍 Buscar por nome ou etiqueta" oninput="filtro.busca=this.value;renderTabela()">
+        <select onchange="filtro.status=this.value;renderTabela()">
+          <option value="todas">Todas</option><option value="pend">Pendentes</option><option value="pagas">Pagas</option>
+        </select>
+        <select onchange="filtro.cat=this.value;renderTabela()">
+          <option value="todas">Todas as categorias</option>
+          <option value="Fixa">Contas Fixas</option><option value="Cartao">Cartão</option>
+          <option value="Variavel">Variáveis</option><option value="Outros">Outros</option>
+        </select>
+        <select onchange="filtro.ordem=this.value;renderTabela()">
+          <option value="padrao">Ordem original</option><option value="valor">Maior valor</option>
+          <option value="nome">Nome A–Z</option><option value="pend">Pendentes primeiro</option>
+        </select>
+        <span class="sp"></span>
+        <label><input type="checkbox" checked onchange="filtro.agrupar=this.checked;renderTabela()"> Agrupar por categoria</label>
+        <label title="Ao editar ou excluir, aplica também nos meses seguintes"><input type="checkbox" id="chk-replicar" onchange="replicar=this.checked;localStorage.setItem('gd_replicar',replicar?'1':'')"> Replicar nos meses seguintes</label>
       </div>
 
       <div class="table-container">
         <div class="table-header">
           <h3>Detalhamento do Mês Selecionado</h3>
-          <span style="font-size:0.8rem; color:var(--text-muted); font-weight:700;">Salvamento Automático Ativo</span>
+          <div class="prog-wrap"><span id="prog-txt"></span><div class="pbar"><i id="prog-bar" style="width:0"></i></div></div>
         </div>
-        <table>
+        <table class="tbl-contas">
           <thead>
-            <tr>
-              <th>Compromisso</th>
-              <th>Categoria</th>
-              <th>Parcela</th>
-              <th>Valor Base</th>
-              <th>Valor Pago</th>
-              <th>Status</th>
-              <th>Ações</th>
-            </tr>
+            <tr><th>Compromisso</th><th>Categoria</th><th>Parcela</th><th style="text-align:right">Valor Base</th><th style="text-align:right">Valor Pago</th><th>Status</th><th>Ações</th></tr>
           </thead>
           <tbody id="tabela-contas"></tbody>
         </table>
@@ -451,6 +528,16 @@
   </div>
 
   <script>
+    /* ===== NUVEM (Firebase) — cole sua configuração aqui ===== */
+    const FIREBASE_CONFIG = {
+      apiKey: "COLE_AQUI",
+      authDomain: "SEU-PROJETO.firebaseapp.com",
+      projectId: "SEU-PROJETO",
+      appId: "COLE_AQUI"
+    };
+    const NUVEM = typeof firebase !== 'undefined' && !String(FIREBASE_CONFIG.apiKey).startsWith('COLE');
+    let auth = null, docRef = null, timerNuvem = null, sujo = false;
+
     const NORM_MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
     
     const dataAtualSistema = new Date();
@@ -484,9 +571,63 @@
       { id: 2, codigo: "CDB ITAÚ", tipo: "CDB", qtd: 1, preco: 5000.00, taxa: 0.85, classe: "Renda Fixa" }
     ];
 
+    function statusNuvem(t, cls) { const el = document.getElementById('sync-status'); if (el) { el.className = 'sync ' + (cls || ''); el.innerHTML = t; } }
+
     function salvarAutomatico() {
       localStorage.setItem('gd_local_mensal', JSON.stringify(bancoMensal));
       localStorage.setItem('gd_local_ativos', JSON.stringify(ativos));
+      if (!docRef) return;
+      sujo = true; statusNuvem('⏳ Salvando...');
+      clearTimeout(timerNuvem);
+      timerNuvem = setTimeout(() => {
+        docRef.set({ dados: JSON.stringify({ bancoMensal, ativos }), em: Date.now() })
+          .then(() => { sujo = false; statusNuvem('☁️ Sincronizado <button class="sync-out" onclick="auth.signOut()">sair</button>', 'ok'); })
+          .catch(() => statusNuvem('⚠️ Sem conexão — salvo só neste aparelho', 'erro'));
+      }, 500);
+    }
+
+    function iniciarNuvem() {
+      firebase.initializeApp(FIREBASE_CONFIG);
+      auth = firebase.auth();
+      const db = firebase.firestore();
+      auth.onAuthStateChanged(u => {
+        document.getElementById('login-overlay').style.display = u ? 'none' : 'flex';
+        if (!u) { docRef = null; statusNuvem('🔒 Faça login para sincronizar', 'erro'); return; }
+        docRef = db.collection('users').doc(u.uid);
+        let primeira = true;
+        docRef.onSnapshot(snap => {
+          if (snap.metadata.hasPendingWrites || sujo) return;
+          if (!snap.exists) { salvarAutomatico(); primeira = false; return; }   // 1º acesso: sobe os dados deste aparelho
+          const dados = snap.data().dados;
+          if (dados !== JSON.stringify({ bancoMensal, ativos })) {
+            const foco = document.activeElement && /INPUT|SELECT/.test(document.activeElement.tagName);
+            if (primeira || !foco) {
+              const d = JSON.parse(dados);
+              bancoMensal = d.bancoMensal || {}; ativos = d.ativos || [];
+              localStorage.setItem('gd_local_mensal', JSON.stringify(bancoMensal));
+              localStorage.setItem('gd_local_ativos', JSON.stringify(ativos));
+              renderizarDashboard(); renderizarState();
+            }
+          }
+          primeira = false;
+          statusNuvem('☁️ Sincronizado <button class="sync-out" onclick="auth.signOut()">sair</button>', 'ok');
+        }, () => statusNuvem('⚠️ Erro de sincronização', 'erro'));
+      });
+    }
+
+    function entrar(e, criar) {
+      e.preventDefault();
+      if (!auth) return;
+      const em = document.getElementById('l-email').value.trim(), se = document.getElementById('l-senha').value;
+      const erro = document.getElementById('login-erro'); erro.textContent = '';
+      (criar ? auth.createUserWithEmailAndPassword(em, se) : auth.signInWithEmailAndPassword(em, se)).catch(err => {
+        erro.textContent = ({
+          'auth/invalid-credential': 'E-mail ou senha incorretos.', 'auth/wrong-password': 'E-mail ou senha incorretos.',
+          'auth/user-not-found': 'Conta não encontrada — clique em Criar conta.', 'auth/email-already-in-use': 'Esse e-mail já tem conta — clique em Entrar.',
+          'auth/weak-password': 'A senha precisa ter pelo menos 6 caracteres.', 'auth/invalid-email': 'E-mail inválido.',
+          'auth/operation-not-supported-in-this-environment': 'Abra por http://localhost ou pelo site hospedado (não por file://).'
+        })[err.code] || err.code;
+      });
     }
 
     /* Relógio Digital */
@@ -500,14 +641,63 @@
     function getChaveMes(m, a) { return `${m}_${a}`; }
 
     function inicializarMesSeNecessario(m, a) {
-      let chave = getChaveMes(m, a);
-      if (!bancoMensal[chave]) {
-        let chaveAnterior = getChaveMes(m === 0 ? 11 : m - 1, m === 0 ? a - 1 : a);
-        let baseParaCopiar = bancoMensal[chaveAnterior] || dadosIniciaisPlanilha;
-        bancoMensal[chave] = baseParaCopiar.map(item => ({ ...item, id: Date.now() + Math.random(), valor_pago: 0, status: "Pendente" }));
-        salvarAutomatico();
+      const chave = getChaveMes(m, a);
+      if (bancoMensal[chave]) return;
+      const alvo = a * 12 + m;
+      let base = null, bi = 0;
+      const ordem = [];
+      for (let d = 1; d <= 60; d++) ordem.push(-d);
+      for (let d = 1; d <= 60; d++) ordem.push(d);
+      for (const d of ordem) {
+        const k = alvo + d, l = bancoMensal[getChaveMes(k % 12, Math.floor(k / 12))];
+        if (l) { base = l; bi = k; break; }
       }
+      if (!base) { base = dadosIniciaisPlanilha; bi = 2026 * 12 + 7; }
+      base.forEach(i => { if (!i.serie) i.serie = uid(); });
+      bancoMensal[chave] = base.map(i => deslocar(i, alvo - bi)).filter(Boolean);
+      salvarAutomatico();
     }
+
+    /* ===== Núcleo inteligente de parcelas ===== */
+    const uid = () => 'i' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+    const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const brl = n => (n || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    const CAT_LABEL = { Fixa: 'Contas Fixas', Cartao: 'Cartão de Crédito', Variavel: 'Variáveis', Outros: 'Outros / Pessoal' };
+    let filtro = { busca: '', status: 'todas', cat: 'todas', ordem: 'padrao', agrupar: true };
+    let replicar = !!localStorage.getItem('gd_replicar');
+
+    // Entende "3/10", "3-10", "3 de 10", "3ª de 10", "10x" (=1 de 10). Retorna null se não for parcelado.
+    function parseParcela(s) {
+      s = String(s || '').toLowerCase().trim();
+      let m = s.match(/(\d+)\s*[ªa°]?\s*(?:\/|-|–|de)\s*(\d+)/);
+      if (m) { const a = +m[1], t = +m[2]; return (t >= 1 && a >= 1 && a <= t) ? { atual: a, total: t } : null; }
+      m = s.match(/^(\d+)\s*x$/);
+      return m && +m[1] > 1 ? { atual: 1, total: +m[1] } : null;
+    }
+
+    // Copia a conta para outro mês: avança (ou recua) a parcela; devolve null se a parcela já acabou ou ainda não começou.
+    function deslocar(it, diff) {
+      const p = parseParcela(it.parcela);
+      let parcela = it.parcela || '-';
+      if (p) {
+        const a = p.atual + diff;
+        if (a < 1 || a > p.total) return null;
+        parcela = a + '-' + p.total;
+      }
+      return { ...it, id: uid(), parcela, etiquetas: [...(it.etiquetas || [])], valor_pago: 0, status: 'Pendente', serie: it.serie || uid() };
+    }
+
+    function dicaParcela(v) {
+      const p = parseParcela(v), el = document.getElementById('c-dica');
+      el.textContent = p ? `Entendi: parcela ${p.atual} de ${p.total} · restam ${p.total - p.atual} depois desta` :
+        (v && v !== '-' ? 'Não entendi — use 3/10, 3 de 10 ou 10x' : '');
+    }
+
+    const chaveAtual = () => getChaveMes(mesIdxAtual, anoAtual);
+    const idxAtual = () => anoAtual * 12 + mesIdxAtual;
+    const achar = id => (bancoMensal[chaveAtual()] || []).find(c => String(c.id) === String(id));
+    const posteriores = () => Object.keys(bancoMensal).map(k => { const [m, a] = k.split('_').map(Number); return { k, idx: a * 12 + m }; }).filter(o => o.idx > idxAtual());
+    const irmao = (lista, it, nomeAntigo) => lista.find(x => it.serie && x.serie === it.serie) || lista.find(x => !x.serie && x.nome === nomeAntigo);
 
     function mudarAba(id, event) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -523,96 +713,174 @@
       renderizarDashboard();
     }
 
+    function tagHtml(t, id, idx) {
+      const h = [...t].reduce((a, c) => (a * 31 + c.charCodeAt(0)) % 360, 7);
+      return `<span class="tag" style="background:hsl(${h} 70% 92%);color:hsl(${h} 55% 28%)">${esc(t)}<button title="Remover" onclick="rmTag('${id}',${idx})">×</button></span>`;
+    }
+
+    function linhaConta(i) {
+      const v = parseFloat(i.valor) || 0, vp = parseFloat(i.valor_pago || 0), paga = i.status === 'Pago';
+      const p = parseParcela(i.parcela), id = i.id, tags = i.etiquetas || [];
+      let pinfo = '';
+      if (p) {
+        const pct = Math.round(p.atual / p.total * 100), rest = p.total - p.atual;
+        pinfo = `<div class="pbar"><i style="width:${pct}%"></i></div><div class="pinfo">${p.atual}/${p.total} · ${rest ? `restam ${rest} (${brl(rest * v)})` : '<span class="badge badge-ultima">Última parcela</span>'}</div>`;
+      }
+      return `<tr class="row ${paga ? 'paga' : ''}">
+        <td>
+          <input class="ghost g-nome" value="${esc(i.nome)}" onchange="editar('${id}','nome',this.value)">
+          <div class="tags">${tags.map((t, k) => tagHtml(t, id, k)).join('')}<input class="tag-add" list="dl-tags" placeholder="+ etiqueta" onkeydown="if(event.key==='Enter'||event.key===','){event.preventDefault();addTag('${id}',this.value)}" onchange="addTag('${id}',this.value)"></div>
+        </td>
+        <td><select class="ghost" onchange="editar('${id}','categoria',this.value)">${Object.entries(CAT_LABEL).map(([k, l]) => `<option value="${k}" ${k === i.categoria ? 'selected' : ''}>${l}</option>`).join('')}</select></td>
+        <td><input class="ghost par" value="${i.parcela && i.parcela !== '-' ? esc(i.parcela) : ''}" placeholder="—" title="Aceita 3/10, 3 de 10, 10x" onchange="editar('${id}','parcela',this.value)">${pinfo}</td>
+        <td style="text-align:right"><input class="ghost num" type="number" step="0.01" min="0" value="${v.toFixed(2)}" onchange="editar('${id}','valor',this.value)"></td>
+        <td style="text-align:right;padding-top:16px">${paga ? brl(vp) : '<span style="color:var(--text-muted)">—</span>'}</td>
+        <td style="padding-top:14px"><span class="badge ${paga ? 'badge-pago' : 'badge-pendente'}">${i.status}</span></td>
+        <td class="acoes">${paga ? `<button class="btn-baixa" onclick="reabrir('${id}')">↩ Reabrir</button>` : `<button class="btn-baixa" onclick="abrirModal('${id}')">Baixa</button>`}<button class="btn-icon" title="Excluir" onclick="excluirConta('${id}')">🗑️</button></td>
+      </tr>`;
+    }
+
+    function renderTabela() {
+      const todas = bancoMensal[chaveAtual()] || [], f = filtro, q = f.busca.toLowerCase().trim();
+      let lista = todas.filter(i =>
+        (f.status === 'todas' || (f.status === 'pagas') === (i.status === 'Pago')) &&
+        (f.cat === 'todas' || i.categoria === f.cat) &&
+        (!q || (i.nome + ' ' + (i.etiquetas || []).join(' ')).toLowerCase().includes(q)));
+      const ord = { valor: (a, b) => b.valor - a.valor, nome: (a, b) => a.nome.localeCompare(b.nome), pend: (a, b) => (a.status === 'Pago') - (b.status === 'Pago') }[f.ordem];
+      if (ord) lista.sort(ord);
+
+      let html = '';
+      if (!lista.length) html = '<tr><td colspan="7" class="vazio">Nenhuma conta encontrada com esses filtros.</td></tr>';
+      else if (f.agrupar) {
+        Object.keys(CAT_LABEL).forEach(cat => {
+          const g = lista.filter(i => i.categoria === cat);
+          if (!g.length) return;
+          const sub = g.reduce((s, i) => s + (parseFloat(i.valor) || 0), 0), pg = g.filter(i => i.status === 'Pago').length;
+          html += `<tr class="grp"><td colspan="7">${CAT_LABEL[cat]}<small>${g.length} ${g.length > 1 ? 'itens' : 'item'} · ${brl(sub)} · ${pg}/${g.length} pagas</small></td></tr>` + g.map(linhaConta).join('');
+        });
+      } else html = lista.map(linhaConta).join('');
+      document.getElementById('tabela-contas').innerHTML = html;
+
+      const tags = new Set();
+      Object.values(bancoMensal).forEach(l => l.forEach(i => (i.etiquetas || []).forEach(t => tags.add(t))));
+      document.getElementById('dl-tags').innerHTML = [...tags].map(t => `<option value="${esc(t)}">`).join('');
+      const pagas = todas.filter(i => i.status === 'Pago').length;
+      document.getElementById('prog-txt').textContent = `${pagas} de ${todas.length} contas pagas`;
+      document.getElementById('prog-bar').style.width = (todas.length ? pagas / todas.length * 100 : 0) + '%';
+    }
+
     function renderizarDashboard() {
       document.getElementById('label-mes-ano').innerText = `${NORM_MESES[mesIdxAtual]} ${anoAtual}`;
+      document.getElementById('chk-replicar').checked = replicar;
       inicializarMesSeNecessario(mesIdxAtual, anoAtual);
-
-      let chave = getChaveMes(mesIdxAtual, anoAtual);
-      let listaContas = bancoMensal[chave] || [];
-
-      const tbody = document.getElementById('tabela-contas');
-      tbody.innerHTML = '';
-      
+      const lista = bancoMensal[chaveAtual()] || [];
       let totalGasto = 0, totalPagoEfetivo = 0;
-      let cats = { Fixa: 0, Cartao: 0, Variavel: 0, Outros: 0 };
-
-      listaContas.forEach(item => {
-        let v = parseFloat(item.valor);
-        let vp = parseFloat(item.valor_pago || 0);
-
+      const cats = { Fixa: 0, Cartao: 0, Variavel: 0, Outros: 0 };
+      lista.forEach(item => {
+        const v = parseFloat(item.valor) || 0;
         totalGasto += v;
-        if(cats[item.categoria] !== undefined) cats[item.categoria] += v;
-        if(item.status === 'Pago') totalPagoEfetivo += vp;
-
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td><strong>${item.nome}</strong></td>
-          <td><span style="color:var(--primary-gold-dark); font-weight:800; font-size:0.8rem">${item.categoria}</span></td>
-          <td>${item.parcela}</td>
-          <td>R$ ${v.toFixed(2)}</td>
-          <td>R$ ${vp.toFixed(2)}</td>
-          <td><span class="badge ${item.status === 'Pago' ? 'badge-pago' : 'badge-pendente'}">${item.status}</span></td>
-          <td>
-            ${item.status !== 'Pago' ? `<button class="btn-baixa" onclick="abrirModal(${item.id})">Baixa</button>` : '✓'}
-            <button class="btn-icon" onclick="excluirConta(${item.id})">🗑️</button>
-          </td>
-        `;
-        tbody.appendChild(tr);
+        if (cats[item.categoria] !== undefined) cats[item.categoria] += v;
+        if (item.status === 'Pago') totalPagoEfetivo += parseFloat(item.valor_pago || 0);
       });
-
-      document.getElementById('m-renda').innerText = `R$ ${rendaSalario.toFixed(2)}`;
-      document.getElementById('m-total').innerText = `R$ ${totalGasto.toFixed(2)}`;
-      document.getElementById('m-pago').innerText = `R$ ${totalPagoEfetivo.toFixed(2)}`;
-      document.getElementById('m-saldo').innerText = `R$ ${(rendaSalario - totalPagoEfetivo).toFixed(2)}`;
-
+      document.getElementById('m-renda').innerText = brl(rendaSalario);
+      document.getElementById('m-total').innerText = brl(totalGasto);
+      document.getElementById('m-pago').innerText = brl(totalPagoEfetivo);
+      document.getElementById('m-saldo').innerText = brl(rendaSalario - totalPagoEfetivo);
+      renderTabela();
       renderChartGastos(cats);
-      gerarInsightsGastos(totalGasto, listaContas.length);
+      gerarInsightsGastos(totalGasto, lista);
     }
+
+    function gerarInsightsGastos(total, lista) {
+      const box = document.getElementById('gastos-insights');
+      const comp = total / rendaSalario * 100;
+      let restante = 0; const ultimas = [], penultimas = [];
+      lista.forEach(i => {
+        const p = parseParcela(i.parcela); if (!p) return;
+        restante += (parseFloat(i.valor) || 0) * (p.total - p.atual);
+        if (p.atual === p.total) ultimas.push(i); else if (p.atual === p.total - 1) penultimas.push(i);
+      });
+      const k = idxAtual() - 1, prev = bancoMensal[getChaveMes(((k % 12) + 12) % 12, Math.floor(k / 12))] || [];
+      const quitadas = prev.filter(i => { const p = parseParcela(i.parcela); return p && p.atual === p.total; });
+      const soma = l => l.reduce((s, i) => s + (parseFloat(i.valor) || 0), 0);
+      let h = `<div class="analysis-item">Comprometimento da renda: <strong>${comp.toFixed(1)}%</strong> · ${lista.length} compromissos no mês.</div>`;
+      if (restante > 0) h += `<div class="analysis-item">Parcelas futuras já comprometidas: <strong>${brl(restante)}</strong>.</div>`;
+      if (quitadas.length) h += `<div class="analysis-item">🎉 Quitadas no mês anterior: <strong>${quitadas.map(i => esc(i.nome)).join(', ')}</strong> — liberaram ${brl(soma(quitadas))}/mês.</div>`;
+      if (ultimas.length) h += `<div class="analysis-item">Última parcela agora: <strong>${ultimas.map(i => esc(i.nome)).join(', ')}</strong>. No próximo mês sobram ${brl(soma(ultimas))}.</div>`;
+      if (penultimas.length) h += `<div class="analysis-item">Falta só 1 parcela depois desta: <strong>${penultimas.map(i => esc(i.nome)).join(', ')}</strong>.</div>`;
+      box.innerHTML = h;
+    }
+
+    function editar(id, campo, val) {
+      const it = achar(id); if (!it) return;
+      const nomeAntigo = it.nome;
+      if (campo === 'valor') { val = parseFloat(String(val).replace(',', '.')); if (isNaN(val) || val < 0) return renderizarDashboard(); }
+      if (campo === 'nome') { val = String(val).trim(); if (!val) return renderizarDashboard(); }
+      if (campo === 'parcela') { const p = parseParcela(val); val = p ? p.atual + '-' + p.total : '-'; }
+      it[campo] = val; it.serie = it.serie || uid();
+      if (replicar) posteriores().forEach(o => {
+        const l = bancoMensal[o.k], x = irmao(l, it, nomeAntigo); if (!x) return;
+        x.serie = it.serie;
+        if (campo === 'parcela') {
+          const p = parseParcela(val);
+          if (!p) { x.parcela = '-'; return; }
+          const na = p.atual + (o.idx - idxAtual());
+          if (na > p.total || na < 1) bancoMensal[o.k] = l.filter(y => y !== x); else x.parcela = na + '-' + p.total;
+        } else x[campo] = Array.isArray(val) ? [...val] : val;
+      });
+      salvarAutomatico(); renderizarDashboard();
+    }
+
+    function addTag(id, txt) {
+      const it = achar(id); if (!it) return;
+      const novas = String(txt).split(',').map(t => t.trim()).filter(Boolean);
+      if (!novas.length) return;
+      editar(id, 'etiquetas', [...new Set([...(it.etiquetas || []), ...novas])]);
+    }
+    function rmTag(id, idx) { const it = achar(id); if (it) editar(id, 'etiquetas', (it.etiquetas || []).filter((_, k) => k !== idx)); }
 
     function adicionarConta(e) {
       e.preventDefault();
-      let chave = getChaveMes(mesIdxAtual, anoAtual);
-      bancoMensal[chave].push({
-        id: Date.now(),
-        nome: document.getElementById('c-nome').value,
+      const p = parseParcela(document.getElementById('c-parcela').value);
+      const item = {
+        id: uid(), serie: uid(),
+        nome: document.getElementById('c-nome').value.trim(),
         valor: parseFloat(document.getElementById('c-valor').value),
-        valor_pago: 0,
-        categoria: document.getElementById('c-cat').value,
-        parcela: document.getElementById('c-parcela').value,
-        status: "Pendente"
-      });
-      salvarAutomatico();
-      e.target.reset();
-      renderizarDashboard();
+        valor_pago: 0, categoria: document.getElementById('c-cat').value,
+        parcela: p ? p.atual + '-' + p.total : '-',
+        etiquetas: [...new Set(document.getElementById('c-tags').value.split(',').map(t => t.trim()).filter(Boolean))],
+        status: 'Pendente'
+      };
+      bancoMensal[chaveAtual()].push(item);
+      if (replicar) posteriores().forEach(o => { const c = deslocar(item, o.idx - idxAtual()); if (c) bancoMensal[o.k].push(c); });
+      salvarAutomatico(); e.target.reset(); document.getElementById('c-dica').textContent = ''; renderizarDashboard();
     }
 
     function excluirConta(id) {
-      if (confirm("Excluir esta conta?")) {
-        let chave = getChaveMes(mesIdxAtual, anoAtual);
-        bancoMensal[chave] = bancoMensal[chave].filter(c => c.id !== id);
-        salvarAutomatico();
-        renderizarDashboard();
-      }
+      const it = achar(id); if (!it) return;
+      if (!confirm(`Excluir "${it.nome}"${replicar ? ' (e dos meses seguintes)' : ''}?`)) return;
+      if (replicar) posteriores().forEach(o => { const x = irmao(bancoMensal[o.k], it, it.nome); if (x) bancoMensal[o.k] = bancoMensal[o.k].filter(y => y !== x); });
+      bancoMensal[chaveAtual()] = bancoMensal[chaveAtual()].filter(c => c !== it);
+      salvarAutomatico(); renderizarDashboard();
     }
+
+    function reabrir(id) { const it = achar(id); if (it) { it.status = 'Pendente'; it.valor_pago = 0; salvarAutomatico(); renderizarDashboard(); } }
 
     function abrirModal(id) {
       idBaixaAtual = id;
-      let chave = getChaveMes(mesIdxAtual, anoAtual);
-      let item = bancoMensal[chave].find(c => c.id === id);
-      document.getElementById('modal-valor-base').value = `R$ ${item.valor.toFixed(2)}`;
-      document.getElementById('modal-valor-pago').value = item.valor.toFixed(2);
+      const item = achar(id);
+      document.getElementById('modal-valor-base').value = brl(item.valor);
+      document.getElementById('modal-valor-pago').value = parseFloat(item.valor).toFixed(2);
       document.getElementById('modalBaixa').style.display = 'flex';
     }
 
     function fecharModal() { document.getElementById('modalBaixa').style.display = 'none'; }
 
     function confirmarBaixa() {
-      let valorPago = parseFloat(document.getElementById('modal-valor-pago').value);
-      let chave = getChaveMes(mesIdxAtual, anoAtual);
-      bancoMensal[chave] = bancoMensal[chave].map(item => item.id === idBaixaAtual ? { ...item, status: "Pago", valor_pago: valorPago } : item);
-      salvarAutomatico();
-      fecharModal();
-      renderizarDashboard();
+      const valorPago = parseFloat(document.getElementById('modal-valor-pago').value);
+      const it = achar(idBaixaAtual);
+      if (it && !isNaN(valorPago)) { it.status = 'Pago'; it.valor_pago = valorPago; }
+      salvarAutomatico(); fecharModal(); renderizarDashboard();
     }
 
     /* State Ativos */
@@ -702,15 +970,6 @@
       });
     }
 
-    function gerarInsightsGastos(total, qtd) {
-      const box = document.getElementById('gastos-insights');
-      let comprometimento = (total / rendaSalario) * 100;
-      box.innerHTML = `
-        <div class="analysis-item">Comprometimento da Renda: <strong>${comprometimento.toFixed(1)}%</strong> no ciclo.</div>
-        <div class="analysis-item">Existem <strong>${qtd} compromissos registrados</strong> para este mês.</div>
-      `;
-    }
-
     function gerarInsightsState(patrimonio, dividendos, rv) {
       const box = document.getElementById('state-insights');
       let yieldMensal = patrimonio > 0 ? (dividendos / patrimonio) * 100 : 0;
@@ -726,6 +985,7 @@
       atualizarRelogio();
       renderizarDashboard();
       renderizarState();
+      if (NUVEM) iniciarNuvem(); else statusNuvem('💾 Salvo só neste aparelho', 'erro');
     });
   </script>
 </body>
