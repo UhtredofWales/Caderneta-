@@ -14,6 +14,9 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg-app: #eef2f6;          /* Fundo confortável com ótimo contraste */
@@ -28,7 +31,7 @@
       --warning: #d97706;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
 
     body {
       background-color: var(--bg-app);
@@ -258,6 +261,105 @@
     .login-box input:focus{border-color:var(--primary-gold)}
     .login-box .btn-action{width:100%;margin-bottom:8px}
     #login-erro{color:var(--danger);font-size:.82rem;font-weight:700;min-height:1.2em;margin-bottom:6px}
+
+    /* ===== Visual v2: contas + state ===== */
+    :root{--line:#e6e9ef}
+    body{background:#f1f3f7}
+    main{width:100%;max-width:1280px}
+    header h1{letter-spacing:-.02em}
+    .analysis-card,.safra-card,.form-container,.table-container{border-radius:16px;border-color:var(--line);box-shadow:0 1px 2px rgba(15,23,42,.04)}
+    .inline-form input:focus,.inline-form select:focus{box-shadow:0 0 0 3px rgba(197,160,89,.18)}
+    .toolbar input,.toolbar select{border-color:var(--line);border-radius:10px}
+    .toolbar input:focus,.toolbar select:focus{border-color:var(--primary-gold);box-shadow:0 0 0 3px rgba(197,160,89,.18)}
+    .sync{display:flex;align-items:center;justify-content:center;gap:4px;border-radius:99px}
+    .inline-form{grid-template-columns:repeat(auto-fit,minmax(160px,1fr));align-items:center}
+    .toolbar input[type=search]{min-width:240px}
+
+    .hero{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;margin-bottom:22px}
+    .hero-main{background:#0f172a;color:#fff;border-radius:18px;padding:26px 28px}
+    .hero-label{font-size:.82rem;font-weight:600;color:#94a3b8}
+    .hero-value{font-size:2.6rem;font-weight:800;letter-spacing:-.025em;margin-top:6px;line-height:1.1;font-variant-numeric:tabular-nums}
+    .hero-value.neg{color:#fca5a5}
+    .hero-sub{font-size:.88rem;color:#cbd5e1;margin-top:8px;font-weight:500}
+    .hero-sub b{color:#fff;font-weight:800}
+    .seg{display:flex;height:10px;border-radius:99px;overflow:hidden;background:#1e293b;margin-top:22px;gap:2px}
+    .seg i{display:block;height:100%;transition:width .6s cubic-bezier(.2,.7,.2,1)}
+    .seg-legend{display:flex;flex-wrap:wrap;gap:6px 20px;margin-top:12px;font-size:.78rem;color:#94a3b8;font-weight:600}
+    .seg-legend b{color:#fff;margin-left:6px;font-variant-numeric:tabular-nums}
+    .seg-legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+    .hero-side{background:#fff;border:1px solid var(--line);border-radius:18px;padding:6px 24px;display:flex;flex-direction:column;justify-content:center}
+    .stat{display:flex;justify-content:space-between;align-items:baseline;padding:15px 0;border-bottom:1px solid var(--line);gap:12px}
+    .stat:last-child{border-bottom:none}
+    .stat span{font-size:.85rem;color:var(--text-muted);font-weight:600}
+    .stat b{font-size:1.25rem;font-weight:800;font-variant-numeric:tabular-nums}
+    .stat.ok b{color:var(--success)}.stat.bad b{color:var(--danger)}
+
+    .ledger{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:28px;box-shadow:0 1px 2px rgba(15,23,42,.04)}
+    .ledger-top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding:18px 22px;border-bottom:1px solid var(--line)}
+    .ledger-top h3{font-size:1rem;font-weight:800;letter-spacing:-.01em}
+    .lhead,.lrow{display:grid;grid-template-columns:34px minmax(200px,1.7fr) 150px minmax(130px,1fr) 150px 40px;gap:14px;align-items:start;padding-left:22px;padding-right:22px}
+    .lhead{padding-top:10px;padding-bottom:10px;font-size:.74rem;font-weight:700;color:var(--text-muted);background:#fafbfc;border-bottom:1px solid var(--line)}
+    .lhead .r{text-align:right}
+    .lrow{padding-top:12px;padding-bottom:12px;border-bottom:1px solid #f0f2f6;transition:background .15s}
+    .lrow:last-child{border-bottom:none}
+    .lrow:hover{background:#fafbfd}
+    .lrow.paga .g-nome{text-decoration:line-through;color:var(--text-muted)}
+    .lgroup.fechado .lbody{display:none}
+    .lgroup.fechado .chev{transform:rotate(-90deg)}
+    .lgrp{width:100%;display:flex;align-items:center;gap:10px;padding:12px 22px;background:#f6f7fa;border:none;border-bottom:1px solid var(--line);cursor:pointer;text-align:left;font-size:.86rem;font-weight:800;color:var(--text-main)}
+    .lgrp:hover{background:#f0f2f7}
+    .lgrp .dot{width:9px;height:9px;border-radius:50%}
+    .lgrp .chev{font-size:.8rem;color:var(--text-muted);transition:transform .2s}
+    .lgrp .gmeta{font-size:.76rem;font-weight:600;color:var(--text-muted)}
+    .lgrp .gsum{margin-left:auto;font-variant-numeric:tabular-nums}
+    .chk{width:24px;height:24px;margin-top:5px;border-radius:50%;border:2px solid #cbd5e1;background:#fff;color:#fff;font-size:.8rem;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s}
+    .chk:hover{border-color:var(--primary-gold)}
+    .lrow.paga .chk{background:var(--success);border-color:var(--success)}
+    .c-par .ghost.par{width:110px}
+    .c-par .pbar{width:100%;max-width:130px;margin:6px 0 0}
+    .c-par .pinfo{padding:4px 0 0}
+    .c-val{text-align:right}
+    .c-val .ghost.num{width:100%}
+    .pill{display:inline-block;margin:6px 8px 0 0;padding:3px 10px;border-radius:99px;font-size:.72rem;font-weight:700}
+    .pill.ok{background:#d1fae5;color:#047857}.pill.pend{background:#f1f5f9;color:#64748b}
+    .c-acoes{text-align:right;padding-top:4px}
+    .btn-del{background:none;border:none;color:#94a3b8;cursor:pointer;padding:6px;border-radius:8px;display:inline-flex;transition:.15s}
+    .btn-del:hover{color:var(--danger);background:#fee2e2}
+
+    .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+    .chip{display:inline-flex;align-items:center;gap:8px;background:#1e293b;color:#e2e8f0;border-radius:99px;padding:7px 14px;font-size:.8rem;font-weight:600}
+    .chip i{width:8px;height:8px;border-radius:50%}
+    .chip b{color:#fff;font-variant-numeric:tabular-nums}
+    .rk{padding:14px 0;border-bottom:1px solid var(--line)}
+    .rk:last-child{border-bottom:none;padding-bottom:0}
+    .rk-top{display:flex;align-items:center;gap:10px}
+    .rk-top b{font-size:.98rem}
+    .rk-val{margin-left:auto;font-weight:800;font-variant-numeric:tabular-nums}
+    .rk-bar{height:8px;background:#eef1f5;border-radius:99px;overflow:hidden;margin:10px 0 8px}
+    .rk-bar i{display:block;height:100%;border-radius:99px;transition:width .6s cubic-bezier(.2,.7,.2,1)}
+    .rk-sub{font-size:.78rem;color:var(--text-muted);font-weight:600}
+    td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+
+    @media (max-width:860px){
+      body{flex-direction:column}
+      aside{width:100%;padding:14px 16px;border-right:none;border-bottom:1px solid var(--line);gap:10px}
+      .brand{margin-bottom:0}
+      .sidebar-clock{display:none}
+      .sync{margin:0}
+      .nav-menu{flex-direction:row;overflow-x:auto;gap:6px}
+      .nav-menu button{white-space:nowrap;padding:10px 12px;border-left:none !important}
+      .nav-menu button.active{background:#0f172a;color:#fff}
+      main{padding:20px 16px}
+      header{flex-direction:column;align-items:flex-start;gap:14px}
+      .hero,.dashboard-layout{grid-template-columns:1fr}
+      .hero-value{font-size:2.1rem}
+      .lhead{display:none}
+      .lrow{grid-template-columns:34px 1fr auto;grid-template-areas:"chk main acoes" ". cat cat" ". par par" ". val val";row-gap:6px;padding-left:16px;padding-right:16px}
+      .lrow .chk{grid-area:chk}.lrow .c-main{grid-area:main}.lrow .c-cat{grid-area:cat}.lrow .c-par{grid-area:par}.lrow .c-val{grid-area:val;text-align:left}.lrow .c-acoes{grid-area:acoes}
+      .c-val .ghost.num{text-align:left}
+      .lgrp{padding:12px 16px}
+      .ledger-top{padding:16px}
+    }
   </style>
 </head>
 <body>
@@ -303,7 +405,7 @@
       <header>
         <div>
           <h1>Contas a Pagar & Gestão de Caixa</h1>
-          <p>Visão mensal com alto contraste, legibilidade e salvamento automático.</p>
+          <p>Seus compromissos do mês, salvos automaticamente.</p>
         </div>
         <div class="month-selector">
           <button onclick="alterarMes(-1)">◄</button>
@@ -312,22 +414,26 @@
         </div>
       </header>
 
-      <div class="metrics-grid">
-        <div class="safra-card">
-          <span class="card-label">Renda Mensal Base</span>
-          <div class="card-value" id="m-renda">R$ 3.950,00</div>
+      <div class="hero">
+        <div class="hero-main">
+          <div class="hero-label">Saldo em carteira</div>
+          <div class="hero-value" id="m-saldo">R$ 0,00</div>
+          <div class="hero-sub" id="m-livre-txt"></div>
+          <div class="seg">
+            <i id="seg-pago" style="background:#c5a059;width:0"></i>
+            <i id="seg-pend" style="background:#64748b;width:0"></i>
+            <i id="seg-livre" style="background:#34d399;width:0"></i>
+          </div>
+          <div class="seg-legend">
+            <span><i style="background:#c5a059"></i>Pago<b id="lg-pago"></b></span>
+            <span><i style="background:#64748b"></i>A pagar<b id="lg-pend"></b></span>
+            <span><i style="background:#34d399"></i>Livre<b id="lg-livre"></b></span>
+          </div>
         </div>
-        <div class="safra-card danger">
-          <span class="card-label">Total a Pagar</span>
-          <div class="card-value" id="m-total">R$ 0,00</div>
-        </div>
-        <div class="safra-card success">
-          <span class="card-label">Total Liquidado</span>
-          <div class="card-value" id="m-pago">R$ 0,00</div>
-        </div>
-        <div class="safra-card warning">
-          <span class="card-label">Saldo em Carteira</span>
-          <div class="card-value" id="m-saldo">R$ 0,00</div>
+        <div class="hero-side">
+          <div class="stat"><span>Renda mensal base</span><b id="m-renda">R$ 3.950,00</b></div>
+          <div class="stat bad"><span>Total a pagar</span><b id="m-total">R$ 0,00</b></div>
+          <div class="stat ok"><span>Total liquidado</span><b id="m-pago">R$ 0,00</b></div>
         </div>
       </div>
 
@@ -385,17 +491,12 @@
         <label title="Ao editar ou excluir, aplica também nos meses seguintes"><input type="checkbox" id="chk-replicar" onchange="replicar=this.checked;localStorage.setItem('gd_replicar',replicar?'1':'')"> Replicar nos meses seguintes</label>
       </div>
 
-      <div class="table-container">
-        <div class="table-header">
-          <h3>Detalhamento do Mês Selecionado</h3>
+      <div class="ledger">
+        <div class="ledger-top">
+          <h3>Contas do mês</h3>
           <div class="prog-wrap"><span id="prog-txt"></span><div class="pbar"><i id="prog-bar" style="width:0"></i></div></div>
         </div>
-        <table class="tbl-contas">
-          <thead>
-            <tr><th>Compromisso</th><th>Categoria</th><th>Parcela</th><th style="text-align:right">Valor Base</th><th style="text-align:right">Valor Pago</th><th>Status</th><th>Ações</th></tr>
-          </thead>
-          <tbody id="tabela-contas"></tbody>
-        </table>
+        <div id="tabela-contas"></div>
       </div>
     </section>
 
@@ -408,30 +509,34 @@
         </div>
       </header>
 
-      <div class="metrics-grid">
-        <div class="safra-card warning">
-          <span class="card-label">Patrimônio Alocado</span>
-          <div class="card-value" id="st-patrimonio">R$ 0,00</div>
+      <div class="hero">
+        <div class="hero-main">
+          <div class="hero-label">Seus ativos estão rendendo por mês</div>
+          <div class="hero-value" id="st-dividendos">R$ 0,00</div>
+          <div class="hero-sub"><b id="st-anual">R$ 0,00</b> por ano · <b id="st-yield">0,00%</b> ao mês sobre o patrimônio</div>
+          <div class="chips" id="st-classes"></div>
         </div>
-        <div class="safra-card success">
-          <span class="card-label">Proventos Estimados / Mês</span>
-          <div class="card-value" id="st-dividendos">R$ 0,00</div>
-        </div>
-        <div class="safra-card">
-          <span class="card-label">Renda Variável (FIIs/Ações)</span>
-          <div class="card-value" id="st-rv">R$ 0,00</div>
-        </div>
-        <div class="safra-card">
-          <span class="card-label">Renda Fixa / CDB</span>
-          <div class="card-value" id="st-rf">R$ 0,00</div>
+        <div class="hero-side">
+          <div class="stat"><span>Patrimônio alocado</span><b id="st-patrimonio">R$ 0,00</b></div>
+          <div class="stat"><span>Renda variável (FIIs/Ações)</span><b id="st-rv">R$ 0,00</b></div>
+          <div class="stat"><span>Renda fixa / CDB</span><b id="st-rf">R$ 0,00</b></div>
         </div>
       </div>
 
-      <div class="analysis-card" style="margin-bottom: 28px;">
-        <div class="analysis-header">Análise Executiva da Carteira de Ativos</div>
-        <div id="state-insights">
-          <div class="analysis-item">A processar alocação...</div>
+      <div class="dashboard-layout">
+        <div class="analysis-card">
+          <div class="analysis-header">O que está rendendo</div>
+          <div id="st-ranking"></div>
         </div>
+        <div class="safra-card">
+          <span class="card-label" style="margin-bottom:12px;display:block;">Participação no rendimento</span>
+          <div style="height:230px;position:relative;"><canvas id="chartProventos"></canvas></div>
+        </div>
+      </div>
+
+      <div class="analysis-card" style="margin-bottom:28px;">
+        <div class="analysis-header">Análise da carteira</div>
+        <div id="state-insights"></div>
       </div>
 
       <div class="form-container">
@@ -449,22 +554,19 @@
         </form>
       </div>
 
-      <div class="table-container">
-        <div class="table-header"><h3>Carteira de Ativos</h3></div>
+      <div class="ledger">
+        <div class="ledger-top"><h3>Carteira de Ativos</h3></div>
+        <div style="overflow-x:auto">
         <table>
           <thead>
             <tr>
-              <th>Ativo</th>
-              <th>Classe</th>
-              <th>Quantidade</th>
-              <th>Preço Médio</th>
-              <th>Total Investido</th>
-              <th>Provento / Mês</th>
-              <th>Ações</th>
+              <th>Ativo</th><th>Classe</th><th class="num">Quantidade</th><th class="num">Preço médio</th>
+              <th class="num">Investido</th><th class="num">Yield a.m.</th><th class="num">Rende / mês</th><th></th>
             </tr>
           </thead>
           <tbody id="tabela-ativos"></tbody>
         </table>
+        </div>
       </div>
     </section>
 
@@ -576,20 +678,34 @@
     function salvarAutomatico() {
       localStorage.setItem('gd_local_mensal', JSON.stringify(bancoMensal));
       localStorage.setItem('gd_local_ativos', JSON.stringify(ativos));
+      remotoPendente = null;
       if (!docRef) return;
       sujo = true; statusNuvem('⏳ Salvando...');
       clearTimeout(timerNuvem);
       timerNuvem = setTimeout(() => {
         docRef.set({ dados: JSON.stringify({ bancoMensal, ativos }), em: Date.now() })
-          .then(() => { sujo = false; statusNuvem('☁️ Sincronizado <button class="sync-out" onclick="auth.signOut()">sair</button>', 'ok'); })
+          .then(() => { sujo = false; statusNuvem(SYNC_OK, 'ok'); })
           .catch(() => statusNuvem('⚠️ Sem conexão — salvo só neste aparelho', 'erro'));
       }, 500);
+    }
+
+    const SYNC_OK = '☁️ Sincronizado <button class="sync-out" onclick="auth.signOut()">sair</button>';
+    let remotoPendente = null;
+    const emCampo = () => document.activeElement && /INPUT|SELECT/.test(document.activeElement.tagName);
+
+    function aplicarRemoto(dados) {
+      const d = JSON.parse(dados);
+      bancoMensal = d.bancoMensal || {}; ativos = d.ativos || [];
+      localStorage.setItem('gd_local_mensal', JSON.stringify(bancoMensal));
+      localStorage.setItem('gd_local_ativos', JSON.stringify(ativos));
+      renderizarDashboard(); renderizarState();
     }
 
     function iniciarNuvem() {
       firebase.initializeApp(FIREBASE_CONFIG);
       auth = firebase.auth();
       const db = firebase.firestore();
+      db.enablePersistence({ synchronizeTabs: true }).catch(() => {});
       auth.onAuthStateChanged(u => {
         document.getElementById('login-overlay').style.display = u ? 'none' : 'flex';
         if (!u) { docRef = null; statusNuvem('🔒 Faça login para sincronizar', 'erro'); return; }
@@ -597,23 +713,26 @@
         let primeira = true;
         docRef.onSnapshot(snap => {
           if (snap.metadata.hasPendingWrites || sujo) return;
-          if (!snap.exists) { salvarAutomatico(); primeira = false; return; }   // 1º acesso: sobe os dados deste aparelho
+          if (!snap.exists) {
+            if (snap.metadata.fromCache) return;             // não sobrescreve a nuvem com um cache vazio
+            salvarAutomatico(); primeira = false; return;     // 1º acesso: sobe os dados deste aparelho
+          }
           const dados = snap.data().dados;
           if (dados !== JSON.stringify({ bancoMensal, ativos })) {
-            const foco = document.activeElement && /INPUT|SELECT/.test(document.activeElement.tagName);
-            if (primeira || !foco) {
-              const d = JSON.parse(dados);
-              bancoMensal = d.bancoMensal || {}; ativos = d.ativos || [];
-              localStorage.setItem('gd_local_mensal', JSON.stringify(bancoMensal));
-              localStorage.setItem('gd_local_ativos', JSON.stringify(ativos));
-              renderizarDashboard(); renderizarState();
-            }
+            if (primeira || !emCampo()) {
+              aplicarRemoto(dados);
+              if (!primeira) { statusNuvem('🔄 Atualizado de outro aparelho', 'ok'); setTimeout(() => statusNuvem(SYNC_OK, 'ok'), 2500); primeira = false; return; }
+            } else remotoPendente = dados;                    // você está digitando: aplica quando sair do campo
           }
           primeira = false;
-          statusNuvem('☁️ Sincronizado <button class="sync-out" onclick="auth.signOut()">sair</button>', 'ok');
+          statusNuvem(SYNC_OK, 'ok');
         }, () => statusNuvem('⚠️ Erro de sincronização', 'erro'));
       });
     }
+
+    document.addEventListener('focusout', () => setTimeout(() => {
+      if (remotoPendente && !sujo && !emCampo()) { const d = remotoPendente; remotoPendente = null; aplicarRemoto(d); statusNuvem('🔄 Atualizado de outro aparelho', 'ok'); setTimeout(() => statusNuvem(SYNC_OK, 'ok'), 2500); }
+    }, 250));
 
     function entrar(e, criar) {
       e.preventDefault();
@@ -704,6 +823,7 @@
       document.querySelectorAll('.nav-menu button').forEach(el => el.classList.remove('active'));
       document.getElementById('aba-' + id).classList.add('active');
       event.currentTarget.classList.add('active');
+      if (id === 'state') renderizarState();
     }
 
     function alterarMes(delta) {
@@ -718,6 +838,11 @@
       return `<span class="tag" style="background:hsl(${h} 70% 92%);color:hsl(${h} 55% 28%)">${esc(t)}<button title="Remover" onclick="rmTag('${id}',${idx})">×</button></span>`;
     }
 
+    const CAT_COR = { Fixa: '#c5a059', Cartao: '#d97706', Variavel: '#059669', Outros: '#dc2626' };
+    const fechados = new Set();
+    const ICO_LIXO = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6"/></svg>';
+    function toggleGrupo(cat) { fechados.has(cat) ? fechados.delete(cat) : fechados.add(cat); renderTabela(); }
+
     function linhaConta(i) {
       const v = parseFloat(i.valor) || 0, vp = parseFloat(i.valor_pago || 0), paga = i.status === 'Pago';
       const p = parseParcela(i.parcela), id = i.id, tags = i.etiquetas || [];
@@ -726,18 +851,17 @@
         const pct = Math.round(p.atual / p.total * 100), rest = p.total - p.atual;
         pinfo = `<div class="pbar"><i style="width:${pct}%"></i></div><div class="pinfo">${p.atual}/${p.total} · ${rest ? `restam ${rest} (${brl(rest * v)})` : '<span class="badge badge-ultima">Última parcela</span>'}</div>`;
       }
-      return `<tr class="row ${paga ? 'paga' : ''}">
-        <td>
+      return `<div class="lrow ${paga ? 'paga' : ''}">
+        <button class="chk" title="${paga ? 'Reabrir conta' : 'Dar baixa'}" onclick="${paga ? `reabrir('${id}')` : `abrirModal('${id}')`}">${paga ? '✓' : ''}</button>
+        <div class="c-main">
           <input class="ghost g-nome" value="${esc(i.nome)}" onchange="editar('${id}','nome',this.value)">
           <div class="tags">${tags.map((t, k) => tagHtml(t, id, k)).join('')}<input class="tag-add" list="dl-tags" placeholder="+ etiqueta" onkeydown="if(event.key==='Enter'||event.key===','){event.preventDefault();addTag('${id}',this.value)}" onchange="addTag('${id}',this.value)"></div>
-        </td>
-        <td><select class="ghost" onchange="editar('${id}','categoria',this.value)">${Object.entries(CAT_LABEL).map(([k, l]) => `<option value="${k}" ${k === i.categoria ? 'selected' : ''}>${l}</option>`).join('')}</select></td>
-        <td><input class="ghost par" value="${i.parcela && i.parcela !== '-' ? esc(i.parcela) : ''}" placeholder="—" title="Aceita 3/10, 3 de 10, 10x" onchange="editar('${id}','parcela',this.value)">${pinfo}</td>
-        <td style="text-align:right"><input class="ghost num" type="number" step="0.01" min="0" value="${v.toFixed(2)}" onchange="editar('${id}','valor',this.value)"></td>
-        <td style="text-align:right;padding-top:16px">${paga ? brl(vp) : '<span style="color:var(--text-muted)">—</span>'}</td>
-        <td style="padding-top:14px"><span class="badge ${paga ? 'badge-pago' : 'badge-pendente'}">${i.status}</span></td>
-        <td class="acoes">${paga ? `<button class="btn-baixa" onclick="reabrir('${id}')">↩ Reabrir</button>` : `<button class="btn-baixa" onclick="abrirModal('${id}')">Baixa</button>`}<button class="btn-icon" title="Excluir" onclick="excluirConta('${id}')">🗑️</button></td>
-      </tr>`;
+        </div>
+        <div class="c-cat"><select class="ghost" onchange="editar('${id}','categoria',this.value)">${Object.entries(CAT_LABEL).map(([k, l]) => `<option value="${k}" ${k === i.categoria ? 'selected' : ''}>${l}</option>`).join('')}</select></div>
+        <div class="c-par"><input class="ghost par" value="${i.parcela && i.parcela !== '-' ? esc(i.parcela) : ''}" placeholder="—" title="Aceita 3/10, 3 de 10, 10x" onchange="editar('${id}','parcela',this.value)">${pinfo}</div>
+        <div class="c-val"><input class="ghost num" type="number" step="0.01" min="0" value="${v.toFixed(2)}" onchange="editar('${id}','valor',this.value)"><span class="pill ${paga ? 'ok' : 'pend'}">${paga ? 'Pago ' + brl(vp) : 'Pendente'}</span></div>
+        <div class="c-acoes"><button class="btn-del" title="Excluir" onclick="excluirConta('${id}')">${ICO_LIXO}</button></div>
+      </div>`;
     }
 
     function renderTabela() {
@@ -750,15 +874,18 @@
       if (ord) lista.sort(ord);
 
       let html = '';
-      if (!lista.length) html = '<tr><td colspan="7" class="vazio">Nenhuma conta encontrada com esses filtros.</td></tr>';
-      else if (f.agrupar) {
-        Object.keys(CAT_LABEL).forEach(cat => {
-          const g = lista.filter(i => i.categoria === cat);
-          if (!g.length) return;
-          const sub = g.reduce((s, i) => s + (parseFloat(i.valor) || 0), 0), pg = g.filter(i => i.status === 'Pago').length;
-          html += `<tr class="grp"><td colspan="7">${CAT_LABEL[cat]}<small>${g.length} ${g.length > 1 ? 'itens' : 'item'} · ${brl(sub)} · ${pg}/${g.length} pagas</small></td></tr>` + g.map(linhaConta).join('');
-        });
-      } else html = lista.map(linhaConta).join('');
+      if (!lista.length) html = '<div class="vazio">Nenhuma conta encontrada. Ajuste os filtros ou lance uma conta acima.</div>';
+      else {
+        html = '<div class="lhead"><span></span><span>Compromisso</span><span>Categoria</span><span>Parcela</span><span class="r">Valor</span><span></span></div>';
+        if (f.agrupar) {
+          Object.keys(CAT_LABEL).forEach(cat => {
+            const g = lista.filter(i => i.categoria === cat);
+            if (!g.length) return;
+            const sub = g.reduce((s, i) => s + (parseFloat(i.valor) || 0), 0), pg = g.filter(i => i.status === 'Pago').length;
+            html += `<section class="lgroup ${fechados.has(cat) ? 'fechado' : ''}"><button class="lgrp" onclick="toggleGrupo('${cat}')"><span class="chev">▾</span><i class="dot" style="background:${CAT_COR[cat]}"></i>${CAT_LABEL[cat]}<span class="gmeta">${pg}/${g.length} pagas</span><span class="gsum">${brl(sub)}</span></button><div class="lbody">${g.map(linhaConta).join('')}</div></section>`;
+          });
+        } else html += `<div class="lbody">${lista.map(linhaConta).join('')}</div>`;
+      }
       document.getElementById('tabela-contas').innerHTML = html;
 
       const tags = new Set();
@@ -785,7 +912,19 @@
       document.getElementById('m-renda').innerText = brl(rendaSalario);
       document.getElementById('m-total').innerText = brl(totalGasto);
       document.getElementById('m-pago').innerText = brl(totalPagoEfetivo);
-      document.getElementById('m-saldo').innerText = brl(rendaSalario - totalPagoEfetivo);
+      const pendV = lista.filter(i => i.status !== 'Pago').reduce((s, i) => s + (parseFloat(i.valor) || 0), 0);
+      const saldo = rendaSalario - totalPagoEfetivo, livre = rendaSalario - totalPagoEfetivo - pendV;
+      const elS = document.getElementById('m-saldo'); elS.innerText = brl(saldo); elS.classList.toggle('neg', saldo < 0);
+      const baseSeg = Math.max(rendaSalario, totalPagoEfetivo + pendV, 1);
+      document.getElementById('seg-pago').style.width = (totalPagoEfetivo / baseSeg * 100) + '%';
+      document.getElementById('seg-pend').style.width = (pendV / baseSeg * 100) + '%';
+      document.getElementById('seg-livre').style.width = (Math.max(livre, 0) / baseSeg * 100) + '%';
+      document.getElementById('lg-pago').innerText = brl(totalPagoEfetivo);
+      document.getElementById('lg-pend').innerText = brl(pendV);
+      document.getElementById('lg-livre').innerText = brl(Math.max(livre, 0));
+      document.getElementById('m-livre-txt').innerHTML = livre >= 0
+        ? `Sobram <b>${brl(livre)}</b> depois de pagar tudo do mês`
+        : `Faltam <b>${brl(-livre)}</b> para cobrir as contas do mês`;
       renderTabela();
       renderChartGastos(cats);
       gerarInsightsGastos(totalGasto, lista);
@@ -884,44 +1023,74 @@
     }
 
     /* State Ativos */
+    const CLASSE_COR = { 'FII': '#c5a059', 'Ação': '#0f172a', 'Renda Fixa': '#059669' };
+    const PALETA = ['#c5a059', '#0f172a', '#059669', '#d97706', '#6366f1', '#dc2626', '#0ea5e9', '#a16207'];
+    let chartProvInstance = null;
+
     function renderizarState() {
       const tbody = document.getElementById('tabela-ativos');
-      tbody.innerHTML = '';
-      let patTotal = 0, divTotal = 0, totalRV = 0, totalRF = 0;
-
-      ativos.forEach(a => {
-        let q = parseFloat(a.qtd);
-        let p = parseFloat(a.preco);
-        let t = parseFloat(a.taxa || 0);
-
-        let totalInvestido = q * p;
-        let proventoMes = totalInvestido * (t / 100);
-
-        patTotal += totalInvestido;
-        divTotal += proventoMes;
-
-        if (a.tipo === 'CDB') totalRF += totalInvestido;
-        else totalRV += totalInvestido;
-
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td><strong>${a.codigo}</strong></td>
-          <td><span class="badge ${a.classe === 'FII' ? 'badge-fii' : 'badge-pago'}">${a.classe}</span></td>
-          <td>${q}</td>
-          <td>R$ ${p.toFixed(2)}</td>
-          <td>R$ ${totalInvestido.toFixed(2)}</td>
-          <td style="color:var(--primary-gold-dark); font-weight:900;">R$ ${proventoMes.toFixed(2)}/mês</td>
-          <td><button class="btn-icon" onclick="excluirAtivo(${a.id})">🗑️</button></td>
-        `;
-        tbody.appendChild(tr);
+      const linhas = ativos.map(a => {
+        const q = parseFloat(a.qtd) || 0, p = parseFloat(a.preco) || 0, t = parseFloat(a.taxa || 0) || 0;
+        const inv = q * p;
+        return { a, q, p, t, inv, prov: inv * t / 100 };
       });
+      const patTotal = linhas.reduce((s, l) => s + l.inv, 0);
+      const divTotal = linhas.reduce((s, l) => s + l.prov, 0);
+      const totalRF = linhas.filter(l => l.a.tipo === 'CDB').reduce((s, l) => s + l.inv, 0);
+      const totalRV = patTotal - totalRF;
 
-      document.getElementById('st-patrimonio').innerText = `R$ ${patTotal.toFixed(2)}`;
-      document.getElementById('st-dividendos').innerText = `R$ ${divTotal.toFixed(2)}`;
-      document.getElementById('st-rv').innerText = `R$ ${totalRV.toFixed(2)}`;
-      document.getElementById('st-rf').innerText = `R$ ${totalRF.toFixed(2)}`;
+      tbody.innerHTML = linhas.length ? linhas.map(l => `<tr>
+          <td><strong>${esc(l.a.codigo)}</strong></td>
+          <td><span class="badge ${l.a.classe === 'FII' ? 'badge-fii' : 'badge-pago'}">${esc(l.a.classe)}</span></td>
+          <td class="num">${l.q}</td>
+          <td class="num">${brl(l.p)}</td>
+          <td class="num">${brl(l.inv)}</td>
+          <td class="num">${l.t.toFixed(2)}%</td>
+          <td class="num" style="color:var(--primary-gold-dark);font-weight:900;">${brl(l.prov)}</td>
+          <td><button class="btn-del" title="Remover" onclick="excluirAtivo(${l.a.id})">${ICO_LIXO}</button></td>
+        </tr>`).join('') : '<tr><td colspan="8" class="vazio">Nenhum ativo ainda. Cadastre o primeiro acima.</td></tr>';
 
-      gerarInsightsState(patTotal, divTotal, totalRV);
+      document.getElementById('st-patrimonio').innerText = brl(patTotal);
+      document.getElementById('st-dividendos').innerText = brl(divTotal);
+      document.getElementById('st-anual').innerText = brl(divTotal * 12);
+      document.getElementById('st-yield').innerText = (patTotal > 0 ? divTotal / patTotal * 100 : 0).toFixed(2) + '%';
+      document.getElementById('st-rv').innerText = brl(totalRV);
+      document.getElementById('st-rf').innerText = brl(totalRF);
+
+      // Quanto cada classe rende
+      const porClasse = {};
+      linhas.forEach(l => { porClasse[l.a.classe] = (porClasse[l.a.classe] || 0) + l.prov; });
+      document.getElementById('st-classes').innerHTML = Object.entries(porClasse).sort((a, b) => b[1] - a[1])
+        .map(([c, v]) => `<span class="chip"><i style="background:${CLASSE_COR[c] === '#0f172a' ? '#94a3b8' : (CLASSE_COR[c] || '#94a3b8')}"></i>${esc(c)}<span><b>${brl(v)}</b>/mês</span></span>`).join('');
+
+      // Ranking: o que está rendendo
+      const ordenado = [...linhas].sort((a, b) => b.prov - a.prov);
+      const maxProv = Math.max(...ordenado.map(l => l.prov), 0.01);
+      document.getElementById('st-ranking').innerHTML = ordenado.length ? ordenado.map((l, k) => {
+        const parte = divTotal > 0 ? l.prov / divTotal * 100 : 0;
+        return `<div class="rk">
+          <div class="rk-top"><b>${esc(l.a.codigo)}</b><span class="badge ${l.a.classe === 'FII' ? 'badge-fii' : 'badge-pago'}">${esc(l.a.classe)}</span><span class="rk-val">${brl(l.prov)}/mês</span></div>
+          <div class="rk-bar"><i style="width:${(l.prov / maxProv * 100).toFixed(1)}%;background:${PALETA[k % PALETA.length]}"></i></div>
+          <div class="rk-sub">${parte.toFixed(0)}% do rendimento · ${l.t.toFixed(2)}% a.m. sobre ${brl(l.inv)} · ${brl(l.prov * 12)} por ano</div>
+        </div>`;
+      }).join('') : '<div class="vazio">Cadastre ativos para ver o que está rendendo.</div>';
+
+      // Gráfico de participação
+      if (typeof Chart !== 'undefined') {
+        const cv = document.getElementById('chartProventos');
+        if (chartProvInstance) chartProvInstance.destroy();
+        const temDados = divTotal > 0;
+        chartProvInstance = new Chart(cv.getContext('2d'), {
+          type: 'doughnut',
+          data: {
+            labels: temDados ? ordenado.map(l => l.a.codigo) : ['Sem rendimento'],
+            datasets: [{ data: temDados ? ordenado.map(l => +l.prov.toFixed(2)) : [1], backgroundColor: temDados ? ordenado.map((_, k) => PALETA[k % PALETA.length]) : ['#e2e8f0'], borderWidth: 2, borderColor: '#fff' }]
+          },
+          options: { responsive: true, maintainAspectRatio: false, cutout: '62%', plugins: { legend: { position: 'bottom', labels: { font: { weight: 'bold' }, boxWidth: 12 } }, tooltip: { enabled: temDados, callbacks: { label: c => ` ${c.label}: ${brl(c.parsed)}/mês` } } } }
+        });
+      }
+
+      gerarInsightsState(patTotal, divTotal, totalRV, ordenado);
     }
 
     function adicionarAtivo(e) {
@@ -953,6 +1122,7 @@
     }
 
     function renderChartGastos(cats) {
+      if (typeof Chart === 'undefined') return;
       const ctx = document.getElementById('chartGastos').getContext('2d');
       if (chartGastosInstance) chartGastosInstance.destroy();
 
@@ -970,15 +1140,17 @@
       });
     }
 
-    function gerarInsightsState(patrimonio, dividendos, rv) {
+    function gerarInsightsState(patrimonio, dividendos, rv, ordenado) {
       const box = document.getElementById('state-insights');
-      let yieldMensal = patrimonio > 0 ? (dividendos / patrimonio) * 100 : 0;
-      let propRV = patrimonio > 0 ? (rv / patrimonio) * 100 : 0;
-
-      box.innerHTML = `
-        <div class="analysis-item">Dividend Yield Médio da Carteira: <strong>${yieldMensal.toFixed(2)}% a.m.</strong> (R$ ${dividendos.toFixed(2)}/mês).</div>
-        <div class="analysis-item">Alocação em Renda Variável: <strong>${propRV.toFixed(0)}%</strong> do patrimônio investido.</div>
-      `;
+      const yieldMensal = patrimonio > 0 ? (dividendos / patrimonio) * 100 : 0;
+      const propRV = patrimonio > 0 ? (rv / patrimonio) * 100 : 0;
+      let h = `<div class="analysis-item">Rendimento médio da carteira: <strong>${yieldMensal.toFixed(2)}% a.m.</strong> (${brl(dividendos)}/mês · ${brl(dividendos * 12)}/ano).</div>
+        <div class="analysis-item">Alocação em renda variável: <strong>${propRV.toFixed(0)}%</strong> do patrimônio · renda fixa: <strong>${(patrimonio > 0 ? 100 - propRV : 0).toFixed(0)}%</strong>.</div>`;
+      if (ordenado && ordenado.length && dividendos > 0) {
+        const t = ordenado[0];
+        h += `<div class="analysis-item">Maior fonte de renda: <strong>${esc(t.a.codigo)}</strong> com ${brl(t.prov)}/mês (${(t.prov / dividendos * 100).toFixed(0)}% do total).</div>`;
+      }
+      box.innerHTML = h;
     }
 
     document.addEventListener('DOMContentLoaded', () => {
