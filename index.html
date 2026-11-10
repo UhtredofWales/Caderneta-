@@ -8,7 +8,7 @@
   <!-- Favicon GD Executivo -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230f172a'/><text x='50%' y='68%' font-family='sans-serif' font-weight='900' font-size='52' fill='%23c5a059' text-anchor='middle'>GD</text></svg>">
 
-  <!-- Chart.js para Gráficos -->
+  <!-- Chart.js para Gráficos Avançados -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
   <!-- Firebase SDK Compat (Auth + Firestore) -->
@@ -18,7 +18,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg-app: #f1f3f7;          
@@ -115,7 +115,7 @@
     }
 
     /* Main Container */
-    main { flex: 1; padding: 36px 44px; overflow-y: auto; max-width: 1320px; width: 100%; }
+    main { flex: 1; padding: 36px 44px; overflow-y: auto; max-width: 1380px; width: 100%; }
     
     header {
       margin-bottom: 32px;
@@ -159,7 +159,7 @@
     .dashboard-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 28px; }
 
     /* Painel de Análise Estilizado */
-    .analysis-header { font-size: 0.95rem; font-weight: 800; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .analysis-header { font-size: 0.95rem; font-weight: 800; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
     .analysis-item { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 12px; padding: 12px 16px; background: #f8fafc; border-radius: 10px; border-left: 4px solid var(--primary-gold); line-height: 1.6; font-weight: 600; box-shadow: 0 2px 4px rgba(0,0,0,0.01); }
     .analysis-item strong { color: var(--text-main); }
 
@@ -176,9 +176,11 @@
     .btn-action {
       background: #0f172a; color: #ffffff; border: none; padding: 12px 22px;
       border-radius: 10px; font-weight: 800; font-size: 0.88rem; cursor: pointer; transition: 0.2s;
-      box-shadow: 0 4px 12px rgba(15,23,42,0.15);
+      box-shadow: 0 4px 12px rgba(15,23,42,0.15); display: inline-flex; align-items: center; justify-content: center; gap: 8px;
     }
     .btn-action:hover { background: #1e293b; transform: translateY(-1px); }
+    .btn-secondary { background: #f1f5f9; color: #0f172a; border: 1px solid var(--card-border); box-shadow: none; }
+    .btn-secondary:hover { background: #e2e8f0; }
 
     /* Tabelas */
     .table-container { overflow: hidden; }
@@ -187,17 +189,20 @@
     th { color: var(--text-muted); font-size: 0.72rem; text-transform: uppercase; font-weight: 800; background: #f8fafc; letter-spacing: 0.8px; }
     td { font-weight: 600; }
 
-    .badge { padding: 5px 12px; border-radius: 8px; font-size: 0.76rem; font-weight: 800; letter-spacing: 0.3px; }
+    .badge { padding: 5px 12px; border-radius: 8px; font-size: 0.76rem; font-weight: 800; letter-spacing: 0.3px; display: inline-block; }
     .badge-pago { background: #d1fae5; color: #047857; }
     .badge-pendente { background: #fee2e2; color: #b91c1c; }
     .badge-fii { background: #fef3c7; color: #92400e; }
+    .badge-rf { background: #e0f2fe; color: #0369a1; }
+    .badge-acao { background: #ede9fe; color: #6d28d9; }
+    .badge-etf { background: #fce7f3; color: #be185d; }
 
     .btn-del { background: none; border: none; color: #94a3b8; cursor: pointer; padding: 8px; border-radius: 8px; display: inline-flex; transition: .15s; }
     .btn-del:hover { color: var(--danger); background: #fee2e2; }
 
     /* Modal */
     .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(15,23,42,0.75); backdrop-filter: blur(4px); display:none; justify-content:center; align-items:center; z-index: 1000; }
-    .modal { background: #ffffff; border-radius: 20px; padding: 32px; width: 100%; max-width: 420px; box-shadow: 0 24px 48px rgba(0,0,0,0.2); }
+    .modal { background: #ffffff; border-radius: 20px; padding: 32px; width: 100%; max-width: 440px; box-shadow: 0 24px 48px rgba(0,0,0,0.2); }
     .modal h3 { margin-bottom: 20px; font-size: 1.15rem; font-weight: 800; color: var(--text-main); }
     .modal-field { margin-bottom: 16px; }
     .modal-field label { display: block; font-size: 0.78rem; text-transform: uppercase; font-weight: 800; color: var(--text-muted); margin-bottom: 8px; letter-spacing: 0.5px; }
@@ -340,6 +345,19 @@
     .hl b { margin-left: auto; font-variant-numeric: tabular-nums; }
     .badge-est { background: #e2e8f0; color: #475569; margin-left: 6px; font-size: .68rem; padding: 2px 6px; font-weight: 800; border-radius: 6px; }
     .nota { font-size: .75rem; color: var(--text-muted); font-weight: 600; margin-top: 14px; text-align: right; }
+
+    /* Card Recomendador de Ações */
+    .rec-card {
+      background: #ffffff; border: 1px solid var(--card-border); border-radius: 16px; padding: 18px; margin-bottom: 14px;
+      display: flex; flex-direction: column; justify-content: space-between; transition: all 0.2s;
+    }
+    .rec-card:hover { border-color: var(--primary-gold); box-shadow: 0 6px 18px rgba(197,160,89,0.12); }
+    .rec-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .rec-ticker { font-size: 1.1rem; font-weight: 900; color: var(--text-main); }
+    .rec-nome { font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; }
+    .rec-tese { font-size: 0.83rem; color: #334155; line-height: 1.4; margin-bottom: 14px; font-weight: 600; }
+    .rec-metrics { display: flex; gap: 12px; font-size: 0.78rem; font-weight: 800; color: var(--text-muted); margin-bottom: 12px; background: #f8fafc; padding: 8px 12px; border-radius: 8px; }
+    .rec-metrics span b { color: var(--text-main); }
     
     @media (max-width: 860px) {
       .agente, .dual { grid-template-columns: 1fr; }
@@ -376,7 +394,7 @@
           <span style="font-size: 0.72rem; font-weight: 800; background: #fef3c7; color: #92400e; padding: 3px 8px; border-radius: 99px; text-transform: uppercase; letter-spacing: 0.5px;">Executive</span>
         </div>
       </div>
-      <p style="font-size: .86rem; color: var(--text-muted); font-weight: 600; margin-bottom: 20px;">Entre com sua conta Google para sincronizar os seus dados em tempo real.</p>
+      <p style="font-size: .86rem; color: var(--text-muted); font-weight: 600; margin-bottom: 20px;">Entre com sua conta Google para sincronizar seus investimentos em tempo real.</p>
       
       <!-- Botão Login Google -->
       <button type="button" class="btn-google" onclick="entrarGoogle()">
@@ -417,6 +435,7 @@
     <ul class="nav-menu">
       <li><button onclick="mudarAba('gastos', event)" id="btn-tab-gastos">📊 Contas a Pagar</button></li>
       <li><button onclick="mudarAba('state', event)" id="btn-tab-state">🏛️ State & Ativos</button></li>
+      <li><button onclick="mudarAba('recomendador', event)" id="btn-tab-recomendador">🎯 Agente Recomendador</button></li>
       <li><button onclick="mudarAba('empresarial', event)" id="btn-tab-empresarial">🏢 Faturamento PJ</button></li>
     </ul>
   </aside>
@@ -433,7 +452,7 @@
         </div>
         <div class="month-selector">
           <button onclick="alterarMes(-1)">◄</button>
-          <span id="label-mes-ano">AGOSTO 2026</span>
+          <span id="label-mes-ano">NOVEMBRO 2026</span>
           <button onclick="alterarMes(1)">►</button>
         </div>
       </header>
@@ -529,23 +548,23 @@
       <header>
         <div>
           <h1>State & Gestão de Ativos</h1>
-          <p>Consolidação patrimonial, valorização, proventos automáticos e perfil analítico.</p>
+          <p>Consolidação patrimonial, cotações BRAPI em tempo real, fechamento diário e múltiplos investimentos.</p>
         </div>
       </header>
 
       <div class="hero">
         <div class="hero-main">
-          <div class="hero-label">Seus ativos estão rendendo por mês</div>
+          <div class="hero-label">Rendimento Mensal Estimado da Carteira</div>
           <div class="hero-value" id="st-dividendos">R$ 0,00</div>
           <div class="hero-sub"><b id="st-anual">R$ 0,00</b> por ano · <b id="st-yield">0,00%</b> ao mês sobre o valor de mercado</div>
           <div class="chips" id="st-classes"></div>
         </div>
         <div class="hero-side">
-          <div class="stat"><span>Valor de mercado</span><b id="st-patrimonio">R$ 0,00</b></div>
-          <div class="stat"><span>Valorização das cotas</span><b id="st-val">R$ 0,00</b></div>
-          <div class="stat"><span>Retorno total (cotas + proventos)</span><b id="st-ret">0,0%</b></div>
-          <div class="stat"><span>Renda variável (FIIs/Ações)</span><b id="st-rv">R$ 0,00</b></div>
-          <div class="stat"><span>Renda fixa / CDB</span><b id="st-rf">R$ 0,00</b></div>
+          <div class="stat"><span>Valor total de mercado</span><b id="st-patrimonio">R$ 0,00</b></div>
+          <div class="stat"><span>Ganho de Capital (vs Custo)</span><b id="st-val">R$ 0,00</b></div>
+          <div class="stat"><span>Retorno total acumulado</span><b id="st-ret">0,0%</b></div>
+          <div class="stat"><span>Renda Variável (Ações/FIIs/ETFs)</span><b id="st-rv">R$ 0,00</b></div>
+          <div class="stat"><span>Renda Fixa / CDBs / Tesouro</span><b id="st-rf">R$ 0,00</b></div>
         </div>
       </div>
 
@@ -555,7 +574,7 @@
           <div class="score" id="st-score"><div><b id="st-nota">–</b><small id="st-grau">sem dados</small></div></div>
           <div id="state-insights"></div>
         </div>
-        <div class="nota">Leitura automática de alocação (FIIs vs Ações), limites de concentração e resiliência de rendimentos calculada localmente.</div>
+        <div class="nota">Cálculos automáticos de rendimento bruto/líquido, alíquotas regressivas de IR e concentração por emissor/corretora.</div>
       </div>
 
       <div class="dual">
@@ -569,68 +588,86 @@
 
       <div class="dashboard-layout">
         <div class="analysis-card">
-          <div class="analysis-header">🏆 O que está mais rendendo</div>
+          <div class="analysis-header">🏆 Maiores Rendimentos Mensais</div>
           <div id="st-ranking"></div>
         </div>
         <div class="safra-card">
-          <span class="card-label" style="margin-bottom:12px;display:block;">Participação no Rendimento</span>
+          <span class="card-label" style="margin-bottom:12px;display:block;">Alocação do Rendimento por Ativo</span>
           <div style="height:230px;position:relative;"><canvas id="chartProventos"></canvas></div>
         </div>
       </div>
 
       <div class="analysis-card">
-        <div class="analysis-header">📊 Curva de Evolução do Patrimônio</div>
+        <div class="analysis-header">📊 Curva de Evolução Patrimonial (Fechamento Diário)</div>
         <div style="height:220px;position:relative;"><canvas id="chartEvo"></canvas></div>
-        <div class="vazio" id="st-evo-vazio" style="display:none">O histórico começa a ser gravado quando você atualiza uma cotação. Volte em outro dia para ver a curva.</div>
+        <div class="vazio" id="st-evo-vazio" style="display:none">O histórico de fechamento é atualizado automaticamente ao buscar cotações.</div>
       </div>
 
+      <!-- FORMULÁRIO DE CADASTRO DE ATIVOS EXPANDIDO -->
       <div class="dual">
         <div class="form-container" style="margin-bottom:0">
-          <h4>+ Cadastrar Ativo na Carteira</h4>
+          <h4>+ Cadastrar Ativo / Investimento</h4>
           <form onsubmit="adicionarAtivo(event)" class="inline-form" style="grid-template-columns:1fr 1fr">
-            <select id="st-tipo">
-              <option value="RV">Renda Variável (Ação / FII)</option>
-              <option value="CDB">Renda Fixa (CDB)</option>
+            <select id="st-tipo" onchange="atualizarFormAtivo(this.value)">
+              <option value="ACAO">Ação B3 (Ex: PETR4, TAEE11)</option>
+              <option value="FII">Fundo Imobiliário (Ex: MXRF11)</option>
+              <option value="CDB">CDB / LC (Renda Fixa % CDI)</option>
+              <option value="TESOURO">Tesouro Direto (Selic/IPCA/Pré)</option>
+              <option value="LCI_LCA">LCI / LCA (Isento de IR)</option>
+              <option value="ETF">ETF / BDR (Ex: IVVB11, AAPL34)</option>
             </select>
-            <input type="text" id="st-codigo" placeholder="Ticker (ex: MXRF11, PETR4)" required>
-            <input type="text" id="st-corretora" list="dl-corr" placeholder="Corretora / banco (BTG, Íon...)">
+            <input type="text" id="st-codigo" placeholder="Ticker / Nome (Ex: PETR4)" required>
+            <input type="text" id="st-corretora" list="dl-corr" placeholder="Corretora (BTG, Íon, XP...)">
             <input type="number" step="any" id="st-qtd" placeholder="Quantidade / Cotas" required>
-            <input type="number" step="0.01" id="st-preco" placeholder="Preço médio (R$)" required>
-            <input type="number" step="0.01" id="st-cot" placeholder="Cotação atual (R$)">
-            <input type="number" step="0.01" id="st-taxa" placeholder="Yield estimado % a.m." value="0.8">
-            <button type="submit" class="btn-action">Cadastrar Ativo</button>
+            <input type="number" step="0.01" id="st-preco" placeholder="Preço médio / Aplicação (R$)" required>
+            <input type="number" step="0.01" id="st-cot" placeholder="Cotação / Valor Atual (R$)">
+            <input type="number" step="0.1" id="st-taxa" placeholder="% do CDI ou % DY a.m." value="100">
+            <button type="submit" class="btn-action" style="grid-column: span 2;">Cadastrar na Carteira</button>
           </form>
           <datalist id="dl-corr"></datalist>
         </div>
+        
         <div class="form-container" style="margin-bottom:0">
-          <h4>+ Lançar Provento Recebido</h4>
+          <h4>+ Lançar Provento ou Rendimento Recebido</h4>
           <form onsubmit="lancarProvento(event)" class="inline-form" style="grid-template-columns:1fr 1fr">
             <select id="pv-ativo" onchange="atualizarInfoCorretoraProvento()" required></select>
             <input type="month" id="pv-mes" required>
             <input type="number" step="0.0001" id="pv-valor" placeholder="Provento por cota (R$)" required>
-            <button type="submit" class="btn-action">Lançar Provento</button>
+            <button type="submit" class="btn-action" style="grid-column: span 2;">Lançar Rendimento</button>
           </form>
           <div id="pv-corretora-info" style="font-size:0.82rem; font-weight:800; color:var(--primary-gold-dark); margin-top:10px;"></div>
           <div id="st-hist" style="margin-top:14px"></div>
         </div>
       </div>
 
+      <!-- BARRA DE COTAÇÃO EM TEMPO REAL BRAPI & PARAMETROS -->
       <div class="toolbar" style="margin-top:28px">
         <label>CDI a.a. (%) <input type="number" step="0.1" id="st-cdi" style="width:84px" onchange="setCdi(this.value)"></label>
-        <input type="password" id="st-token" placeholder="Token brapi.dev (opcional, só neste aparelho)" style="min-width:260px" onchange="setToken(this.value)">
-        <span class="sp"></span><span id="st-cot-msg" class="dica" style="margin:0"></span>
-        <button class="btn-action" onclick="atualizarCotacoes()">Atualizar cotações</button>
+        <input type="password" id="st-token" placeholder="Token BRAPI.dev (opcional para dados ilimitados)" style="min-width:260px" onchange="setToken(this.value)">
+        <span class="sp"></span>
+        <span id="st-cot-msg" class="dica" style="margin:0"></span>
+        <button class="btn-action" onclick="atualizarCotacoes(true)">⚡ Buscar Cotações em Tempo Real (BRAPI)</button>
       </div>
 
       <div class="ledger">
-        <div class="ledger-top"><h3>Carteira Consolidada de Ativos</h3></div>
+        <div class="ledger-top">
+          <h3>Carteira Consolidada de Ativos & Posições</h3>
+          <span style="font-size:0.8rem; font-weight:700; color:var(--text-muted);">Valores de Fechamento Armazenados</span>
+        </div>
         <div style="overflow-x:auto">
         <table>
           <thead>
             <tr>
-              <th>Ativo</th><th>Corretora / Banco</th><th class="num">Qtd</th><th class="num">Preço médio</th><th class="num">Cotação</th>
-              <th class="num">Valor atual</th><th class="num">Valorização</th><th class="num">Prov./cota (média)</th>
-              <th class="num">Rende / mês</th><th class="num">DY a.m.</th><th></th>
+              <th>Ativo / Classe</th>
+              <th>Corretora</th>
+              <th class="num">Qtd</th>
+              <th class="num">Preço Médio</th>
+              <th class="num">Fechamento / Cotação</th>
+              <th class="num">Valor de Mercado</th>
+              <th class="num">Valorização</th>
+              <th class="num">Rendimento / mês</th>
+              <th class="num">DY / Taxa Líquida</th>
+              <th>Ações</th>
             </tr>
           </thead>
           <tbody id="tabela-ativos"></tbody>
@@ -639,7 +676,45 @@
       </div>
     </section>
 
-    <!-- ABA 3: EMPRESARIAL -->
+    <!-- ABA 3: RECOMENDADOR INTELIGENTE DE AÇÕES -->
+    <section id="aba-recomendador" class="tab-content">
+      <header>
+        <div>
+          <h1>Agente Recomendador Inteligente</h1>
+          <p>Sugestões personalizadas de ações e FIIs ajustadas ao seu momento financeiro e fluxo de caixa.</p>
+        </div>
+      </header>
+
+      <div class="hero">
+        <div class="hero-main" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);">
+          <div class="hero-label">Diagnóstico de Aporte do Agente</div>
+          <div class="hero-value" id="rec-diagnostico-titulo">Analisando momento...</div>
+          <div class="hero-sub" id="rec-diagnostico-sub">Calculando margem de caixa e alocação ideal.</div>
+        </div>
+        <div class="hero-side">
+          <div class="stat"><span>Caixa Livre Mensal</span><b id="rec-caixa">R$ 0,00</b></div>
+          <div class="stat"><span>Tolerância a Risco Sideral</span><b id="rec-perfil-txt">Moderado / Conservador</b></div>
+          <div class="stat"><span>Foco Recomendado</span><b id="rec-estrategia-txt">Dividendos & Reserva</b></div>
+        </div>
+      </div>
+
+      <div class="analysis-card">
+        <div class="analysis-header">
+          <span>🎯 Seleção de Oportunidades Ajustadas ao Seu Momento</span>
+          <select id="rec-filtro-categoria" onchange="renderizarRecomendacoes()" style="padding:6px 12px; border-radius:8px; border:1px solid var(--card-border); font-weight:700;">
+            <option value="TODOS">Todas as Teses</option>
+            <option value="DIVIDENDOS">Foco em Dividendos / Renda Passiva</option>
+            <option value="CRESCIMENTO">Crescimento / Value Investing</option>
+            <option value="DEFENSIVO">Reserva Defensiva / Renda Fixa</option>
+          </select>
+        </div>
+        <div id="rec-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:18px;">
+          <!-- Injetado por JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ABA 4: EMPRESARIAL -->
     <section id="aba-empresarial" class="tab-content">
       <header>
         <div>
@@ -692,14 +767,14 @@
       </div>
 
       <div class="modal-actions">
-        <button class="btn-action" style="background:#e2e8f0; color:#0f172a;" onclick="fecharModal()">Cancelar</button>
+        <button class="btn-action btn-secondary" onclick="fecharModal()">Cancelar</button>
         <button class="btn-action" onclick="confirmarBaixa()">Confirmar Baixa</button>
       </div>
     </div>
   </div>
 
   <script>
-    /* NUVEM (Firebase Cloud Firestore com Google Auth) */
+    /* FIREBASE CONFIG & AUTH */
     const FIREBASE_CONFIG = {
       apiKey: "AIzaSyBCb-3lMVDgrdTxBY1fuod-_bqYV0sDdLk",
       authDomain: "caderneta-a0754.firebaseapp.com",
@@ -743,11 +818,25 @@
 
     let bancoMensal = JSON.parse(localStorage.getItem('gd_local_mensal')) || {};
     let ativos = JSON.parse(localStorage.getItem('gd_local_ativos')) || [
-      { id: 1, codigo: "MXRF11", tipo: "RV", qtd: 100, preco: 10.20, taxa: 0.9, classe: "FII", corretora: "BTG" },
-      { id: 2, codigo: "CDB ITAÚ", tipo: "CDB", qtd: 1, preco: 5000.00, taxa: 0.85, classe: "Renda Fixa", corretora: "Itaú" }
+      { id: 1, codigo: "MXRF11", tipo: "FII", qtd: 100, preco: 10.20, cotacao: 10.45, fechamento: 10.45, taxa: 0.9, classe: "FII", corretora: "BTG" },
+      { id: 2, codigo: "PETR4", tipo: "ACAO", qtd: 50, preco: 32.50, cotacao: 38.20, fechamento: 38.20, taxa: 0.8, classe: "Ação", corretora: "Íon" },
+      { id: 3, codigo: "CDB ITAÚ 100% CDI", tipo: "CDB", qtd: 1, preco: 5000.00, cotacao: 5240.00, fechamento: 5240.00, taxa: 100, classe: "Renda Fixa", corretora: "Itaú" }
     ];
 
     let snaps = JSON.parse(localStorage.getItem('gd_local_snaps')) || [];
+
+    // BANCO DE RECOMENDAÇÕES PARA O AGENTE INTELIGENTE
+    const BANCO_RECOMENDACOES = [
+      { ticker: "TAEE11", nome: "Taesa", categoria: "DIVIDENDOS", classe: "ACAO", dy: "9.8% a.a.", tese: "Transmissora de energia com receita previsível indexada à inflação (IGPM/IPCA). Excelente pagadora de dividendos perenes.", precoEstimado: 35.50 },
+      { ticker: "BBSE3", nome: "BB Seguridade", categoria: "DIVIDENDOS", classe: "ACAO", dy: "8.9% a.a.", tese: "Líder em seguros rurais/penhor no Brasil. Modelo leve em capital com alto ROE e distribuição robusta de proventos.", precoEstimado: 33.80 },
+      { ticker: "BBAS3", nome: "Banco do Brasil", categoria: "DIVIDENDOS", classe: "ACAO", dy: "9.4% a.a.", tese: "Banco mais eficiente do país em carteira de agronegócio. Negociado a múltiplos descontados (P/VP atrativo).", precoEstimado: 27.40 },
+      { ticker: "HGLG11", nome: "CSHG Logística", categoria: "DIVIDENDOS", classe: "FII", dy: "8.5% a.a.", tese: "Fundo imobiliário premium de galpões logísticos com alta qualidade de inquilinos e previsibilidade de caixa.", precoEstimado: 162.00 },
+      { ticker: "WEGE3", nome: "Weg S.A.", categoria: "CRESCIMENTO", classe: "ACAO", dy: "2.1% a.a.", tese: "Multinacional brasileira de motores e energia renovável com forte crescimento histórico e reinvestimento em P&D.", precoEstimado: 48.90 },
+      { ticker: "ITUB4", nome: "Itaú Unibanco", categoria: "CRESCIMENTO", classe: "ACAO", dy: "6.8% a.a.", tese: "Maior banco privado da América Latina, com forte capacidade tecnológica, ROE elevado e crescimento constante.", precoEstimado: 34.20 },
+      { ticker: "IVVB11", nome: "iShares S&P 500", categoria: "CRESCIMENTO", classe: "ETF", dy: "Dólar", tese: "Dolarização de patrimônio com exposição às 500 maiores empresas globais (Apple, Microsoft, Nvidia).", precoEstimado: 310.00 },
+      { ticker: "CDB 110% CDI", nome: "CDB Banco Sofisa/Inter", categoria: "DEFENSIVO", classe: "CDB", dy: "15.95% a.a.", tese: "Reserva de liquidez com garantia do FGC. Liquidez diária e rendimento superior à poupança e Selic pura.", precoEstimado: 1000.00 },
+      { ticker: "TESOURO SELIC 2029", nome: "Tesouro Direto", categoria: "DEFENSIVO", classe: "TESOURO", dy: "Selic + 0.15%", tese: "O investimento mais seguro do país para caixa imediato e resgate sem marcação a mercado brusca.", precoEstimado: 14500.00 }
+    ];
 
     function formatarCorretora(str) {
       if (!str) return 'Sem corretora';
@@ -788,7 +877,7 @@
       localStorage.setItem('gd_local_snaps', JSON.stringify(snaps));
       localStorage.setItem('gd_local_mensal', JSON.stringify(bancoMensal));
       localStorage.setItem('gd_local_ativos', JSON.stringify(ativos));
-      renderizarDashboard(); renderizarState();
+      renderizarDashboard(); renderizarState(); renderizarRecomendacoes();
     }
 
     function iniciarNuvem() {
@@ -842,7 +931,7 @@
           'auth/invalid-credential': 'E-mail ou senha incorretos.', 'auth/wrong-password': 'E-mail ou senha incorretos.',
           'auth/user-not-found': 'Conta não encontrada — clique em Criar conta.', 'auth/email-already-in-use': 'Esse e-mail já tem conta — clique em Entrar.',
           'auth/weak-password': 'A senha precisa ter pelo menos 6 caracteres.', 'auth/invalid-email': 'E-mail inválido.',
-          'auth/configuration-not-found': 'Ative o provedor Google / E-mail no console do Firebase (Authentication > Sign-in method).',
+          'auth/configuration-not-found': 'Ative o provedor Google / E-mail no console do Firebase.',
           'auth/operation-not-supported-in-this-environment': 'Abra por http://localhost ou pelo site hospedado.'
         })[err.code] || err.message || err.code;
       });
@@ -870,7 +959,7 @@
         const k = alvo + d, l = bancoMensal[getChaveMes(k % 12, Math.floor(k / 12))];
         if (l) { base = l; bi = k; break; }
       }
-      if (!base) { base = dadosIniciaisPlanilha; bi = 2026 * 12 + 7; }
+      if (!base) { base = dadosIniciaisPlanilha; bi = 2026 * 12 + 10; }
       base.forEach(i => { if (!i.serie) i.serie = uid(); });
       bancoMensal[chave] = base.map(i => deslocar(i, alvo - bi)).filter(Boolean);
       salvarAutomatico();
@@ -929,6 +1018,7 @@
       }
 
       if (id === 'state') renderizarState();
+      if (id === 'recomendador') renderizarRecomendacoes();
     }
 
     function restaurarAbaAtiva() {
@@ -1034,7 +1124,7 @@
       document.getElementById('lg-pend').innerText = brl(pendV);
       document.getElementById('lg-livre').innerText = brl(Math.max(livre, 0));
       document.getElementById('m-livre-txt').innerHTML = livre >= 0
-        ? `Sobram <b>${brl(livre)}</b> depois de pagar tudo do mês`
+        ? `Sobram <b>${brl(livre)}</b> livre para aportar em investimentos`
         : `Faltam <b>${brl(-livre)}</b> para cobrir as contas do mês`;
       renderTabela();
       renderChartGastos(cats);
@@ -1133,12 +1223,12 @@
       salvarAutomatico(); fecharModal(); renderizarDashboard();
     }
 
-    /* State PRO: Agente Analítico e Estético */
-    const CLASSE_COR = { 'FII': '#c5a059', 'Ação': '#0f172a', 'Renda Fixa': '#059669' };
+    /* STATE PRO: RENDIMENTO CDB, COTAÇÃO BRAPI E MÚLTIPLOS ATIVOS */
+    const CLASSE_COR = { 'FII': '#c5a059', 'Ação': '#0f172a', 'Renda Fixa': '#059669', 'ETF': '#be185d' };
     const PALETA = ['#c5a059', '#0f172a', '#059669', '#d97706', '#6366f1', '#dc2626', '#0ea5e9', '#a16207'];
     const CORRETORAS = ['BTG', 'Íon', 'XP', 'Inter', 'Nubank', 'Rico', 'Clear', 'Genial', 'C6', 'Itaú', 'Outra'];
     let chartProvInstance = null, chartMesInstance = null, chartEvoInstance = null;
-    let cdiAA = parseFloat(localStorage.getItem('gd_cdi')) || 14.5;
+    let cdiAA = parseFloat(localStorage.getItem('gd_cdi')) || 14.5; // CDI Atual estimado
     let brapiToken = localStorage.getItem('gd_brapi') || '';
     const pct = (v, d = 1) => (isFinite(v) ? v : 0).toFixed(d).replace('.', ',') + '%';
     const sgn = v => (v > 0 ? '+' : '') + pct(v);
@@ -1146,19 +1236,83 @@
     const sinal = v => v > 0.005 ? 'pos' : v < -0.005 ? 'neg' : '';
     const mesBR = m => m.slice(5) + '/' + m.slice(0, 4);
 
+    function atualizarFormAtivo(tipo) {
+      const inputTaxa = document.getElementById('st-taxa');
+      const inputCodigo = document.getElementById('st-codigo');
+      if (tipo === 'CDB' || tipo === 'LCI_LCA') {
+        inputTaxa.placeholder = "% do CDI (ex: 100, 110)";
+        inputTaxa.value = "100";
+        inputCodigo.placeholder = "Nome do CDB / Emissor (Ex: CDB Itaú)";
+      } else if (tipo === 'TESOURO') {
+        inputTaxa.placeholder = "% a.a. estimado (ex: 13.5)";
+        inputTaxa.value = "13.5";
+        inputCodigo.placeholder = "Título (Ex: Tesouro Selic 2029)";
+      } else {
+        inputTaxa.placeholder = "% DY mensal est. (ex: 0.8)";
+        inputTaxa.value = "0.8";
+        inputCodigo.placeholder = "Ticker (Ex: PETR4, MXRF11)";
+      }
+    }
+
     function mediaProv(a) {
       const p = (a.provs || []).slice().sort((x, y) => x.m < y.m ? 1 : -1).slice(0, 12);
       if (!p.length) return null;
       return { avg: soma(p, x => x.v) / p.length, n: p.length, ult: p[0].v, vals: p.map(x => x.v) };
     }
 
+    /* Cálculo Avançado de Rendimento Bruto e Líquido por Classe */
     function calcAtivos() {
       return ativos.map(a => {
         const q = parseFloat(a.qtd) || 0, p = parseFloat(a.preco) || 0, t = parseFloat(a.taxa || 0) || 0;
-        const semCot = !(parseFloat(a.cotacao) > 0), c = semCot ? p : parseFloat(a.cotacao);
-        const inv = q * p, val = q * c, mp = mediaProv(a);
-        const prov = mp ? mp.avg * q : (a.classe === 'Renda Fixa' ? val : inv) * t / 100;
-        return { a, q, p, t, c, inv, val, pnl: val - inv, pnlP: inv > 0 ? (val - inv) / inv * 100 : 0, mp, prov, est: !mp, semCot, corr: formatarCorretora(a.corretora) };
+        const cotaOuFechamento = parseFloat(a.cotacao) > 0 ? parseFloat(a.cotacao) : (parseFloat(a.fechamento) > 0 ? parseFloat(a.fechamento) : p);
+        const semCot = !(parseFloat(a.cotacao) > 0 || parseFloat(a.fechamento) > 0);
+        
+        const inv = q * p;
+        let val = q * cotaOuFechamento;
+        const mp = mediaProv(a);
+        let prov = 0;
+        let dyMensalLiquido = 0;
+
+        // Regras específicas de cálculo de rendimentos
+        if (a.tipo === 'CDB') {
+          // Rendimento CDB vinculado à taxa CDI a.a. (% do CDI)
+          const cdiEfetivo = (cdiAA * (t / 100)) / 100; // a.a.
+          const cdiMensalBruto = Math.pow(1 + cdiEfetivo, 1/12) - 1;
+          // Alíquota IR RF média estimada (17.5% - mais de 360 dias)
+          const irRf = 0.175;
+          const cdiMensalLiquido = cdiMensalBruto * (1 - irRf);
+          prov = val * cdiMensalLiquido;
+          dyMensalLiquido = cdiMensalLiquido * 100;
+        } else if (a.tipo === 'LCI_LCA') {
+          // LCI/LCA isento de Imposto de Renda
+          const cdiEfetivo = (cdiAA * (t / 100)) / 100;
+          const cdiMensalIsento = Math.pow(1 + cdiEfetivo, 1/12) - 1;
+          prov = val * cdiMensalIsento;
+          dyMensalLiquido = cdiMensalIsento * 100;
+        } else if (a.tipo === 'TESOURO') {
+          const taxaMensal = Math.pow(1 + (t / 100), 1/12) - 1;
+          prov = val * (taxaMensal * 0.825); // Líquido de IR
+          dyMensalLiquido = (taxaMensal * 0.825) * 100;
+        } else {
+          // Renda Variável (FIIs, Ações, ETFs)
+          if (mp) {
+            prov = mp.avg * q;
+            dyMensalLiquido = val > 0 ? (prov / val) * 100 : 0;
+          } else {
+            prov = (inv * t) / 100;
+            dyMensalLiquido = t;
+          }
+        }
+
+        const classeMapeada = a.tipo === 'CDB' || a.tipo === 'TESOURO' || a.tipo === 'LCI_LCA' ? 'Renda Fixa' : (a.tipo === 'FII' ? 'FII' : (a.tipo === 'ETF' ? 'ETF' : 'Ação'));
+
+        return { 
+          a, q, p, t, c: cotaOuFechamento, inv, val, 
+          pnl: val - inv, 
+          pnlP: inv > 0 ? (val - inv) / inv * 100 : 0, 
+          mp, prov, dyMensalLiquido, est: !mp && (a.tipo !== 'CDB' && a.tipo !== 'LCI_LCA'), 
+          semCot, corr: formatarCorretora(a.corretora), classe: classeMapeada 
+        };
       });
     }
 
@@ -1175,36 +1329,28 @@
       const it = []; let score = 100;
       const add = (n, t, pen = 0) => { it.push({ n, t }); score -= pen; };
       
-      const patRV = soma(L.filter(l => l.a.classe !== 'Renda Fixa'), l => l.val);
-      const patFII = soma(L.filter(l => l.a.classe === 'FII'), l => l.val);
-      const patAcao = soma(L.filter(l => l.a.classe === 'Ação'), l => l.val);
-      
+      const patRV = soma(L.filter(l => l.classe !== 'Renda Fixa'), l => l.val);
+      const patFII = soma(L.filter(l => l.classe === 'FII'), l => l.val);
+      const patAcao = soma(L.filter(l => l.classe === 'Ação'), l => l.val);
+      const patRF = soma(L.filter(l => l.classe === 'Renda Fixa'), l => l.val);
+
+      if (patRF > 0) {
+        add('ok', `Proteção e liquidez: <strong>${brl(patRF)} (${pct(patRF / pat * 100, 0)})</strong> alocados em Renda Fixa / CDBs.`);
+      }
+
       if (patRV > 0) {
-        const pFII = (patFII / patRV) * 100;
-        const pAcao = (patAcao / patRV) * 100;
-        add('ok', `Alocação em Renda Variável: <strong>${pct(pFII, 0)} em FIIs</strong> e <strong>${pct(pAcao, 0)} em Ações</strong>.`);
-        if (pFII > 80) add('warn', `Foco excessivo em Fundos Imobiliários (${pct(pFII, 0)} da RV). Considere diversificar em Ações para equilibrar o portfólio.`, 4);
-        if (pAcao > 80 && patAcao > 0) add('warn', `Foco forte em Ações (${pct(pAcao, 0)} da RV). Lembre de manter aportes em FIIs para garantir fluxo passivo mensal.`, 4);
+        const pFII = (patFII / pat) * 100;
+        const pAcao = (patAcao / pat) * 100;
+        add('ok', `Exposição em Renda Variável: <strong>${pct(pFII, 0)} em FIIs</strong> e <strong>${pct(pAcao, 0)} em Ações</strong>.`);
+        if (pFII > 60) add('warn', `Foco elevado em Fundos Imobiliários (${pct(pFII, 0)} da carteira). Considere diversificar em Ações perenes.`, 4);
       }
 
       const ord = [...L].sort((a, b) => b.val - a.val), top = ord[0], pt = top.val / pat * 100;
-      if (pt > 40) add('bad', `<b>${esc(top.a.codigo)}</b> concentra <b>${pct(pt, 0)}</b> do patrimônio. Acima de 40%, o risco individual de desvalorização é elevado.`, 16);
-      else if (pt > 25) add('warn', `<b>${esc(top.a.codigo)}</b> representa <b>${pct(pt, 0)}</b> da carteira. Vale diluir os próximos aportes em outros papéis.`, 6);
-      else add('ok', `Concentração equilibrada: o maior ativo (<b>${esc(top.a.codigo)}</b>) detém ${pct(pt, 0)} do total.`);
-
-      if (L.length < 5) add('warn', `Sua carteira possui apenas <b>${L.length}</b> ativo(s). Recomenda-se expandir para 5+ posições para mitigar volatilidade setorial.`, 6);
-      
-      const porC = {}; L.forEach(l => porC[l.corr] = (porC[l.corr] || 0) + l.val);
-      const rc = Object.entries(porC).sort((a, b) => b[1] - a[1]);
-      if (rc.length > 1 && rc[0][1] / pat > 0.8) add('warn', `<b>${pct(rc[0][1] / pat * 100, 0)}</b> do seu capital está centralizado em <b>${esc(rc[0][0])}</b>. Considere descentralizar custódias.`, 4);
-      if (porC['Sem corretora']) add('warn', `Existem ativos sem corretora preenchida (<b>${brl(porC['Sem corretora'])}</b>). Atribua as custódias para relatórios precisos.`);
-
-      const comCot = L.filter(l => !l.semCot);
-      if (comCot.length < L.length) add('warn', `Há <b>${L.length - comCot.length}</b> ativo(s) sem cotação atualizada na tabela.`, 4);
+      if (pt > 40) add('bad', `<b>${esc(top.a.codigo)}</b> concentra <b>${pct(pt, 0)}</b> do patrimônio total. Risco alto de volatilidade concentrada.`, 16);
+      else add('ok', `Concentração equilibrada: maior ativo (<b>${esc(top.a.codigo)}</b>) representa ${pct(pt, 0)} do total.`);
 
       const prov = soma(L, l => l.prov), yAA = prov * 12 / pat * 100, vsCdi = yAA / cdiAA * 100;
-      if (vsCdi < 60) add('warn', `Rendimento passivo atual em <b>${pct(yAA)} a.a.</b> (${pct(vsCdi, 0)} do CDI). O foco está em ganho de capital.`, 4);
-      else add('ok', `Excelente geração de caixa: rendimento passivo em <b>${pct(yAA)} a.a.</b> equivalente a <b>${pct(vsCdi, 0)} do CDI</b>.`);
+      add('ok', `Rendimento passivo estimado de <b>${brl(prov)}/mês</b> (${pct(yAA)} a.a. / ${pct(vsCdi, 0)} do CDI).`);
 
       score = Math.max(0, Math.min(100, Math.round(score)));
       const ordem = { bad: 0, warn: 1, ok: 2 };
@@ -1214,23 +1360,25 @@
     function renderizarState() {
       const L = calcAtivos();
       const patTotal = soma(L, l => l.val), invTotal = soma(L, l => l.inv), divTotal = soma(L, l => l.prov);
-      const totalRF = soma(L.filter(l => l.a.classe === 'Renda Fixa'), l => l.val), totalRV = patTotal - totalRF;
+      const totalRF = soma(L.filter(l => l.classe === 'Renda Fixa'), l => l.val), totalRV = patTotal - totalRF;
       const provAcum = soma(L, l => l.q * soma(l.a.provs || [], x => x.v));
       const hasCot = L.some(l => !l.semCot);
 
       document.getElementById('tabela-ativos').innerHTML = L.length ? L.map(l => `<tr>
-          <td><strong>${esc(l.a.codigo)}</strong> <span class="badge ${l.a.classe === 'FII' ? 'badge-fii' : 'badge-pago'}">${esc(l.a.classe)}</span></td>
+          <td>
+            <strong>${esc(l.a.codigo)}</strong> 
+            <span class="badge ${l.classe === 'FII' ? 'badge-fii' : (l.classe === 'Renda Fixa' ? 'badge-rf' : (l.classe === 'ETF' ? 'badge-etf' : 'badge-acao'))}">${esc(l.classe)}</span>
+          </td>
           <td><input class="ghost" style="min-width:110px" list="dl-corr" value="${esc(l.corr)}" placeholder="—" onchange="editarAtivo(${l.a.id},'corretora',this.value)"></td>
           <td class="num">${l.q}</td>
           <td class="num">${brl(l.p)}</td>
-          <td class="num"><input class="ghost num" type="number" step="0.01" value="${l.semCot ? '' : l.c}" placeholder="${l.p.toFixed(2)}" onchange="editarAtivo(${l.a.id},'cotacao',this.value)"></td>
+          <td class="num"><input class="ghost num" type="number" step="0.01" value="${l.c.toFixed(2)}" title="Última cotação de fechamento" onchange="editarAtivo(${l.a.id},'fechamento',this.value)"></td>
           <td class="num">${brl(l.val)}</td>
-          <td class="num ${l.semCot ? '' : sinal(l.pnl)}">${l.semCot ? '—' : brl(l.pnl) + '<br><small>' + sgn(l.pnlP) + '</small>'}</td>
-          <td class="num">${l.mp ? brl(l.mp.avg) + '<br><small>' + l.mp.n + ' mês(es)</small>' : '—'}</td>
+          <td class="num ${l.semCot ? '' : sinal(l.pnl)}">${brl(l.pnl)}<br><small>${sgn(l.pnlP)}</small></td>
           <td class="num" style="color:var(--primary-gold-dark);font-weight:900;">${brl(l.prov)}${l.est ? '<span class="badge badge-est">est.</span>' : ''}</td>
-          <td class="num">${pct(l.val > 0 ? l.prov / l.val * 100 : 0, 2)}</td>
+          <td class="num">${pct(l.dyMensalLiquido, 2)} a.m.</td>
           <td><button class="btn-del" title="Remover" onclick="excluirAtivo(${l.a.id})">${ICO_LIXO}</button></td>
-        </tr>`).join('') : '<tr><td colspan="11" class="vazio">Nenhum ativo cadastrado. Adicione o primeiro acima.</td></tr>';
+        </tr>`).join('') : '<tr><td colspan="10" class="vazio">Nenhum ativo cadastrado. Adicione o primeiro acima.</td></tr>';
 
       document.getElementById('st-patrimonio').innerText = brl(patTotal);
       document.getElementById('st-dividendos').innerText = brl(divTotal);
@@ -1239,22 +1387,22 @@
       document.getElementById('st-rv').innerText = brl(totalRV);
       document.getElementById('st-rf').innerText = brl(totalRF);
       const elV = document.getElementById('st-val'), elR = document.getElementById('st-ret');
-      elV.innerText = hasCot ? brl(patTotal - invTotal) : '—'; elV.className = hasCot ? sinal(patTotal - invTotal) : '';
+      elV.innerText = brl(patTotal - invTotal); elV.className = sinal(patTotal - invTotal);
       const ret = invTotal > 0 ? (patTotal + provAcum - invTotal) / invTotal * 100 : 0;
-      elR.innerText = hasCot ? sgn(ret) : '—'; elR.className = hasCot ? sinal(ret) : '';
+      elR.innerText = sgn(ret); elR.className = sinal(ret);
       document.getElementById('st-cdi').value = cdiAA;
       document.getElementById('st-token').value = brapiToken;
       document.getElementById('dl-corr').innerHTML = CORRETORAS.map(c => `<option value="${c}">`).join('');
       
       const sel = document.getElementById('pv-ativo'), atual = sel.value;
-      sel.innerHTML = L.filter(l => l.a.classe !== 'Renda Fixa').map(l => `<option value="${l.a.id}">${esc(l.a.codigo)} — Custódia: ${esc(l.corr)}</option>`).join('') || '<option value="">Cadastre um FII/Ação</option>';
+      sel.innerHTML = L.filter(l => l.classe !== 'Renda Fixa').map(l => `<option value="${l.a.id}">${esc(l.a.codigo)} — Custódia: ${esc(l.corr)}</option>`).join('') || '<option value="">Cadastre um FII/Ação</option>';
       if (atual) sel.value = atual;
       atualizarInfoCorretoraProvento();
 
       const porClasse = {};
-      L.forEach(l => { porClasse[l.a.classe] = (porClasse[l.a.classe] || 0) + l.prov; });
+      L.forEach(l => { porClasse[l.classe] = (porClasse[l.classe] || 0) + l.prov; });
       document.getElementById('st-classes').innerHTML = Object.entries(porClasse).sort((a, b) => b[1] - a[1])
-        .map(([c, v]) => `<span class="chip"><i style="background:${CLASSE_COR[c] === '#0f172a' ? '#94a3b8' : (CLASSE_COR[c] || '#94a3b8')}"></i>${esc(c)}<span><b>${brl(v)}</b>/mês</span></span>`).join('');
+        .map(([c, v]) => `<span class="chip"><i style="background:${CLASSE_COR[c] || '#94a3b8'}"></i>${esc(c)}<span><b>${brl(v)}</b>/mês</span></span>`).join('');
 
       const porC = {};
       L.forEach(l => { const o = porC[l.corr] || (porC[l.corr] = { val: 0, prov: 0, n: 0 }); o.val += l.val; o.prov += l.prov; o.n++; });
@@ -1268,9 +1416,9 @@
       document.getElementById('st-ranking').innerHTML = ordenado.length ? ordenado.map((l, k) => {
         const parte = divTotal > 0 ? l.prov / divTotal * 100 : 0;
         return `<div class="rk">
-          <div class="rk-top"><b>${esc(l.a.codigo)}</b> <span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">[${esc(l.corr)}]</span><span class="badge ${l.a.classe === 'FII' ? 'badge-fii' : 'badge-pago'}">${esc(l.a.classe)}</span><span class="rk-val">${brl(l.prov)}/mês</span></div>
+          <div class="rk-top"><b>${esc(l.a.codigo)}</b> <span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">[${esc(l.corr)}]</span><span class="badge ${l.classe === 'FII' ? 'badge-fii' : (l.classe === 'Renda Fixa' ? 'badge-rf' : 'badge-pago')}">${esc(l.classe)}</span><span class="rk-val">${brl(l.prov)}/mês</span></div>
           <div class="rk-bar"><i style="width:${(l.prov / maxProv * 100).toFixed(1)}%;background:${PALETA[k % PALETA.length]}"></i></div>
-          <div class="rk-sub">${parte.toFixed(0)}% do rendimento total · ${pct(l.val > 0 ? l.prov / l.val * 100 : 0, 2)} a.m. sobre ${brl(l.val)}${l.est ? ' · estimado' : ''}</div>
+          <div class="rk-sub">${parte.toFixed(0)}% do rendimento total · ${pct(l.dyMensalLiquido, 2)} a.m. sobre ${brl(l.val)}</div>
         </div>`;
       }).join('') : '<div class="vazio">Sem ativos para exibir ranking.</div>';
 
@@ -1282,11 +1430,9 @@
       lanc.sort((a, b) => a.m < b.m ? 1 : -1);
       document.getElementById('st-hist').innerHTML = lanc.slice(0, 6).map(x => `<div class="hl"><span><strong>${esc(x.cod)}</strong> <small style="color:var(--text-muted)">(${esc(x.corr)})</small></span><span>${mesBR(x.m)}</span><b>${brl(x.v)}/cota</b><button class="btn-del" title="Remover" onclick="excluirProvento(${x.id},'${x.m}')">${ICO_LIXO}</button></div>`).join('');
 
-      /* Renderização dos Gráficos com Estética Institucional Refinada */
+      /* Gráficos Chart.js Institucionais */
       if (typeof Chart !== 'undefined') {
         const temDados = divTotal > 0;
-        
-        // Cores e fontes globais do Chart.js
         Chart.defaults.font.family = 'Manrope';
         Chart.defaults.color = '#64748b';
 
@@ -1304,13 +1450,8 @@
             }] 
           },
           options: { 
-            responsive: true, 
-            maintainAspectRatio: false, 
-            cutout: '68%', 
-            plugins: { 
-              legend: { position: 'bottom', labels: { font: { weight: '700', size: 11 }, boxWidth: 10, padding: 16 } }, 
-              tooltip: { enabled: temDados, backgroundColor: '#0f172a', titleFont: { weight: '800' }, bodyFont: { weight: '600' }, padding: 12, cornerRadius: 8, callbacks: { label: c => ` ${c.label}: ${brl(c.parsed)}/mês` } } 
-            } 
+            responsive: true, maintainAspectRatio: false, cutout: '68%', 
+            plugins: { legend: { position: 'bottom', labels: { font: { weight: '700', size: 11 }, boxWidth: 10, padding: 16 } } } 
           }
         });
 
@@ -1323,30 +1464,11 @@
         if (chartMesInstance) chartMesInstance.destroy();
         if (meses.length) chartMesInstance = new Chart(document.getElementById('chartMes').getContext('2d'), {
           type: 'bar',
-          data: { 
-            labels: meses.map(mesBR), 
-            datasets: [{ 
-              data: meses.map(m => +porMes[m].toFixed(2)), 
-              backgroundColor: '#c5a059', 
-              borderRadius: 8,
-              borderSkipped: false
-            }] 
-          },
-          options: { 
-            responsive: true, 
-            maintainAspectRatio: false, 
-            plugins: { 
-              legend: { display: false }, 
-              tooltip: { backgroundColor: '#0f172a', padding: 12, cornerRadius: 8, callbacks: { label: c => ' Recebido: ' + brl(c.parsed.y) } } 
-            },
-            scales: {
-              x: { grid: { display: false } },
-              y: { grid: { color: '#edf2f7' }, ticks: { callback: v => 'R$ ' + v } }
-            }
-          }
+          data: { labels: meses.map(mesBR), datasets: [{ data: meses.map(m => +porMes[m].toFixed(2)), backgroundColor: '#c5a059', borderRadius: 8 }] },
+          options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#edf2f7' } } } }
         });
 
-        const sn = snaps.slice(-90), evoOk = sn.length >= 2;
+        const sn = snaps.slice(-90), evoOk = sn.length >= 1;
         document.getElementById('st-evo-vazio').style.display = evoOk ? 'none' : 'block';
         document.getElementById('chartEvo').parentElement.style.display = evoOk ? 'block' : 'none';
         
@@ -1362,40 +1484,11 @@
             data: { 
               labels: sn.map(s => s.d.split('-').reverse().slice(0, 2).join('/')), 
               datasets: [
-                { 
-                  label: 'Valor de mercado', 
-                  data: sn.map(s => s.val), 
-                  borderColor: '#c5a059', 
-                  backgroundColor: gradient, 
-                  fill: true, 
-                  tension: .35, 
-                  borderWidth: 3,
-                  pointRadius: 0,
-                  pointHoverRadius: 5
-                },
-                { 
-                  label: 'Custo investido', 
-                  data: sn.map(s => s.inv), 
-                  borderColor: '#0f172a', 
-                  borderDash: [6, 4], 
-                  borderWidth: 2,
-                  tension: .35, 
-                  pointRadius: 0 
-                }
+                { label: 'Valor de mercado', data: sn.map(s => s.val), borderColor: '#c5a059', backgroundColor: gradient, fill: true, tension: .35, borderWidth: 3 },
+                { label: 'Custo investido', data: sn.map(s => s.inv), borderColor: '#0f172a', borderDash: [6, 4], borderWidth: 2, tension: .35 }
               ] 
             },
-            options: { 
-              responsive: true, 
-              maintainAspectRatio: false, 
-              plugins: { 
-                legend: { position: 'bottom', labels: { font: { weight: '700', size: 11 }, boxWidth: 12, padding: 16 } }, 
-                tooltip: { backgroundColor: '#0f172a', padding: 12, cornerRadius: 8, callbacks: { label: c => ` ${c.dataset.label}: ${brl(c.parsed.y)}` } } 
-              },
-              scales: {
-                x: { grid: { display: false } },
-                y: { grid: { color: '#edf2f7' } }
-              }
-            }
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
           });
         }
       }
@@ -1406,6 +1499,55 @@
       document.getElementById('st-nota').innerText = r.score === null ? '–' : r.score;
       document.getElementById('st-grau').innerText = r.score === null ? 'sem dados' : r.score >= 85 ? 'Sólida' : r.score >= 70 ? 'Saudável' : r.score >= 50 ? 'Atenção' : 'Frágil';
       document.getElementById('state-insights').innerHTML = r.it.map(x => `<div class="ins ${x.n}"><i></i><div>${x.t}</div></div>`).join('');
+    }
+
+    /* BUSCA DE COTAÇÕES EM TEMPO REAL VIA BRAPI COM ARMAZENAMENTO DE FECHAMENTO */
+    async function atualizarCotacoes(manual = false) {
+      const msg = document.getElementById('st-cot-msg');
+      const alvo = ativos.filter(a => a.tipo === 'ACAO' || a.tipo === 'FII' || a.tipo === 'ETF');
+      if (!alvo.length) { 
+        if (msg) msg.textContent = 'Nenhum ativo negociável em bolsa para cotar.'; 
+        return; 
+      }
+      
+      let ok = 0, falhas = [];
+      if (msg) msg.textContent = '⚡ Conectando ao serviço de cotações em tempo real...';
+
+      for (const a of alvo) {
+        if (msg) msg.textContent = `Buscando cotação de ${a.codigo}...`;
+        try {
+          // Chamada para BRAPI API pública
+          const tokenParam = brapiToken ? `?token=${encodeURIComponent(brapiToken)}` : '';
+          const url = `https://brapi.dev/api/quote/${encodeURIComponent(a.codigo)}${tokenParam}`;
+          const res = await fetch(url);
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data.results && data.results[0] && data.results[0].regularMarketPrice) {
+              const preco = data.results[0].regularMarketPrice;
+              a.cotacao = preco;
+              a.fechamento = preco; // Armazena como fechamento diário
+              ok++;
+            } else {
+              falhas.push(a.codigo);
+            }
+          } else {
+            falhas.push(a.codigo);
+          }
+        } catch (err) {
+          falhas.push(a.codigo);
+        }
+      }
+
+      if (ok > 0) {
+        registrarSnap();
+        salvarAutomatico();
+      }
+      renderizarState();
+      
+      if (msg) {
+        msg.textContent = `${ok} cotação(ões) atualizada(s) e gravadas como fechamento!` + 
+          (falhas.length ? ` (Sem resposta: ${falhas.join(', ')})` : '');
+      }
     }
 
     function atualizarInfoCorretoraProvento() {
@@ -1427,24 +1569,39 @@
       const tipo = document.getElementById('st-tipo').value;
       const cot = parseFloat(document.getElementById('st-cot').value);
       const corrInput = document.getElementById('st-corretora').value;
+      const precoMedio = parseFloat(document.getElementById('st-preco').value);
       
-      ativos.push({
+      const novo = {
         id: Date.now(), codigo, tipo,
         corretora: formatarCorretora(corrInput),
         qtd: parseFloat(document.getElementById('st-qtd').value),
-        preco: parseFloat(document.getElementById('st-preco').value),
-        cotacao: cot > 0 ? cot : undefined,
+        preco: precoMedio,
+        cotacao: cot > 0 ? cot : precoMedio,
+        fechamento: cot > 0 ? cot : precoMedio,
         taxa: parseFloat(document.getElementById('st-taxa').value) || 0,
-        provs: [],
-        classe: tipo === 'CDB' ? 'Renda Fixa' : (codigo.endsWith('11') ? 'FII' : 'Ação')
-      });
-      if (cot > 0) registrarSnap();
-      salvarAutomatico(); e.target.reset(); renderizarState();
+        provs: []
+      };
+
+      ativos.push(novo);
+      registrarSnap();
+      salvarAutomatico(); 
+      e.target.reset(); 
+      renderizarState();
+      
+      // Atualiza cotação individual se for papel negociável
+      if (tipo === 'ACAO' || tipo === 'FII' || tipo === 'ETF') {
+        atualizarCotacoes();
+      }
     }
 
     function editarAtivo(id, campo, val) {
       const a = ativos.find(x => x.id === id); if (!a) return;
-      if (campo === 'cotacao') { const n = parseFloat(val); a.cotacao = n > 0 ? n : undefined; registrarSnap(); }
+      if (campo === 'cotacao' || campo === 'fechamento') { 
+        const n = parseFloat(val); 
+        a.cotacao = n > 0 ? n : a.preco; 
+        a.fechamento = n > 0 ? n : a.preco; 
+        registrarSnap(); 
+      }
       else if (campo === 'corretora') { a.corretora = formatarCorretora(val); }
       else { a[campo] = String(val).trim(); }
       salvarAutomatico(); renderizarState();
@@ -1467,28 +1624,92 @@
     function setCdi(v) { const n = parseFloat(v); if (n > 0) { cdiAA = n; localStorage.setItem('gd_cdi', n); } renderizarState(); }
     function setToken(v) { brapiToken = v.trim(); localStorage.setItem('gd_brapi', brapiToken); }
 
-    async function atualizarCotacoes() {
-      const msg = document.getElementById('st-cot-msg'), alvo = ativos.filter(a => a.classe !== 'Renda Fixa');
-      if (!alvo.length) { msg.textContent = 'Nenhum FII/ação para atualizar.'; return; }
-      let ok = 0, falhas = [];
-      for (const a of alvo) {
-        msg.textContent = `Buscando ${a.codigo}...`;
-        try {
-          const r = await fetch(`https://brapi.dev/api/quote/${encodeURIComponent(a.codigo)}` + (brapiToken ? `?token=${encodeURIComponent(brapiToken)}` : ''));
-          const j = await r.json(), p = j && j.results && j.results[0] && j.results[0].regularMarketPrice;
-          if (p > 0) { a.cotacao = p; ok++; } else falhas.push(a.codigo);
-        } catch (err) { falhas.push(a.codigo); }
-      }
-      if (ok) { registrarSnap(); salvarAutomatico(); }
-      renderizarState();
-      msg.textContent = `${ok} atualizada(s)` + (falhas.length ? ` · sem resposta: ${falhas.join(', ')} (digite a cotação na tabela ou informe o token)` : '');
-    }
-
     function excluirAtivo(id) {
-      if (confirm("Remover ativo?")) {
+      if (confirm("Remover investimento da carteira?")) {
         ativos = ativos.filter(a => a.id !== id);
         registrarSnap(); salvarAutomatico(); renderizarState();
       }
+    }
+
+    /* MÓDULO DO AGENTE RECOMENDADOR INTELIGENTE POR MOMENTO */
+    function renderizarRecomendacoes() {
+      const listaContas = bancoMensal[chaveAtual()] || [];
+      const totalGasto = listaContas.reduce((s, i) => s + (parseFloat(i.valor) || 0), 0);
+      const caixaLivre = rendaSalario - totalGasto;
+      
+      const L = calcAtivos();
+      const patTotal = soma(L, l => l.val);
+      const patRF = soma(L.filter(l => l.classe === 'Renda Fixa'), l => l.val);
+      const patRV = patTotal - patRF;
+
+      // Diagnóstico do momento financeiro
+      let diagnosticoTitulo = "Momento para Foco em Dividendos";
+      let diagnosticoSub = "Seu caixa livre permite acelerar aportes em ativos geradores de proventos mensais.";
+      let estrategiaFoco = "DIVIDENDOS";
+      let perfilRisco = "Moderado / Crescimento";
+
+      if (caixaLivre < 500 || patRF < 3000) {
+        diagnosticoTitulo = "Momento de Construção de Reserva Defensiva";
+        diagnosticoSub = "Priorize Liquidez Diária e CDBs 100%+ do CDI antes de expor capital a riscos de bolsa.";
+        estrategiaFoco = "DEFENSIVO";
+        perfilRisco = "Conservador / Liquidez";
+      } else if (patRV > patRF * 2 && patTotal > 10000) {
+        diagnosticoTitulo = "Momento de Diversificação & Crescimento";
+        diagnosticoSub = "Sua base de dividendos está sólida. Momento propício para alocar em empresas de valor e ETFs globais.";
+        estrategiaFoco = "CRESCIMENTO";
+        perfilRisco = "Sofisticado / Longo Prazo";
+      }
+
+      document.getElementById('rec-diagnostico-titulo').textContent = diagnosticoTitulo;
+      document.getElementById('rec-diagnostico-sub').textContent = diagnosticoSub;
+      document.getElementById('rec-caixa').textContent = brl(caixaLivre);
+      document.getElementById('rec-perfil-txt').textContent = perfilRisco;
+      document.getElementById('rec-estrategia-txt').textContent = estrategiaFoco;
+
+      const filtroCat = document.getElementById('rec-filtro-categoria').value;
+      const recomendados = BANCO_RECOMENDACOES.filter(r => filtroCat === 'TODOS' || r.categoria === filtroCat);
+
+      const grid = document.getElementById('rec-grid');
+      grid.innerHTML = recomendados.map(r => `
+        <div class="rec-card">
+          <div>
+            <div class="rec-header">
+              <span class="rec-ticker">${esc(r.ticker)}</span>
+              <span class="badge ${r.categoria === 'DIVIDENDOS' ? 'badge-pago' : (r.categoria === 'CRESCIMENTO' ? 'badge-acao' : 'badge-rf')}">${esc(r.categoria)}</span>
+            </div>
+            <div class="rec-nome">${esc(r.nome)} · ${esc(r.classe)}</div>
+            <div class="rec-tese">${esc(r.tese)}</div>
+          </div>
+          <div>
+            <div class="rec-metrics">
+              <span>Retorno Estimado: <b>${esc(r.dy)}</b></span>
+              <span>Preço Médio: <b>${brl(r.precoEstimado)}</b></span>
+            </div>
+            <button class="btn-action btn-secondary" style="width:100%;" onclick="adicionarRecomendadoDireto('${r.ticker}','${r.nome}','${r.classe}',${r.precoEstimado})">
+              + Adicionar Simulação na Carteira
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function adicionarRecomendadoDireto(ticker, nome, classe, preco) {
+      const tipo = classe === 'Renda Fixa' || classe === 'CDB' ? 'CDB' : (classe === 'FII' ? 'FII' : 'ACAO');
+      ativos.push({
+        id: Date.now(),
+        codigo: ticker,
+        tipo: tipo,
+        corretora: "BTG",
+        qtd: 10,
+        preco: preco,
+        cotacao: preco,
+        fechamento: preco,
+        taxa: 0.8,
+        provs: []
+      });
+      salvarAutomatico();
+      mudarAba('state');
+      alert(`O ativo ${ticker} foi adicionado à sua carteira com sucesso!`);
     }
 
     function renderChartGastos(cats) {
@@ -1509,9 +1730,7 @@
           }]
         },
         options: { 
-          responsive: true, 
-          maintainAspectRatio: false, 
-          cutout: '68%',
+          responsive: true, maintainAspectRatio: false, cutout: '68%',
           plugins: { legend: { position: 'right', labels: { font: { weight: '700', size: 11 }, boxWidth: 10, padding: 14 } } } 
         }
       });
@@ -1521,7 +1740,12 @@
       atualizarRelogio();
       renderizarDashboard();
       renderizarState();
+      renderizarRecomendacoes();
       restaurarAbaAtiva();
+
+      // Busca cotações BRAPI automaticamente na inicialização
+      setTimeout(() => atualizarCotacoes(), 1200);
+
       if (NUVEM) iniciarNuvem(); else statusNuvem('💾 Salvo só neste aparelho', 'erro');
     });
   </script>
