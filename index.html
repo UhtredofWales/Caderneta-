@@ -319,6 +319,27 @@
     
     td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 
+
+    /* ===== State PRO ===== */
+    .agente { display: grid; grid-template-columns: 190px 1fr; gap: 26px; align-items: start; }
+    .score { width: 150px; height: 150px; border-radius: 50%; display: grid; place-items: center; margin: 4px auto; background: conic-gradient(var(--sc, #94a3b8) calc(var(--p, 0) * 1%), #e8ecf2 0); }
+    .score div { width: 116px; height: 116px; border-radius: 50%; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .score b { font-size: 2.3rem; font-weight: 800; line-height: 1; }
+    .score small { font-size: .76rem; font-weight: 700; color: var(--text-muted); margin-top: 5px; }
+    .ins { display: flex; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--line); font-size: .88rem; line-height: 1.5; font-weight: 600; color: var(--text-muted); }
+    .ins:last-child { border-bottom: none; }
+    .ins > i { flex: none; width: 5px; border-radius: 9px; background: var(--c); }
+    .ins.ok { --c: var(--success); } .ins.warn { --c: var(--warning); } .ins.bad { --c: var(--danger); }
+    .ins b { color: var(--text-main); }
+    .pos { color: var(--success); } .neg { color: var(--danger); }
+    .dual { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 28px; }
+    .dual > .analysis-card { margin-bottom: 0; }
+    .hl { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: .84rem; font-weight: 600; }
+    .hl b { margin-left: auto; font-variant-numeric: tabular-nums; }
+    .badge-est { background: #e2e8f0; color: #475569; margin-left: 6px; font-size: .66rem; padding: 2px 6px; }
+    .nota { font-size: .74rem; color: var(--text-muted); font-weight: 600; margin-top: 12px; }
+    @media (max-width: 860px) { .agente, .dual { grid-template-columns: 1fr; } }
+
     @media (max-width: 860px) {
       body { flex-direction: column; }
       aside { width: 100%; padding: 14px 16px; border-right: none; border-bottom: 1px solid var(--line); gap: 10px; }
@@ -506,7 +527,7 @@
       <header>
         <div>
           <h1>State & Gestão de Ativos</h1>
-          <p>Consolidação patrimonial e projeção de proventos com alta clareza.</p>
+          <p>Consolidação patrimonial, valorização e proventos com leitura de corretora.</p>
         </div>
       </header>
 
@@ -514,14 +535,30 @@
         <div class="hero-main">
           <div class="hero-label">Seus ativos estão rendendo por mês</div>
           <div class="hero-value" id="st-dividendos">R$ 0,00</div>
-          <div class="hero-sub"><b id="st-anual">R$ 0,00</b> por ano · <b id="st-yield">0,00%</b> ao mês sobre o patrimônio</div>
+          <div class="hero-sub"><b id="st-anual">R$ 0,00</b> por ano · <b id="st-yield">0,00%</b> ao mês sobre o valor de mercado</div>
           <div class="chips" id="st-classes"></div>
         </div>
         <div class="hero-side">
-          <div class="stat"><span>Patrimônio alocado</span><b id="st-patrimonio">R$ 0,00</b></div>
+          <div class="stat"><span>Valor de mercado</span><b id="st-patrimonio">R$ 0,00</b></div>
+          <div class="stat"><span>Valorização das cotas</span><b id="st-val">R$ 0,00</b></div>
+          <div class="stat"><span>Retorno total (cotas + proventos)</span><b id="st-ret">0,0%</b></div>
           <div class="stat"><span>Renda variável (FIIs/Ações)</span><b id="st-rv">R$ 0,00</b></div>
           <div class="stat"><span>Renda fixa / CDB</span><b id="st-rf">R$ 0,00</b></div>
         </div>
+      </div>
+
+      <div class="analysis-card">
+        <div class="analysis-header">Parecer do agente de carteira</div>
+        <div class="agente">
+          <div class="score" id="st-score"><div><b id="st-nota">–</b><small id="st-grau">sem dados</small></div></div>
+          <div id="state-insights"></div>
+        </div>
+        <div class="nota">Leitura automática por regras, calculada no seu navegador (sem custo de API). Não é recomendação de investimento.</div>
+      </div>
+
+      <div class="dual">
+        <div class="analysis-card"><div class="analysis-header">Por corretora / banco</div><div id="st-corretoras"></div></div>
+        <div class="analysis-card"><div class="analysis-header">Proventos por mês (R$)</div><div style="height:230px;position:relative;"><canvas id="chartMes"></canvas></div><div class="vazio" id="st-mes-vazio" style="display:none">Lance proventos abaixo para ver o histórico.</div></div>
       </div>
 
       <div class="dashboard-layout">
@@ -535,24 +572,47 @@
         </div>
       </div>
 
-      <div class="analysis-card" style="margin-bottom:28px;">
-        <div class="analysis-header">Análise da carteira</div>
-        <div id="state-insights"></div>
+      <div class="analysis-card">
+        <div class="analysis-header">Evolução do patrimônio</div>
+        <div style="height:220px;position:relative;"><canvas id="chartEvo"></canvas></div>
+        <div class="vazio" id="st-evo-vazio" style="display:none">O histórico começa a ser gravado quando você atualiza uma cotação. Volte em outro dia para ver a curva.</div>
       </div>
 
-      <div class="form-container">
-        <h4>+ Cadastrar Ativo na Carteira</h4>
-        <form onsubmit="adicionarAtivo(event)" class="inline-form">
-          <select id="st-tipo">
-            <option value="RV">Renda Variável (Ação / FII)</option>
-            <option value="CDB">Renda Fixa (CDB)</option>
-          </select>
-          <input type="text" id="st-codigo" placeholder="Ticker (ex: MXRF11, PETR4)" required>
-          <input type="number" id="st-qtd" placeholder="Quantidade / Cotas" required>
-          <input type="number" step="0.01" id="st-preco" placeholder="Preço Médio (R$)" required>
-          <input type="number" step="0.01" id="st-taxa" placeholder="Yield/Taxa % a.m" value="0.8">
-          <button type="submit" class="btn-action">Cadastrar Ativo</button>
-        </form>
+      <div class="dual">
+        <div class="form-container" style="margin-bottom:0">
+          <h4>+ Cadastrar Ativo na Carteira</h4>
+          <form onsubmit="adicionarAtivo(event)" class="inline-form" style="grid-template-columns:1fr 1fr">
+            <select id="st-tipo">
+              <option value="RV">Renda Variável (Ação / FII)</option>
+              <option value="CDB">Renda Fixa (CDB)</option>
+            </select>
+            <input type="text" id="st-codigo" placeholder="Ticker (ex: MXRF11, PETR4)" required>
+            <input type="text" id="st-corretora" list="dl-corr" placeholder="Corretora / banco (BTG, íon...)">
+            <input type="number" step="any" id="st-qtd" placeholder="Quantidade / Cotas" required>
+            <input type="number" step="0.01" id="st-preco" placeholder="Preço médio (R$)" required>
+            <input type="number" step="0.01" id="st-cot" placeholder="Cotação atual (R$)">
+            <input type="number" step="0.01" id="st-taxa" placeholder="Yield estimado % a.m." value="0.8">
+            <button type="submit" class="btn-action">Cadastrar Ativo</button>
+          </form>
+          <datalist id="dl-corr"></datalist>
+        </div>
+        <div class="form-container" style="margin-bottom:0">
+          <h4>+ Lançar provento recebido</h4>
+          <form onsubmit="lancarProvento(event)" class="inline-form" style="grid-template-columns:1fr 1fr">
+            <select id="pv-ativo" required></select>
+            <input type="month" id="pv-mes" required>
+            <input type="number" step="0.0001" id="pv-valor" placeholder="Provento por cota (R$)" required>
+            <button type="submit" class="btn-action">Lançar</button>
+          </form>
+          <div id="st-hist" style="margin-top:12px"></div>
+        </div>
+      </div>
+
+      <div class="toolbar" style="margin-top:28px">
+        <label>CDI a.a. (%) <input type="number" step="0.1" id="st-cdi" style="width:84px" onchange="setCdi(this.value)"></label>
+        <input type="password" id="st-token" placeholder="Token brapi.dev (opcional, só neste aparelho)" style="min-width:260px" onchange="setToken(this.value)">
+        <span class="sp"></span><span id="st-cot-msg" class="dica" style="margin:0"></span>
+        <button class="btn-action" onclick="atualizarCotacoes()">Atualizar cotações</button>
       </div>
 
       <div class="ledger">
@@ -561,8 +621,9 @@
         <table>
           <thead>
             <tr>
-              <th>Ativo</th><th>Classe</th><th class="num">Quantidade</th><th class="num">Preço médio</th>
-              <th class="num">Investido</th><th class="num">Yield a.m.</th><th class="num">Rende / mês</th><th></th>
+              <th>Ativo</th><th>Corretora</th><th class="num">Qtd</th><th class="num">Preço médio</th><th class="num">Cotação</th>
+              <th class="num">Valor atual</th><th class="num">Valorização</th><th class="num">Prov./cota (média)</th>
+              <th class="num">Rende / mês</th><th class="num">DY a.m.</th><th></th>
             </tr>
           </thead>
           <tbody id="tabela-ativos"></tbody>
@@ -679,17 +740,20 @@
       { id: 2, codigo: "CDB ITAÚ", tipo: "CDB", qtd: 1, preco: 5000.00, taxa: 0.85, classe: "Renda Fixa" }
     ];
 
+    let snaps = JSON.parse(localStorage.getItem('gd_local_snaps')) || [];
+
     function statusNuvem(t, cls) { const el = document.getElementById('sync-status'); if (el) { el.className = 'sync ' + (cls || ''); el.innerHTML = t; } }
 
     function salvarAutomatico() {
       localStorage.setItem('gd_local_mensal', JSON.stringify(bancoMensal));
       localStorage.setItem('gd_local_ativos', JSON.stringify(ativos));
+      localStorage.setItem('gd_local_snaps', JSON.stringify(snaps));
       remotoPendente = null;
       if (!docRef) return;
       sujo = true; statusNuvem('⏳ Salvando...');
       clearTimeout(timerNuvem);
       timerNuvem = setTimeout(() => {
-        docRef.set({ dados: JSON.stringify({ bancoMensal, ativos }), em: Date.now() })
+        docRef.set({ dados: JSON.stringify({ bancoMensal, ativos, snaps }), em: Date.now() })
           .then(() => { sujo = false; statusNuvem(SYNC_OK, 'ok'); })
           .catch(() => statusNuvem('⚠️ Sem conexão — salvo só neste aparelho', 'erro'));
       }, 500);
@@ -701,7 +765,8 @@
 
     function aplicarRemoto(dados) {
       const d = JSON.parse(dados);
-      bancoMensal = d.bancoMensal || {}; ativos = d.ativos || [];
+      bancoMensal = d.bancoMensal || {}; ativos = d.ativos || []; snaps = d.snaps || [];
+      localStorage.setItem('gd_local_snaps', JSON.stringify(snaps));
       localStorage.setItem('gd_local_mensal', JSON.stringify(bancoMensal));
       localStorage.setItem('gd_local_ativos', JSON.stringify(ativos));
       renderizarDashboard(); renderizarState();
@@ -724,7 +789,7 @@
             salvarAutomatico(); primeira = false; return;
           }
           const dados = snap.data().dados;
-          if (dados !== JSON.stringify({ bancoMensal, ativos })) {
+          if (dados !== JSON.stringify({ bancoMensal, ativos, snaps })) {
             if (primeira || !emCampo()) {
               aplicarRemoto(dados);
               if (!primeira) { statusNuvem('🔄 Atualizado de outro aparelho', 'ok'); setTimeout(() => statusNuvem(SYNC_OK, 'ok'), 2500); primeira = false; return; }
@@ -1035,33 +1100,108 @@
       salvarAutomatico(); fecharModal(); renderizarDashboard();
     }
 
-    /* State Ativos */
+    /* ===== State PRO: agente de carteira (100% no navegador, sem API paga) ===== */
     const CLASSE_COR = { 'FII': '#c5a059', 'Ação': '#0f172a', 'Renda Fixa': '#059669' };
     const PALETA = ['#c5a059', '#0f172a', '#059669', '#d97706', '#6366f1', '#dc2626', '#0ea5e9', '#a16207'];
-    let chartProvInstance = null;
+    const CORRETORAS = ['BTG', 'íon', 'XP', 'Inter', 'Nubank', 'Rico', 'Clear', 'Genial', 'C6', 'Itaú', 'Outra'];
+    let chartProvInstance = null, chartMesInstance = null, chartEvoInstance = null;
+    let cdiAA = parseFloat(localStorage.getItem('gd_cdi')) || 14.5;
+    let brapiToken = localStorage.getItem('gd_brapi') || '';
+    const pct = (v, d = 1) => (isFinite(v) ? v : 0).toFixed(d).replace('.', ',') + '%';
+    const sgn = v => (v > 0 ? '+' : '') + pct(v);
+    const soma = (arr, f) => arr.reduce((s, x) => s + f(x), 0);
+    const sinal = v => v > 0.005 ? 'pos' : v < -0.005 ? 'neg' : '';
+    const mesBR = m => m.slice(5) + '/' + m.slice(0, 4);
+
+    function mediaProv(a) {
+      const p = (a.provs || []).slice().sort((x, y) => x.m < y.m ? 1 : -1).slice(0, 12);
+      if (!p.length) return null;
+      return { avg: soma(p, x => x.v) / p.length, n: p.length, ult: p[0].v, vals: p.map(x => x.v) };
+    }
+
+    function calcAtivos() {
+      return ativos.map(a => {
+        const q = parseFloat(a.qtd) || 0, p = parseFloat(a.preco) || 0, t = parseFloat(a.taxa || 0) || 0;
+        const semCot = !(parseFloat(a.cotacao) > 0), c = semCot ? p : parseFloat(a.cotacao);
+        const inv = q * p, val = q * c, mp = mediaProv(a);
+        const prov = mp ? mp.avg * q : (a.classe === 'Renda Fixa' ? val : inv) * t / 100;
+        return { a, q, p, t, c, inv, val, pnl: val - inv, pnlP: inv > 0 ? (val - inv) / inv * 100 : 0, mp, prov, est: !mp, semCot, corr: (a.corretora || '').trim() || 'Sem corretora' };
+      });
+    }
+
+    function registrarSnap() {
+      const L = calcAtivos(); if (!L.length) return;
+      const d = new Date().toISOString().slice(0, 10), s = { d, inv: +soma(L, l => l.inv).toFixed(2), val: +soma(L, l => l.val).toFixed(2) };
+      const i = snaps.findIndex(x => x.d === d); if (i >= 0) snaps[i] = s; else snaps.push(s);
+      snaps = snaps.slice(-365);
+    }
+
+    function analisar(L) {
+      const pat = soma(L, l => l.val);
+      if (!L.length || pat <= 0) return { score: null, it: [{ n: 'warn', t: 'Cadastre ativos para o agente analisar a carteira.' }] };
+      const it = []; let score = 100;
+      const add = (n, t, pen = 0) => { it.push({ n, t }); score -= pen; };
+      const ord = [...L].sort((a, b) => b.val - a.val), top = ord[0], pt = top.val / pat * 100;
+      if (pt > 40) add('bad', `<b>${esc(top.a.codigo)}</b> concentra <b>${pct(pt, 0)}</b> do patrimônio. Acima de 40% em um só ativo, uma má notícia nele pesa demais no todo.`, 18);
+      else if (pt > 25) add('warn', `<b>${esc(top.a.codigo)}</b> já é <b>${pct(pt, 0)}</b> da carteira. Vale dividir os próximos aportes em outros ativos.`, 8);
+      else add('ok', `Concentração sob controle: o maior ativo (<b>${esc(top.a.codigo)}</b>) tem ${pct(pt, 0)}.`);
+
+      if (L.length < 5) add('warn', `Só <b>${L.length}</b> ativo(s). Carteiras com menos de 5 posições ficam expostas ao risco individual de cada papel.`, 8);
+      const nFII = L.filter(l => l.a.classe === 'FII').length;
+      if (nFII === 1) add('warn', `Apenas <b>1 FII</b>: um único fundo define toda a sua renda de FIIs. Considere diversificar entre papel, tijolo e fundos de fundos.`, 4);
+
+      const porC = {}; L.forEach(l => porC[l.corr] = (porC[l.corr] || 0) + l.val);
+      const rc = Object.entries(porC).sort((a, b) => b[1] - a[1]);
+      if (rc.length > 1 && rc[0][1] / pat > 0.8) add('warn', `<b>${pct(rc[0][1] / pat * 100, 0)}</b> do patrimônio está na custódia <b>${esc(rc[0][0])}</b>. Espalhar entre corretoras reduz risco operacional.`, 4);
+      if (porC['Sem corretora']) add('warn', `Há ativos sem corretora informada (<b>${brl(porC['Sem corretora'])}</b>). Preencha para o agente analisar por custódia.`);
+      L.filter(l => l.a.classe === 'Renda Fixa' && l.val > 250000).forEach(l => add('warn', `<b>${esc(l.a.codigo)}</b> passa de R$ 250 mil em um emissor, acima do teto de cobertura do FGC.`, 4));
+
+      const comCot = L.filter(l => !l.semCot);
+      if (comCot.length < L.length) add('warn', `<b>${L.length - comCot.length}</b> ativo(s) sem cotação atual: a valorização deles aparece zerada até você atualizar.`, 6);
+      comCot.filter(l => l.pnlP < -10 && l.a.classe !== 'Renda Fixa').forEach(l => add('warn', `<b>${esc(l.a.codigo)}</b> está <b>${pct(Math.abs(l.pnlP))}</b> abaixo do seu preço médio. Reavalie a tese antes de aportar mais.`, 4));
+      const provAcum = soma(L, l => l.q * soma(l.a.provs || [], x => x.v)), inv = soma(L, l => l.inv);
+      if (comCot.length) {
+        const ret = (pat + provAcum - inv) / inv * 100;
+        add(ret >= 0 ? 'ok' : 'warn', `Retorno total (cotas + proventos lançados): <b>${sgn(ret)}</b> sobre o custo de ${brl(inv)}.`, ret < -5 ? 6 : 0);
+      }
+
+      const prov = soma(L, l => l.prov), yAA = prov * 12 / pat * 100, vsCdi = yAA / cdiAA * 100;
+      if (vsCdi < 60) add('warn', `A renda recorrente equivale a <b>${pct(yAA)} a.a.</b>, só <b>${pct(vsCdi, 0)} do CDI</b> (${pct(cdiAA)}). Parte do retorno depende da valorização das cotas.`, 6);
+      else add('ok', `A renda recorrente equivale a <b>${pct(yAA)} a.a.</b>, cerca de <b>${pct(vsCdi, 0)} do CDI</b> (${pct(cdiAA)}).`);
+
+      L.filter(l => l.a.classe !== 'Renda Fixa' && l.mp && l.mp.n >= 3).forEach(l => {
+        const m = l.mp.avg, dp = Math.sqrt(soma(l.mp.vals, v => (v - m) ** 2) / l.mp.n), cv = m > 0 ? dp / m : 0;
+        if (l.mp.ult < m * 0.85) add('warn', `<b>${esc(l.a.codigo)}</b>: o último provento (${brl(l.mp.ult)}) ficou <b>${pct((1 - l.mp.ult / m) * 100, 0)}</b> abaixo da média de ${brl(m)}/cota.`, 5);
+        else if (cv > 0.3 && l.mp.n >= 4) add('warn', `<b>${esc(l.a.codigo)}</b> paga de forma irregular (variação de ${pct(cv * 100, 0)} em torno da média).`, 3);
+      });
+      const est = L.filter(l => l.est && l.a.classe !== 'Renda Fixa');
+      if (est.length) add('warn', `O rendimento de <b>${est.map(l => esc(l.a.codigo)).join(', ')}</b> é estimado pela taxa digitada. Lance os proventos reais para a média ficar precisa.`, 3);
+
+      score = Math.max(0, Math.min(100, Math.round(score)));
+      const ordem = { bad: 0, warn: 1, ok: 2 };
+      return { score, it: it.sort((a, b) => ordem[a.n] - ordem[b.n]) };
+    }
 
     function renderizarState() {
-      const tbody = document.getElementById('tabela-ativos');
-      const linhas = ativos.map(a => {
-        const q = parseFloat(a.qtd) || 0, p = parseFloat(a.preco) || 0, t = parseFloat(a.taxa || 0) || 0;
-        const inv = q * p;
-        return { a, q, p, t, inv, prov: inv * t / 100 };
-      });
-      const patTotal = linhas.reduce((s, l) => s + l.inv, 0);
-      const divTotal = linhas.reduce((s, l) => s + l.prov, 0);
-      const totalRF = linhas.filter(l => l.a.tipo === 'CDB').reduce((s, l) => s + l.inv, 0);
-      const totalRV = patTotal - totalRF;
+      const L = calcAtivos();
+      const patTotal = soma(L, l => l.val), invTotal = soma(L, l => l.inv), divTotal = soma(L, l => l.prov);
+      const totalRF = soma(L.filter(l => l.a.classe === 'Renda Fixa'), l => l.val), totalRV = patTotal - totalRF;
+      const provAcum = soma(L, l => l.q * soma(l.a.provs || [], x => x.v));
+      const hasCot = L.some(l => !l.semCot);
 
-      tbody.innerHTML = linhas.length ? linhas.map(l => `<tr>
-          <td><strong>${esc(l.a.codigo)}</strong></td>
-          <td><span class="badge ${l.a.classe === 'FII' ? 'badge-fii' : 'badge-pago'}">${esc(l.a.classe)}</span></td>
+      document.getElementById('tabela-ativos').innerHTML = L.length ? L.map(l => `<tr>
+          <td><strong>${esc(l.a.codigo)}</strong> <span class="badge ${l.a.classe === 'FII' ? 'badge-fii' : 'badge-pago'}">${esc(l.a.classe)}</span></td>
+          <td><input class="ghost" style="min-width:96px" list="dl-corr" value="${esc(l.a.corretora || '')}" placeholder="—" onchange="editarAtivo(${l.a.id},'corretora',this.value)"></td>
           <td class="num">${l.q}</td>
           <td class="num">${brl(l.p)}</td>
-          <td class="num">${brl(l.inv)}</td>
-          <td class="num">${l.t.toFixed(2)}%</td>
-          <td class="num" style="color:var(--primary-gold-dark);font-weight:900;">${brl(l.prov)}</td>
+          <td class="num"><input class="ghost num" type="number" step="0.01" value="${l.semCot ? '' : l.c}" placeholder="${l.p.toFixed(2)}" onchange="editarAtivo(${l.a.id},'cotacao',this.value)"></td>
+          <td class="num">${brl(l.val)}</td>
+          <td class="num ${l.semCot ? '' : sinal(l.pnl)}">${l.semCot ? '—' : brl(l.pnl) + '<br><small>' + sgn(l.pnlP) + '</small>'}</td>
+          <td class="num">${l.mp ? brl(l.mp.avg) + '<br><small>' + l.mp.n + ' mês(es)</small>' : '—'}</td>
+          <td class="num" style="color:var(--primary-gold-dark);font-weight:900;">${brl(l.prov)}${l.est ? '<span class="badge badge-est">est.</span>' : ''}</td>
+          <td class="num">${pct(l.val > 0 ? l.prov / l.val * 100 : 0, 2)}</td>
           <td><button class="btn-del" title="Remover" onclick="excluirAtivo(${l.a.id})">${ICO_LIXO}</button></td>
-        </tr>`).join('') : '<tr><td colspan="8" class="vazio">Nenhum ativo ainda. Cadastre o primeiro acima.</td></tr>';
+        </tr>`).join('') : '<tr><td colspan="11" class="vazio">Nenhum ativo ainda. Cadastre o primeiro acima.</td></tr>';
 
       document.getElementById('st-patrimonio').innerText = brl(patTotal);
       document.getElementById('st-dividendos').innerText = brl(divTotal);
@@ -1069,65 +1209,151 @@
       document.getElementById('st-yield').innerText = (patTotal > 0 ? divTotal / patTotal * 100 : 0).toFixed(2) + '%';
       document.getElementById('st-rv').innerText = brl(totalRV);
       document.getElementById('st-rf').innerText = brl(totalRF);
+      const elV = document.getElementById('st-val'), elR = document.getElementById('st-ret');
+      elV.innerText = hasCot ? brl(patTotal - invTotal) : '—'; elV.className = hasCot ? sinal(patTotal - invTotal) : '';
+      const ret = invTotal > 0 ? (patTotal + provAcum - invTotal) / invTotal * 100 : 0;
+      elR.innerText = hasCot ? sgn(ret) : '—'; elR.className = hasCot ? sinal(ret) : '';
+      document.getElementById('st-cdi').value = cdiAA;
+      document.getElementById('st-token').value = brapiToken;
+      document.getElementById('dl-corr').innerHTML = CORRETORAS.map(c => `<option value="${c}">`).join('');
+      const sel = document.getElementById('pv-ativo'), atual = sel.value;
+      sel.innerHTML = L.filter(l => l.a.classe !== 'Renda Fixa').map(l => `<option value="${l.a.id}">${esc(l.a.codigo)}</option>`).join('') || '<option value="">Cadastre um FII/Ação</option>';
+      if (atual) sel.value = atual;
 
       const porClasse = {};
-      linhas.forEach(l => { porClasse[l.a.classe] = (porClasse[l.a.classe] || 0) + l.prov; });
+      L.forEach(l => { porClasse[l.a.classe] = (porClasse[l.a.classe] || 0) + l.prov; });
       document.getElementById('st-classes').innerHTML = Object.entries(porClasse).sort((a, b) => b[1] - a[1])
         .map(([c, v]) => `<span class="chip"><i style="background:${CLASSE_COR[c] === '#0f172a' ? '#94a3b8' : (CLASSE_COR[c] || '#94a3b8')}"></i>${esc(c)}<span><b>${brl(v)}</b>/mês</span></span>`).join('');
 
-      const ordenado = [...linhas].sort((a, b) => b.prov - a.prov);
+      const porC = {};
+      L.forEach(l => { const o = porC[l.corr] || (porC[l.corr] = { val: 0, prov: 0, n: 0 }); o.val += l.val; o.prov += l.prov; o.n++; });
+      document.getElementById('st-corretoras').innerHTML = L.length ? Object.entries(porC).sort((a, b) => b[1].val - a[1].val).map(([c, o], k) => `<div class="rk">
+          <div class="rk-top"><b>${esc(c)}</b><span class="rk-val">${brl(o.val)}</span></div>
+          <div class="rk-bar"><i style="width:${(patTotal > 0 ? o.val / patTotal * 100 : 0).toFixed(1)}%;background:${PALETA[k % PALETA.length]}"></i></div>
+          <div class="rk-sub">${pct(patTotal > 0 ? o.val / patTotal * 100 : 0, 0)} do patrimônio · ${o.n} ativo(s) · rende ${brl(o.prov)}/mês</div></div>`).join('') : '<div class="vazio">Sem ativos.</div>';
+
+      const ordenado = [...L].sort((a, b) => b.prov - a.prov);
       const maxProv = Math.max(...ordenado.map(l => l.prov), 0.01);
       document.getElementById('st-ranking').innerHTML = ordenado.length ? ordenado.map((l, k) => {
         const parte = divTotal > 0 ? l.prov / divTotal * 100 : 0;
         return `<div class="rk">
           <div class="rk-top"><b>${esc(l.a.codigo)}</b><span class="badge ${l.a.classe === 'FII' ? 'badge-fii' : 'badge-pago'}">${esc(l.a.classe)}</span><span class="rk-val">${brl(l.prov)}/mês</span></div>
           <div class="rk-bar"><i style="width:${(l.prov / maxProv * 100).toFixed(1)}%;background:${PALETA[k % PALETA.length]}"></i></div>
-          <div class="rk-sub">${parte.toFixed(0)}% do rendimento · ${l.t.toFixed(2)}% a.m. sobre ${brl(l.inv)} · ${brl(l.prov * 12)} por ano</div>
+          <div class="rk-sub">${parte.toFixed(0)}% do rendimento · ${pct(l.val > 0 ? l.prov / l.val * 100 : 0, 2)} a.m. sobre ${brl(l.val)} · ${brl(l.prov * 12)} por ano${l.est ? ' · estimado' : ''}</div>
         </div>`;
       }).join('') : '<div class="vazio">Cadastre ativos para ver o que está rendendo.</div>';
 
+      const lanc = [];
+      ativos.forEach(a => (a.provs || []).forEach(p => lanc.push({ id: a.id, cod: a.codigo, m: p.m, v: p.v, q: parseFloat(a.qtd) || 0 })));
+      lanc.sort((a, b) => a.m < b.m ? 1 : -1);
+      document.getElementById('st-hist').innerHTML = lanc.slice(0, 6).map(x => `<div class="hl"><span>${esc(x.cod)}</span><span>${mesBR(x.m)}</span><b>${brl(x.v)}/cota</b><button class="btn-del" title="Remover" onclick="excluirProvento(${x.id},'${x.m}')">${ICO_LIXO}</button></div>`).join('');
+
       if (typeof Chart !== 'undefined') {
-        const cv = document.getElementById('chartProventos');
-        if (chartProvInstance) chartProvInstance.destroy();
         const temDados = divTotal > 0;
-        chartProvInstance = new Chart(cv.getContext('2d'), {
+        if (chartProvInstance) chartProvInstance.destroy();
+        chartProvInstance = new Chart(document.getElementById('chartProventos').getContext('2d'), {
           type: 'doughnut',
-          data: {
-            labels: temDados ? ordenado.map(l => l.a.codigo) : ['Sem rendimento'],
-            datasets: [{ data: temDados ? ordenado.map(l => +l.prov.toFixed(2)) : [1], backgroundColor: temDados ? ordenado.map((_, k) => PALETA[k % PALETA.length]) : ['#e2e8f0'], borderWidth: 2, borderColor: '#fff' }]
-          },
+          data: { labels: temDados ? ordenado.map(l => l.a.codigo) : ['Sem rendimento'], datasets: [{ data: temDados ? ordenado.map(l => +l.prov.toFixed(2)) : [1], backgroundColor: temDados ? ordenado.map((_, k) => PALETA[k % PALETA.length]) : ['#e2e8f0'], borderWidth: 2, borderColor: '#fff' }] },
           options: { responsive: true, maintainAspectRatio: false, cutout: '62%', plugins: { legend: { position: 'bottom', labels: { font: { weight: 'bold' }, boxWidth: 12 } }, tooltip: { enabled: temDados, callbacks: { label: c => ` ${c.label}: ${brl(c.parsed)}/mês` } } } }
+        });
+
+        const porMes = {};
+        L.forEach(l => (l.a.provs || []).forEach(p => porMes[p.m] = (porMes[p.m] || 0) + p.v * l.q));
+        const meses = Object.keys(porMes).sort().slice(-12);
+        document.getElementById('st-mes-vazio').style.display = meses.length ? 'none' : 'block';
+        document.getElementById('chartMes').parentElement.style.display = meses.length ? 'block' : 'none';
+        if (chartMesInstance) chartMesInstance.destroy();
+        if (meses.length) chartMesInstance = new Chart(document.getElementById('chartMes').getContext('2d'), {
+          type: 'bar',
+          data: { labels: meses.map(mesBR), datasets: [{ data: meses.map(m => +porMes[m].toFixed(2)), backgroundColor: '#c5a059', borderRadius: 6 }] },
+          options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ' ' + brl(c.parsed.y) } } } }
+        });
+
+        const sn = snaps.slice(-90), evoOk = sn.length >= 2;
+        document.getElementById('st-evo-vazio').style.display = evoOk ? 'none' : 'block';
+        document.getElementById('chartEvo').parentElement.style.display = evoOk ? 'block' : 'none';
+        if (chartEvoInstance) chartEvoInstance.destroy();
+        if (evoOk) chartEvoInstance = new Chart(document.getElementById('chartEvo').getContext('2d'), {
+          type: 'line',
+          data: { labels: sn.map(s => s.d.split('-').reverse().slice(0, 2).join('/')), datasets: [
+            { label: 'Valor de mercado', data: sn.map(s => s.val), borderColor: '#c5a059', backgroundColor: 'rgba(197,160,89,.12)', fill: true, tension: .3, pointRadius: 2 },
+            { label: 'Investido (custo)', data: sn.map(s => s.inv), borderColor: '#0f172a', borderDash: [5, 4], tension: .3, pointRadius: 0 }] },
+          options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { weight: 'bold' }, boxWidth: 12 } }, tooltip: { callbacks: { label: c => ` ${c.dataset.label}: ${brl(c.parsed.y)}` } } } }
         });
       }
 
-      gerarInsightsState(patTotal, divTotal, totalRV, ordenado);
+      const r = analisar(L), sc = document.getElementById('st-score');
+      const cor = r.score === null ? '#94a3b8' : r.score >= 85 ? '#059669' : r.score >= 70 ? '#c5a059' : r.score >= 50 ? '#d97706' : '#dc2626';
+      sc.style.setProperty('--p', r.score || 0); sc.style.setProperty('--sc', cor);
+      document.getElementById('st-nota').innerText = r.score === null ? '–' : r.score;
+      document.getElementById('st-grau').innerText = r.score === null ? 'sem dados' : r.score >= 85 ? 'Sólida' : r.score >= 70 ? 'Saudável' : r.score >= 50 ? 'Atenção' : 'Frágil';
+      document.getElementById('state-insights').innerHTML = r.it.map(x => `<div class="ins ${x.n}"><i></i><div>${x.t}</div></div>`).join('');
     }
 
     function adicionarAtivo(e) {
       e.preventDefault();
-      let codigo = document.getElementById('st-codigo').value.toUpperCase();
-      let tipo = document.getElementById('st-tipo').value;
-      let isFII = codigo.endsWith('11');
-
+      const codigo = document.getElementById('st-codigo').value.trim().toUpperCase();
+      const tipo = document.getElementById('st-tipo').value;
+      const cot = parseFloat(document.getElementById('st-cot').value);
       ativos.push({
-        id: Date.now(),
-        codigo: codigo,
-        tipo: tipo,
+        id: Date.now(), codigo, tipo,
+        corretora: document.getElementById('st-corretora').value.trim(),
         qtd: parseFloat(document.getElementById('st-qtd').value),
         preco: parseFloat(document.getElementById('st-preco').value),
-        taxa: parseFloat(document.getElementById('st-taxa').value),
-        classe: tipo === 'CDB' ? 'Renda Fixa' : (isFII ? 'FII' : 'Ação')
+        cotacao: cot > 0 ? cot : undefined,
+        taxa: parseFloat(document.getElementById('st-taxa').value) || 0,
+        provs: [],
+        classe: tipo === 'CDB' ? 'Renda Fixa' : (codigo.endsWith('11') ? 'FII' : 'Ação')
       });
-      salvarAutomatico();
-      e.target.reset();
+      if (cot > 0) registrarSnap();
+      salvarAutomatico(); e.target.reset(); renderizarState();
+    }
+
+    function editarAtivo(id, campo, val) {
+      const a = ativos.find(x => x.id === id); if (!a) return;
+      if (campo === 'cotacao') { const n = parseFloat(val); a.cotacao = n > 0 ? n : undefined; registrarSnap(); }
+      else a[campo] = String(val).trim();
+      salvarAutomatico(); renderizarState();
+    }
+
+    function lancarProvento(e) {
+      e.preventDefault();
+      const a = ativos.find(x => String(x.id) === document.getElementById('pv-ativo').value); if (!a) return;
+      const m = document.getElementById('pv-mes').value, v = parseFloat(document.getElementById('pv-valor').value);
+      if (!m || !(v >= 0)) return;
+      a.provs = (a.provs || []).filter(p => p.m !== m); a.provs.push({ m, v });
+      salvarAutomatico(); document.getElementById('pv-valor').value = ''; renderizarState();
+    }
+
+    function excluirProvento(id, m) {
+      const a = ativos.find(x => x.id === id); if (!a) return;
+      a.provs = (a.provs || []).filter(p => p.m !== m); salvarAutomatico(); renderizarState();
+    }
+
+    function setCdi(v) { const n = parseFloat(v); if (n > 0) { cdiAA = n; localStorage.setItem('gd_cdi', n); } renderizarState(); }
+    function setToken(v) { brapiToken = v.trim(); localStorage.setItem('gd_brapi', brapiToken); }
+
+    async function atualizarCotacoes() {
+      const msg = document.getElementById('st-cot-msg'), alvo = ativos.filter(a => a.classe !== 'Renda Fixa');
+      if (!alvo.length) { msg.textContent = 'Nenhum FII/ação para atualizar.'; return; }
+      let ok = 0, falhas = [];
+      for (const a of alvo) {
+        msg.textContent = `Buscando ${a.codigo}...`;
+        try {
+          const r = await fetch(`https://brapi.dev/api/quote/${encodeURIComponent(a.codigo)}` + (brapiToken ? `?token=${encodeURIComponent(brapiToken)}` : ''));
+          const j = await r.json(), p = j && j.results && j.results[0] && j.results[0].regularMarketPrice;
+          if (p > 0) { a.cotacao = p; ok++; } else falhas.push(a.codigo);
+        } catch (err) { falhas.push(a.codigo); }
+      }
+      if (ok) { registrarSnap(); salvarAutomatico(); }
       renderizarState();
+      msg.textContent = `${ok} atualizada(s)` + (falhas.length ? ` · sem resposta: ${falhas.join(', ')} (digite a cotação na tabela ou informe o token)` : '');
     }
 
     function excluirAtivo(id) {
       if (confirm("Remover ativo?")) {
         ativos = ativos.filter(a => a.id !== id);
-        salvarAutomatico();
-        renderizarState();
+        registrarSnap(); salvarAutomatico(); renderizarState();
       }
     }
 
@@ -1148,19 +1374,6 @@
         },
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { font: { weight: 'bold' } } } } }
       });
-    }
-
-    function gerarInsightsState(patrimonio, dividendos, rv, ordenado) {
-      const box = document.getElementById('state-insights');
-      const yieldMensal = patrimonio > 0 ? (dividendos / patrimonio) * 100 : 0;
-      const propRV = patrimonio > 0 ? (rv / patrimonio) * 100 : 0;
-      let h = `<div class="analysis-item">Rendimento médio da carteira: <strong>${yieldMensal.toFixed(2)}% a.m.</strong> (${brl(dividendos)}/mês · ${brl(dividendos * 12)}/ano).</div>
-        <div class="analysis-item">Alocação em renda variável: <strong>${propRV.toFixed(0)}%</strong> do patrimônio · renda fixa: <strong>${(patrimonio > 0 ? 100 - propRV : 0).toFixed(0)}%</strong>.</div>`;
-      if (ordenado && ordenado.length && dividendos > 0) {
-        const t = ordenado[0];
-        h += `<div class="analysis-item">Maior fonte de renda: <strong>${esc(t.a.codigo)}</strong> com ${brl(t.prov)}/mês (${(t.prov / dividendos * 100).toFixed(0)}% do total).</div>`;
-      }
-      box.innerHTML = h;
     }
 
     document.addEventListener('DOMContentLoaded', () => {
