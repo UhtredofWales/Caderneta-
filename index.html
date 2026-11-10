@@ -21,23 +21,23 @@
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-app: #eef2f6;          
+      --bg-app: #f1f3f7;          
       --card-bg: #ffffff;         
-      --card-border: #cbd5e1;     
+      --card-border: #e2e8f0;     
       --primary-gold: #c5a059;    
       --primary-gold-dark: #9a7b38;
       --text-main: #0f172a;       
-      --text-muted: #475569;      
+      --text-muted: #64748b;      
       --success: #059669;
       --danger: #dc2626;
       --warning: #d97706;
-      --line: #e6e9ef;
+      --line: #edf2f7;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
 
     body {
-      background-color: #f1f3f7;
+      background-color: var(--bg-app);
       color: var(--text-main);
       min-height: 100vh;
       display: flex;
@@ -47,12 +47,12 @@
     aside {
       width: 270px;
       background: #ffffff;
-      border-right: 1px solid var(--line);
+      border-right: 1px solid var(--card-border);
       padding: 28px 20px;
       display: flex;
       flex-direction: column;
       flex-shrink: 0;
-      box-shadow: 2px 0 10px rgba(0,0,0,0.03);
+      box-shadow: 4px 0 20px rgba(15,23,42,0.02);
     }
 
     .brand {
@@ -69,311 +69,314 @@
       color: var(--primary-gold);
       font-weight: 900;
       font-size: 1.1rem;
-      border-radius: 10px;
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
+      box-shadow: 0 4px 12px rgba(15,23,42,0.15);
     }
 
-    .brand h2 { font-size: 1.1rem; font-weight: 800; letter-spacing: 1px; color: var(--text-main); text-transform: uppercase; }
+    .brand h2 { font-size: 1.05rem; font-weight: 800; letter-spacing: 0.5px; color: var(--text-main); text-transform: uppercase; }
     .brand span { color: var(--primary-gold); }
 
     .sidebar-clock {
       background: #f8fafc;
       border: 1px solid var(--card-border);
-      border-radius: 10px;
-      padding: 12px;
+      border-radius: 12px;
+      padding: 14px;
       text-align: center;
       margin-bottom: 24px;
     }
 
     .sidebar-clock .clock-time {
-      font-size: 1.3rem;
+      font-size: 1.35rem;
       font-weight: 800;
       color: var(--text-main);
       font-variant-numeric: tabular-nums;
     }
 
     .sidebar-clock .clock-date {
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.8px;
-      margin-top: 2px;
+      letter-spacing: 1px;
+      margin-top: 4px;
       font-weight: 700;
     }
 
     .nav-menu { list-style: none; display: flex; flex-direction: column; gap: 8px; }
     .nav-menu button {
-      width: 100%; text-align: left; background: transparent; border: none; padding: 12px 14px; border-radius: 8px;
+      width: 100%; text-align: left; background: transparent; border: none; padding: 12px 16px; border-radius: 10px;
       font-size: 0.9rem; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: all 0.2s;
-      display: flex; align-items: center; gap: 10px;
+      display: flex; align-items: center; gap: 12px;
     }
     .nav-menu button:hover, .nav-menu button.active {
-      background: #f1f5f9; color: var(--text-main); border-left: 4px solid var(--primary-gold);
+      background: #f8fafc; color: var(--text-main); border-left: 4px solid var(--primary-gold); box-shadow: 0 2px 6px rgba(0,0,0,0.02);
     }
 
     /* Main Container */
-    main { flex: 1; padding: 36px 40px; overflow-y: auto; max-width: 1280px; width: 100%; }
+    main { flex: 1; padding: 36px 44px; overflow-y: auto; max-width: 1320px; width: 100%; }
     
     header {
-      margin-bottom: 28px;
+      margin-bottom: 32px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding-bottom: 20px;
-      border-bottom: 1px solid var(--line);
+      border-bottom: 1px solid var(--card-border);
     }
 
-    header h1 { font-size: 1.6rem; font-weight: 800; color: var(--text-main); letter-spacing: -.02em; }
+    header h1 { font-size: 1.65rem; font-weight: 800; color: var(--text-main); letter-spacing: -.02em; }
     header p { color: var(--text-muted); font-size: 0.9rem; margin-top: 4px; font-weight: 500; }
 
     .month-selector {
       display: flex; align-items: center; gap: 14px; background: #ffffff;
-      border: 1px solid var(--card-border); padding: 8px 18px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+      border: 1px solid var(--card-border); padding: 10px 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(15,23,42,0.03);
     }
     .month-selector button { background: transparent; border: none; color: var(--text-main); font-size: 1.1rem; cursor: pointer; font-weight: 900; }
     .month-selector span { font-size: 0.92rem; font-weight: 800; letter-spacing: 1px; color: var(--primary-gold-dark); }
 
     .tab-content { display: none; }
-    .tab-content.active { display: block; animation: fadeIn 0.2s ease-in-out; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    .tab-content.active { display: block; animation: fadeIn 0.25s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
     /* Cards e Métricas */
-    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin-bottom: 28px; }
+    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 28px; }
     .safra-card, .analysis-card, .form-container, .table-container, .ledger, .hero-side {
       background: var(--card-bg);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 22px;
-      box-shadow: 0 1px 2px rgba(15,23,42,.04);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 4px 16px rgba(15,23,42,0.03);
       margin-bottom: 28px;
     }
-    .safra-card .card-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 800; }
-    .safra-card .card-value { font-size: 1.6rem; font-weight: 900; color: var(--text-main); margin-top: 8px; }
+    .safra-card .card-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-muted); font-weight: 800; }
+    .safra-card .card-value { font-size: 1.7rem; font-weight: 900; color: var(--text-main); margin-top: 10px; font-variant-numeric: tabular-nums; }
     .safra-card.success .card-value { color: var(--success); }
     .safra-card.danger .card-value { color: var(--danger); }
     .safra-card.warning .card-value { color: var(--primary-gold-dark); }
 
     .dashboard-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 28px; }
 
-    /* Painel de Análise */
-    .analysis-header { font-size: 0.95rem; font-weight: 800; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px; }
-    .analysis-item { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 10px; padding-left: 12px; border-left: 4px solid var(--primary-gold); line-height: 1.5; font-weight: 600; }
+    /* Painel de Análise Estilizado */
+    .analysis-header { font-size: 0.95rem; font-weight: 800; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .analysis-item { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 12px; padding: 12px 16px; background: #f8fafc; border-radius: 10px; border-left: 4px solid var(--primary-gold); line-height: 1.6; font-weight: 600; box-shadow: 0 2px 4px rgba(0,0,0,0.01); }
     .analysis-item strong { color: var(--text-main); }
 
     /* Forms */
-    .form-container h4 { font-size: 0.95rem; font-weight: 800; margin-bottom: 14px; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px; }
-    .inline-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)) auto; gap: 12px; align-items: center; }
+    .form-container h4 { font-size: 0.95rem; font-weight: 800; margin-bottom: 16px; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.8px; }
+    .inline-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)) auto; gap: 14px; align-items: center; }
     .inline-form input, .inline-form select {
-      background: #f8fafc; border: 1px solid var(--line); color: var(--text-main);
-      padding: 11px 14px; border-radius: 10px; font-size: 0.9rem; outline: none; font-weight: 600;
+      background: #f8fafc; border: 1px solid var(--card-border); color: var(--text-main);
+      padding: 12px 16px; border-radius: 12px; font-size: 0.9rem; outline: none; font-weight: 600;
+      transition: all 0.2s;
     }
-    .inline-form input:focus, .inline-form select:focus { border-color: var(--primary-gold); background: #fff; box-shadow: 0 0 0 3px rgba(197,160,89,.18); }
+    .inline-form input:focus, .inline-form select:focus { border-color: var(--primary-gold); background: #fff; box-shadow: 0 0 0 4px rgba(197,160,89,0.15); }
 
     .btn-action {
-      background: #0f172a; color: #ffffff; border: none; padding: 11px 20px;
-      border-radius: 8px; font-weight: 800; font-size: 0.88rem; cursor: pointer; transition: 0.2s;
+      background: #0f172a; color: #ffffff; border: none; padding: 12px 22px;
+      border-radius: 10px; font-weight: 800; font-size: 0.88rem; cursor: pointer; transition: 0.2s;
+      box-shadow: 0 4px 12px rgba(15,23,42,0.15);
     }
-    .btn-action:hover { background: #1e293b; }
+    .btn-action:hover { background: #1e293b; transform: translateY(-1px); }
 
     /* Tabelas */
     .table-container { overflow: hidden; }
-    .table-header { padding: 18px 22px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line); background: #f8fafc; }
-    .table-header h3 { font-size: 0.95rem; font-weight: 800; color: var(--text-main); }
     table { width: 100%; border-collapse: collapse; text-align: left; }
-    th, td { padding: 14px 20px; border-bottom: 1px solid var(--line); font-size: 0.9rem; }
-    th { color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; font-weight: 800; background: #f8fafc; letter-spacing: 0.5px; }
+    th, td { padding: 16px 20px; border-bottom: 1px solid var(--line); font-size: 0.9rem; }
+    th { color: var(--text-muted); font-size: 0.72rem; text-transform: uppercase; font-weight: 800; background: #f8fafc; letter-spacing: 0.8px; }
     td { font-weight: 600; }
 
-    .badge { padding: 4px 10px; border-radius: 6px; font-size: 0.78rem; font-weight: 800; }
+    .badge { padding: 5px 12px; border-radius: 8px; font-size: 0.76rem; font-weight: 800; letter-spacing: 0.3px; }
     .badge-pago { background: #d1fae5; color: #047857; }
     .badge-pendente { background: #fee2e2; color: #b91c1c; }
     .badge-fii { background: #fef3c7; color: #92400e; }
 
-    .btn-del { background: none; border: none; color: #94a3b8; cursor: pointer; padding: 6px; border-radius: 8px; display: inline-flex; transition: .15s; }
+    .btn-del { background: none; border: none; color: #94a3b8; cursor: pointer; padding: 8px; border-radius: 8px; display: inline-flex; transition: .15s; }
     .btn-del:hover { color: var(--danger); background: #fee2e2; }
 
     /* Modal */
-    .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(15,23,42,0.7); display:none; justify-content:center; align-items:center; z-index: 1000; }
-    .modal { background: #ffffff; border-radius: 12px; padding: 28px; width: 100%; max-width: 420px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.15); }
-    .modal h3 { margin-bottom: 18px; font-size: 1.1rem; font-weight: 800; color: var(--text-main); }
-    .modal-field { margin-bottom: 14px; }
-    .modal-field label { display: block; font-size: 0.78rem; text-transform: uppercase; font-weight: 800; color: var(--text-muted); margin-bottom: 6px; }
-    .modal-field input, .modal-field select { width: 100%; background: #f8fafc; border: 1px solid var(--card-border); padding: 10px 12px; border-radius: 8px; font-weight: 600; }
-    .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+    .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(15,23,42,0.75); backdrop-filter: blur(4px); display:none; justify-content:center; align-items:center; z-index: 1000; }
+    .modal { background: #ffffff; border-radius: 20px; padding: 32px; width: 100%; max-width: 420px; box-shadow: 0 24px 48px rgba(0,0,0,0.2); }
+    .modal h3 { margin-bottom: 20px; font-size: 1.15rem; font-weight: 800; color: var(--text-main); }
+    .modal-field { margin-bottom: 16px; }
+    .modal-field label { display: block; font-size: 0.78rem; text-transform: uppercase; font-weight: 800; color: var(--text-muted); margin-bottom: 8px; letter-spacing: 0.5px; }
+    .modal-field input, .modal-field select { width: 100%; background: #f8fafc; border: 1px solid var(--card-border); padding: 12px 14px; border-radius: 10px; font-weight: 600; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; }
 
-    /* ===== Contas a Pagar PRO & Ledger ===== */
-    .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 14px; }
-    .toolbar input, .toolbar select { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; font-size: .86rem; font-weight: 600; color: var(--text-main); outline: none; }
+    /* Contas a Pagar PRO & Ledger */
+    .toolbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 16px; }
+    .toolbar input, .toolbar select { background: #fff; border: 1px solid var(--card-border); border-radius: 12px; padding: 11px 14px; font-size: .88rem; font-weight: 600; color: var(--text-main); outline: none; }
     .toolbar input[type=search] { flex: 1; min-width: 240px; }
-    .toolbar input:focus, .toolbar select:focus { border-color: var(--primary-gold); box-shadow: 0 0 0 3px rgba(197,160,89,.18); }
-    .toolbar label { font-size: .8rem; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 6px; cursor: pointer; }
+    .toolbar input:focus, .toolbar select:focus { border-color: var(--primary-gold); box-shadow: 0 0 0 3px rgba(197,160,89,.15); }
+    .toolbar label { font-size: .82rem; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 8px; cursor: pointer; }
     .toolbar .sp { flex: 1; }
     
-    .dica { font-size: .8rem; font-weight: 700; color: var(--primary-gold-dark); margin-top: 10px; min-height: 1em; }
+    .dica { font-size: .82rem; font-weight: 700; color: var(--primary-gold-dark); margin-top: 12px; min-height: 1em; }
     
-    .ledger-top { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; padding: 18px 22px; border-bottom: 1px solid var(--line); }
-    .ledger-top h3 { font-size: 1rem; font-weight: 800; letter-spacing: -.01em; }
+    .ledger-top { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; padding: 20px 24px; border-bottom: 1px solid var(--card-border); }
+    .ledger-top h3 { font-size: 1.05rem; font-weight: 800; letter-spacing: -.01em; }
     
-    .lhead, .lrow { display: grid; grid-template-columns: 34px minmax(200px, 1.7fr) 150px minmax(130px, 1fr) 150px 40px; gap: 14px; align-items: start; padding-left: 22px; padding-right: 22px; }
-    .lhead { padding-top: 10px; padding-bottom: 10px; font-size: .74rem; font-weight: 700; color: var(--text-muted); background: #fafbfc; border-bottom: 1px solid var(--line); }
+    .lhead, .lrow { display: grid; grid-template-columns: 34px minmax(200px, 1.7fr) 150px minmax(130px, 1fr) 150px 40px; gap: 14px; align-items: start; padding-left: 24px; padding-right: 24px; }
+    .lhead { padding-top: 12px; padding-bottom: 12px; font-size: .75rem; font-weight: 800; color: var(--text-muted); background: #f8fafc; border-bottom: 1px solid var(--card-border); letter-spacing: 0.8px; }
     .lhead .r { text-align: right; }
     
-    .lrow { padding-top: 12px; padding-bottom: 12px; border-bottom: 1px solid #f0f2f6; transition: background .15s; }
+    .lrow { padding-top: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--line); transition: background .15s; }
     .lrow:last-child { border-bottom: none; }
-    .lrow:hover { background: #fafbfd; }
+    .lrow:hover { background: #fcfcfd; }
     .lrow.paga .g-nome { text-decoration: line-through; color: var(--text-muted); }
     
     .lgroup.fechado .lbody { display: none; }
     .lgroup.fechado .chev { transform: rotate(-90deg); }
-    .lgrp { width: 100%; display: flex; align-items: center; gap: 10px; padding: 12px 22px; background: #f6f7fa; border: none; border-bottom: 1px solid var(--line); cursor: pointer; text-align: left; font-size: .86rem; font-weight: 800; color: var(--text-main); }
-    .lgrp:hover { background: #f0f2f7; }
-    .lgrp .dot { width: 9px; height: 9px; border-radius: 50%; }
-    .lgrp .chev { font-size: .8rem; color: var(--text-muted); transition: transform .2s; }
-    .lgrp .gmeta { font-size: .76rem; font-weight: 600; color: var(--text-muted); }
+    .lgrp { width: 100%; display: flex; align-items: center; gap: 12px; padding: 14px 24px; background: #f8fafc; border: none; border-bottom: 1px solid var(--card-border); cursor: pointer; text-align: left; font-size: .88rem; font-weight: 800; color: var(--text-main); }
+    .lgrp:hover { background: #f1f5f9; }
+    .lgrp .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .lgrp .chev { font-size: .85rem; color: var(--text-muted); transition: transform .2s; }
+    .lgrp .gmeta { font-size: .78rem; font-weight: 600; color: var(--text-muted); }
     .lgrp .gsum { margin-left: auto; font-variant-numeric: tabular-nums; }
     
-    .chk { width: 24px; height: 24px; margin-top: 5px; border-radius: 50%; border: 2px solid #cbd5e1; background: #fff; color: #fff; font-size: .8rem; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: .15s; }
+    .chk { width: 26px; height: 26px; margin-top: 4px; border-radius: 50%; border: 2px solid #cbd5e1; background: #fff; color: #fff; font-size: .85rem; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: .15s; }
     .chk:hover { border-color: var(--primary-gold); }
     .lrow.paga .chk { background: var(--success); border-color: var(--success); }
     
-    .ghost { background: transparent; border: 1px solid transparent; border-radius: 6px; padding: 6px 8px; font-size: .9rem; font-weight: 700; color: var(--text-main); width: 100%; outline: none; transition: .15s; }
+    .ghost { background: transparent; border: 1px solid transparent; border-radius: 8px; padding: 6px 10px; font-size: .9rem; font-weight: 700; color: var(--text-main); width: 100%; outline: none; transition: .15s; }
     .ghost:hover { border-color: var(--card-border); background: #fff; }
-    .ghost:focus { border-color: var(--primary-gold); background: #fff; box-shadow: 0 0 0 3px rgba(197,160,89,.18); }
+    .ghost:focus { border-color: var(--primary-gold); background: #fff; box-shadow: 0 0 0 3px rgba(197,160,89,.15); }
     .ghost.num { text-align: right; width: 112px; font-variant-numeric: tabular-nums; }
     .ghost.par { width: 84px; }
-    select.ghost { cursor: pointer; color: var(--primary-gold-dark); font-weight: 800; font-size: .8rem; }
+    select.ghost { cursor: pointer; color: var(--primary-gold-dark); font-weight: 800; font-size: .82rem; }
     
-    .tags { display: flex; flex-wrap: wrap; gap: 5px; padding: 2px 8px 0; align-items: center; }
-    .tag { display: inline-flex; align-items: center; gap: 4px; padding: 2px 4px 2px 9px; border-radius: 99px; font-size: .72rem; font-weight: 800; }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; padding: 4px 8px 0; align-items: center; }
+    .tag { display: inline-flex; align-items: center; gap: 6px; padding: 3px 8px 3px 10px; border-radius: 99px; font-size: .72rem; font-weight: 800; }
     .tag button { background: none; border: none; cursor: pointer; color: inherit; opacity: .5; font-size: .85rem; line-height: 1; padding: 0 3px; }
     .tag button:hover { opacity: 1; }
-    .tag-add { border: 1px dashed var(--card-border); background: transparent; border-radius: 99px; padding: 2px 9px; font-size: .72rem; font-weight: 700; width: 96px; outline: none; color: var(--text-muted); }
+    .tag-add { border: 1px dashed var(--card-border); background: transparent; border-radius: 99px; padding: 3px 10px; font-size: .72rem; font-weight: 700; width: 96px; outline: none; color: var(--text-muted); }
     .tag-add:focus { border-color: var(--primary-gold); background: #fff; }
     
-    .pbar { height: 5px; background: #e2e8f0; border-radius: 9px; overflow: hidden; margin: 5px 8px 0; width: 84px; }
-    .pbar i { display: block; height: 100%; background: var(--primary-gold); }
-    .pinfo { font-size: .7rem; color: var(--text-muted); font-weight: 700; padding: 3px 8px 0; }
+    .pbar { height: 6px; background: #e2e8f0; border-radius: 99px; overflow: hidden; margin: 6px 8px 0; width: 90px; }
+    .pbar i { display: block; height: 100%; background: var(--primary-gold); border-radius: 99px; }
+    .pinfo { font-size: .72rem; color: var(--text-muted); font-weight: 700; padding: 4px 8px 0; }
     .badge-ultima { background: #fef3c7; color: #92400e; margin-left: 6px; }
     
     .c-acoes { text-align: right; padding-top: 4px; }
-    .prog-wrap { display: flex; align-items: center; gap: 10px; font-size: .8rem; font-weight: 700; color: var(--text-muted); }
-    .prog-wrap .pbar { width: 140px; margin: 0; }
-    .vazio { text-align: center; color: var(--text-muted); font-weight: 700; padding: 30px !important; }
+    .prog-wrap { display: flex; align-items: center; gap: 12px; font-size: .82rem; font-weight: 700; color: var(--text-muted); }
+    .prog-wrap .pbar { width: 160px; margin: 0; }
+    .vazio { text-align: center; color: var(--text-muted); font-weight: 700; padding: 36px !important; }
 
-    /* ===== Nuvem / Login ===== */
-    .sync { display: flex; align-items: center; justify-content: center; gap: 4px; border-radius: 99px; font-size: .72rem; font-weight: 800; text-align: center; padding: 7px 10px; margin: -10px 0 18px; background: #f1f5f9; color: var(--text-muted); }
+    /* Nuvem / Login */
+    .sync { display: flex; align-items: center; justify-content: center; gap: 6px; border-radius: 99px; font-size: .74rem; font-weight: 800; text-align: center; padding: 8px 12px; margin: -10px 0 20px; background: #f1f5f9; color: var(--text-muted); }
     .sync.ok { background: #d1fae5; color: #047857; }
     .sync.erro { background: #fef3c7; color: #92400e; }
-    .sync-out { background: none; border: none; font-size: .72rem; font-weight: 800; color: var(--text-muted); cursor: pointer; text-decoration: underline; margin-left: 6px; }
+    .sync-out { background: none; border: none; font-size: .74rem; font-weight: 800; color: var(--text-muted); cursor: pointer; text-decoration: underline; margin-left: 6px; }
     
     #login-overlay { position: fixed; inset: 0; background: #0f172a; display: none; justify-content: center; align-items: center; z-index: 2000; }
-    .login-box { background: #fff; border-radius: 14px; padding: 32px; width: 100%; max-width: 380px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.25); }
-    .login-box input { width: 100%; background: #f8fafc; border: 1px solid var(--card-border); padding: 11px 14px; border-radius: 8px; font-size: .92rem; font-weight: 600; margin-bottom: 10px; outline: none; }
+    .login-box { background: #fff; border-radius: 20px; padding: 36px; width: 100%; max-width: 400px; box-shadow: 0 24px 48px rgba(0,0,0,0.3); }
+    .login-box input { width: 100%; background: #f8fafc; border: 1px solid var(--card-border); padding: 12px 16px; border-radius: 10px; font-size: .92rem; font-weight: 600; margin-bottom: 12px; outline: none; }
     .login-box input:focus { border-color: var(--primary-gold); }
-    .login-box .btn-action { width: 100%; margin-bottom: 8px; }
-    #login-erro { color: var(--danger); font-size: .82rem; font-weight: 700; min-height: 1.2em; margin-bottom: 6px; }
+    .login-box .btn-action { width: 100%; margin-bottom: 10px; }
+    #login-erro { color: var(--danger); font-size: .82rem; font-weight: 700; min-height: 1.2em; margin-bottom: 8px; }
     
     .btn-google {
-      width: 100%; background: #ffffff; color: #334155; border: 1px solid var(--card-border); padding: 11px 20px;
-      border-radius: 8px; font-weight: 800; font-size: 0.88rem; cursor: pointer; transition: 0.2s;
-      display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 10px;
+      width: 100%; background: #ffffff; color: #334155; border: 1px solid var(--card-border); padding: 12px 20px;
+      border-radius: 10px; font-weight: 800; font-size: 0.88rem; cursor: pointer; transition: 0.2s;
+      display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px;
     }
-    .btn-google:hover { background: #f8fafc; border-color: #94a3b8; }
+    .btn-google:hover { background: #f8fafc; border-color: #94a3b8; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
 
-    /* ===== Hero e Layout v2 ===== */
-    .hero { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; margin-bottom: 22px; }
-    .hero-main { background: #0f172a; color: #fff; border-radius: 18px; padding: 26px 28px; }
-    .hero-label { font-size: .82rem; font-weight: 600; color: #94a3b8; }
-    .hero-value { font-size: 2.6rem; font-weight: 800; letter-spacing: -.025em; margin-top: 6px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+    /* Hero e Layout v2 */
+    .hero { display: grid; grid-template-columns: 1.4fr 1fr; gap: 20px; margin-bottom: 24px; }
+    .hero-main { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #fff; border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(15,23,42,0.15); }
+    .hero-label { font-size: .82rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.8px; }
+    .hero-value { font-size: 2.8rem; font-weight: 900; letter-spacing: -.03em; margin-top: 8px; line-height: 1.1; font-variant-numeric: tabular-nums; }
     .hero-value.neg { color: #fca5a5; }
-    .hero-sub { font-size: .88rem; color: #cbd5e1; margin-top: 8px; font-weight: 500; }
+    .hero-sub { font-size: .88rem; color: #cbd5e1; margin-top: 10px; font-weight: 500; }
     .hero-sub b { color: #fff; font-weight: 800; }
     
-    .seg { display: flex; height: 10px; border-radius: 99px; overflow: hidden; background: #1e293b; margin-top: 22px; gap: 2px; }
+    .seg { display: flex; height: 10px; border-radius: 99px; overflow: hidden; background: #334155; margin-top: 24px; gap: 2px; }
     .seg i { display: block; height: 100%; transition: width .6s cubic-bezier(.2,.7,.2,1); }
-    .seg-legend { display: flex; flex-wrap: wrap; gap: 6px 20px; margin-top: 12px; font-size: .78rem; color: #94a3b8; font-weight: 600; }
+    .seg-legend { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 14px; font-size: .78rem; color: #94a3b8; font-weight: 600; }
     .seg-legend b { color: #fff; margin-left: 6px; font-variant-numeric: tabular-nums; }
     .seg-legend i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
     
-    .stat { display: flex; justify-content: space-between; align-items: baseline; padding: 15px 0; border-bottom: 1px solid var(--line); gap: 12px; }
+    .stat { display: flex; justify-content: space-between; align-items: baseline; padding: 16px 0; border-bottom: 1px solid var(--card-border); gap: 12px; }
     .stat:last-child { border-bottom: none; }
     .stat span { font-size: .85rem; color: var(--text-muted); font-weight: 600; }
     .stat b { font-size: 1.25rem; font-weight: 800; font-variant-numeric: tabular-nums; }
     .stat.ok b { color: var(--success); } .stat.bad b { color: var(--danger); }
 
-    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
-    .chip { display: inline-flex; align-items: center; gap: 8px; background: #1e293b; color: #e2e8f0; border-radius: 99px; padding: 7px 14px; font-size: .8rem; font-weight: 600; }
+    .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+    .chip { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #e2e8f0; border-radius: 99px; padding: 8px 16px; font-size: .8rem; font-weight: 700; backdrop-filter: blur(4px); }
     .chip i { width: 8px; height: 8px; border-radius: 50%; }
     .chip b { color: #fff; font-variant-numeric: tabular-nums; }
     
-    .rk { padding: 14px 0; border-bottom: 1px solid var(--line); }
+    .rk { padding: 16px 0; border-bottom: 1px solid var(--line); }
     .rk:last-child { border-bottom: none; padding-bottom: 0; }
-    .rk-top { display: flex; align-items: center; gap: 10px; }
-    .rk-top b { font-size: .98rem; }
+    .rk-top { display: flex; align-items: center; gap: 12px; }
+    .rk-top b { font-size: .95rem; }
     .rk-val { margin-left: auto; font-weight: 800; font-variant-numeric: tabular-nums; }
-    .rk-bar { height: 8px; background: #eef1f5; border-radius: 99px; overflow: hidden; margin: 10px 0 8px; }
+    .rk-bar { height: 8px; background: #f1f5f9; border-radius: 99px; overflow: hidden; margin: 10px 0 8px; }
     .rk-bar i { display: block; height: 100%; border-radius: 99px; transition: width .6s cubic-bezier(.2,.7,.2,1); }
     .rk-sub { font-size: .78rem; color: var(--text-muted); font-weight: 600; }
     
     td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 
-    /* ===== State PRO ===== */
-    .agente { display: grid; grid-template-columns: 190px 1fr; gap: 26px; align-items: start; }
-    .score { width: 150px; height: 150px; border-radius: 50%; display: grid; place-items: center; margin: 4px auto; background: conic-gradient(var(--sc, #94a3b8) calc(var(--p, 0) * 1%), #e8ecf2 0); }
-    .score div { width: 116px; height: 116px; border-radius: 50%; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-    .score b { font-size: 2.3rem; font-weight: 800; line-height: 1; }
-    .score small { font-size: .76rem; font-weight: 700; color: var(--text-muted); margin-top: 5px; }
-    .ins { display: flex; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--line); font-size: .88rem; line-height: 1.5; font-weight: 600; color: var(--text-muted); }
-    .ins:last-child { border-bottom: none; }
-    .ins > i { flex: none; width: 5px; border-radius: 9px; background: var(--c); }
+    /* State PRO & Agente Analítico */
+    .agente { display: grid; grid-template-columns: 200px 1fr; gap: 28px; align-items: center; }
+    .score { width: 155px; height: 155px; border-radius: 50%; display: grid; place-items: center; margin: 0 auto; background: conic-gradient(var(--sc, #94a3b8) calc(var(--p, 0) * 1%), #f1f5f9 0); box-shadow: inset 0 2px 8px rgba(0,0,0,0.05); }
+    .score div { width: 122px; height: 122px; border-radius: 50%; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
+    .score b { font-size: 2.4rem; font-weight: 900; line-height: 1; }
+    .score small { font-size: .75rem; font-weight: 800; color: var(--text-muted); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+    
+    .ins { display: flex; gap: 14px; padding: 12px 16px; background: #f8fafc; border-radius: 12px; margin-bottom: 10px; font-size: .88rem; line-height: 1.5; font-weight: 600; color: var(--text-muted); border: 1px solid var(--card-border); }
+    .ins:last-child { margin-bottom: 0; }
+    .ins > i { flex: none; width: 6px; border-radius: 9px; background: var(--c); }
     .ins.ok { --c: var(--success); } .ins.warn { --c: var(--warning); } .ins.bad { --c: var(--danger); }
     .ins b { color: var(--text-main); }
+    
     .pos { color: var(--success); } .neg { color: var(--danger); }
     .dual { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 28px; }
     .dual > .analysis-card { margin-bottom: 0; }
-    .hl { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: .84rem; font-weight: 600; }
+    .hl { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: .85rem; font-weight: 600; }
     .hl b { margin-left: auto; font-variant-numeric: tabular-nums; }
-    .badge-est { background: #e2e8f0; color: #475569; margin-left: 6px; font-size: .66rem; padding: 2px 6px; }
-    .nota { font-size: .74rem; color: var(--text-muted); font-weight: 600; margin-top: 12px; }
-    @media (max-width: 860px) { .agente, .dual { grid-template-columns: 1fr; } }
-
+    .badge-est { background: #e2e8f0; color: #475569; margin-left: 6px; font-size: .68rem; padding: 2px 6px; font-weight: 800; border-radius: 6px; }
+    .nota { font-size: .75rem; color: var(--text-muted); font-weight: 600; margin-top: 14px; text-align: right; }
+    
     @media (max-width: 860px) {
+      .agente, .dual { grid-template-columns: 1fr; }
       body { flex-direction: column; }
-      aside { width: 100%; padding: 14px 16px; border-right: none; border-bottom: 1px solid var(--line); gap: 10px; }
+      aside { width: 100%; padding: 14px 16px; border-right: none; border-bottom: 1px solid var(--card-border); gap: 10px; }
       .brand { margin-bottom: 0; }
       .sidebar-clock { display: none; }
       .sync { margin: 0; }
       .nav-menu { flex-direction: row; overflow-x: auto; gap: 6px; }
-      .nav-menu button { white-space: nowrap; padding: 10px 12px; border-left: none !important; }
+      .nav-menu button { white-space: nowrap; padding: 10px 14px; border-left: none !important; }
       .nav-menu button.active { background: #0f172a; color: #fff; }
       main { padding: 20px 16px; }
       header { flex-direction: column; align-items: flex-start; gap: 14px; }
       .hero, .dashboard-layout { grid-template-columns: 1fr; }
-      .hero-value { font-size: 2.1rem; }
+      .hero-value { font-size: 2.2rem; }
       .lhead { display: none; }
-      .lrow { grid-template-columns: 34px 1fr auto; grid-template-areas: "chk main acoes" ". cat cat" ". par par" ". val val"; row-gap: 6px; padding-left: 16px; padding-right: 16px; }
+      .lrow { grid-template-columns: 34px 1fr auto; grid-template-areas: "chk main acoes" ". cat cat" ". par par" ". val val"; row-gap: 8px; padding-left: 16px; padding-right: 16px; }
       .lrow .chk { grid-area: chk; } .lrow .c-main { grid-area: main; } .lrow .c-cat { grid-area: cat; } .lrow .c-par { grid-area: par; } .lrow .c-val { grid-area: val; text-align: left; } .lrow .c-acoes { grid-area: acoes; }
       .c-val .ghost.num { text-align: left; }
-      .lgrp { padding: 12px 16px; }
+      .lgrp { padding: 14px 16px; }
       .ledger-top { padding: 16px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Modal de Login / Sincronização com Logótipo GD Pro e Login Google -->
+  <!-- Modal de Login / Sincronização -->
   <div id="login-overlay">
     <div class="login-box">
-      <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 16px;">
+      <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 20px;">
         <div style="width: 48px; height: 48px; background: #0f172a; color: #c5a059; font-weight: 900; font-size: 1.25rem; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(15,23,42,0.15); border: 1px solid rgba(197,160,89,0.3); flex-shrink: 0;">GD</div>
         <div>
           <h3 style="margin: 0; font-size: 1.2rem; font-weight: 800; color: #0f172a;">Caderneta <span style="color: #c5a059;">Pro</span></h3>
-          <span style="font-size: 0.72rem; font-weight: 800; background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 99px; text-transform: uppercase; letter-spacing: 0.5px;">Executive</span>
+          <span style="font-size: 0.72rem; font-weight: 800; background: #fef3c7; color: #92400e; padding: 3px 8px; border-radius: 99px; text-transform: uppercase; letter-spacing: 0.5px;">Executive</span>
         </div>
       </div>
-      <p style="font-size: .85rem; color: var(--text-muted); font-weight: 600; margin-bottom: 18px;">Entre com sua conta Google para sincronizar os seus dados.</p>
+      <p style="font-size: .86rem; color: var(--text-muted); font-weight: 600; margin-bottom: 20px;">Entre com sua conta Google para sincronizar os seus dados em tempo real.</p>
       
       <!-- Botão Login Google -->
       <button type="button" class="btn-google" onclick="entrarGoogle()">
@@ -381,7 +384,7 @@
         Entrar com o Google
       </button>
 
-      <div style="display: flex; align-items: center; margin: 16px 0; color: #94a3b8; font-size: 0.78rem; font-weight: 700; text-transform: uppercase;">
+      <div style="display: flex; align-items: center; margin: 18px 0; color: #94a3b8; font-size: 0.78rem; font-weight: 700; text-transform: uppercase;">
         <div style="flex: 1; height: 1px; background: #e2e8f0;"></div>
         <span style="padding: 0 10px;">ou com e-mail</span>
         <div style="flex: 1; height: 1px; background: #e2e8f0;"></div>
@@ -392,12 +395,12 @@
         <input type="password" id="l-senha" placeholder="Senha (mín. 6 caracteres)" autocomplete="current-password" required>
         <div id="login-erro"></div>
         <button type="submit" class="btn-action">Entrar com E-mail</button>
-        <button type="button" class="btn-action" style="background:#e2e8f0; color:#0f172a; margin-top: 6px;" onclick="entrar(event, true)">Criar conta</button>
+        <button type="button" class="btn-action" style="background:#f1f5f9; color:#0f172a; margin-top: 8px;" onclick="entrar(event, true)">Criar conta</button>
       </form>
     </div>
   </div>
 
-  <!-- Sidebar com Logo GD e Relógio em Tempo Real -->
+  <!-- Sidebar -->
   <aside>
     <div class="brand">
       <div class="brand-logo">GD</div>
@@ -461,7 +464,7 @@
       <div class="dashboard-layout">
         <div class="safra-card">
           <span class="card-label" style="margin-bottom: 12px; display:block;">Composição das Despesas</span>
-          <div style="height: 190px; position: relative;">
+          <div style="height: 195px; position: relative;">
             <canvas id="chartGastos"></canvas>
           </div>
         </div>
@@ -547,7 +550,7 @@
       </div>
 
       <div class="analysis-card">
-        <div class="analysis-header">Parecer do agente de carteira & Alertas Analíticos</div>
+        <div class="analysis-header">💡 Parecer do Agente de Carteira & Insights Analíticos</div>
         <div class="agente">
           <div class="score" id="st-score"><div><b id="st-nota">–</b><small id="st-grau">sem dados</small></div></div>
           <div id="state-insights"></div>
@@ -556,23 +559,27 @@
       </div>
 
       <div class="dual">
-        <div class="analysis-card"><div class="analysis-header">Por corretora / banco</div><div id="st-corretoras"></div></div>
-        <div class="analysis-card"><div class="analysis-header">Proventos por mês (R$)</div><div style="height:230px;position:relative;"><canvas id="chartMes"></canvas></div><div class="vazio" id="st-mes-vazio" style="display:none">Lance proventos abaixo para ver o histórico.</div></div>
+        <div class="analysis-card"><div class="analysis-header">🏦 Exposição por Corretora / Banco</div><div id="st-corretoras"></div></div>
+        <div class="analysis-card">
+          <div class="analysis-header">📈 Histórico de Proventos Recebidos (R$)</div>
+          <div style="height:230px;position:relative;"><canvas id="chartMes"></canvas></div>
+          <div class="vazio" id="st-mes-vazio" style="display:none">Lance proventos abaixo para ver o histórico.</div>
+        </div>
       </div>
 
       <div class="dashboard-layout">
         <div class="analysis-card">
-          <div class="analysis-header">O que está rendendo</div>
+          <div class="analysis-header">🏆 O que está mais rendendo</div>
           <div id="st-ranking"></div>
         </div>
         <div class="safra-card">
-          <span class="card-label" style="margin-bottom:12px;display:block;">Participação no rendimento</span>
+          <span class="card-label" style="margin-bottom:12px;display:block;">Participação no Rendimento</span>
           <div style="height:230px;position:relative;"><canvas id="chartProventos"></canvas></div>
         </div>
       </div>
 
       <div class="analysis-card">
-        <div class="analysis-header">Evolução do patrimônio</div>
+        <div class="analysis-header">📊 Curva de Evolução do Patrimônio</div>
         <div style="height:220px;position:relative;"><canvas id="chartEvo"></canvas></div>
         <div class="vazio" id="st-evo-vazio" style="display:none">O histórico começa a ser gravado quando você atualiza uma cotação. Volte em outro dia para ver a curva.</div>
       </div>
@@ -596,15 +603,15 @@
           <datalist id="dl-corr"></datalist>
         </div>
         <div class="form-container" style="margin-bottom:0">
-          <h4>+ Lançar provento recebido</h4>
+          <h4>+ Lançar Provento Recebido</h4>
           <form onsubmit="lancarProvento(event)" class="inline-form" style="grid-template-columns:1fr 1fr">
             <select id="pv-ativo" onchange="atualizarInfoCorretoraProvento()" required></select>
             <input type="month" id="pv-mes" required>
             <input type="number" step="0.0001" id="pv-valor" placeholder="Provento por cota (R$)" required>
-            <button type="submit" class="btn-action">Lançar</button>
+            <button type="submit" class="btn-action">Lançar Provento</button>
           </form>
-          <div id="pv-corretora-info" style="font-size:0.8rem; font-weight:700; color:var(--primary-gold-dark); margin-top:8px;"></div>
-          <div id="st-hist" style="margin-top:12px"></div>
+          <div id="pv-corretora-info" style="font-size:0.82rem; font-weight:800; color:var(--primary-gold-dark); margin-top:10px;"></div>
+          <div id="st-hist" style="margin-top:14px"></div>
         </div>
       </div>
 
@@ -616,7 +623,7 @@
       </div>
 
       <div class="ledger">
-        <div class="ledger-top"><h3>Carteira de Ativos</h3></div>
+        <div class="ledger-top"><h3>Carteira Consolidada de Ativos</h3></div>
         <div style="overflow-x:auto">
         <table>
           <thead>
@@ -692,7 +699,7 @@
   </div>
 
   <script>
-    /* ===== NUVEM (Firebase Cloud Firestore com Google Auth) ===== */
+    /* NUVEM (Firebase Cloud Firestore com Google Auth) */
     const FIREBASE_CONFIG = {
       apiKey: "AIzaSyBCb-3lMVDgrdTxBY1fuod-_bqYV0sDdLk",
       authDomain: "caderneta-a0754.firebaseapp.com",
@@ -742,7 +749,6 @@
 
     let snaps = JSON.parse(localStorage.getItem('gd_local_snaps')) || [];
 
-    // Função para corrigir nomes de corretoras/bancos (Capitaliza a primeira letra e ajusta abreviações comuns)
     function formatarCorretora(str) {
       if (!str) return 'Sem corretora';
       let limpo = String(str).trim();
@@ -870,7 +876,6 @@
       salvarAutomatico();
     }
 
-    /* Utilitários Inteligentes */
     const uid = () => 'i' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
     const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     const brl = n => (n || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -914,7 +919,6 @@
       document.querySelectorAll('.nav-menu button').forEach(el => el.classList.remove('active'));
       document.getElementById('aba-' + id).classList.add('active');
       
-      // Salva a aba ativa no localStorage para manter após refresh
       localStorage.setItem('gd_aba_ativa', id);
 
       if (event && event.currentTarget) {
@@ -1129,7 +1133,7 @@
       salvarAutomatico(); fecharModal(); renderizarDashboard();
     }
 
-    /* ===== State PRO: agente de carteira analítico & automático ===== */
+    /* State PRO: Agente Analítico e Estético */
     const CLASSE_COR = { 'FII': '#c5a059', 'Ação': '#0f172a', 'Renda Fixa': '#059669' };
     const PALETA = ['#c5a059', '#0f172a', '#059669', '#d97706', '#6366f1', '#dc2626', '#0ea5e9', '#a16207'];
     const CORRETORAS = ['BTG', 'Íon', 'XP', 'Inter', 'Nubank', 'Rico', 'Clear', 'Genial', 'C6', 'Itaú', 'Outra'];
@@ -1178,29 +1182,29 @@
       if (patRV > 0) {
         const pFII = (patFII / patRV) * 100;
         const pAcao = (patAcao / patRV) * 100;
-        add('ok', `Perfil de Renda Variável: <strong>${pct(pFII, 0)} em FIIs</strong> e <strong>${pct(pAcao, 0)} em Ações</strong>.`);
-        if (pFII > 80) add('warn', `Exposição muito alta a Fundos Imobiliários (${pct(pFII, 0)} da RV). Considere diversificar também em Ações focadas em valor ou crescimento.`, 4);
-        if (pAcao > 80 && patAcao > 0) add('warn', `Exposição forte em Ações (${pct(pAcao, 0)} da RV). Garanta aportes recorrentes em FIIs para equilibrar a renda mensal passiva.`, 4);
+        add('ok', `Alocação em Renda Variável: <strong>${pct(pFII, 0)} em FIIs</strong> e <strong>${pct(pAcao, 0)} em Ações</strong>.`);
+        if (pFII > 80) add('warn', `Foco excessivo em Fundos Imobiliários (${pct(pFII, 0)} da RV). Considere diversificar em Ações para equilibrar o portfólio.`, 4);
+        if (pAcao > 80 && patAcao > 0) add('warn', `Foco forte em Ações (${pct(pAcao, 0)} da RV). Lembre de manter aportes em FIIs para garantir fluxo passivo mensal.`, 4);
       }
 
       const ord = [...L].sort((a, b) => b.val - a.val), top = ord[0], pt = top.val / pat * 100;
-      if (pt > 40) add('bad', `<b>${esc(top.a.codigo)}</b> concentra <b>${pct(pt, 0)}</b> do patrimônio. Acima de 40% em um só ativo, uma má notícia nele pesa demais no todo.`, 18);
-      else if (pt > 25) add('warn', `<b>${esc(top.a.codigo)}</b> já é <b>${pct(pt, 0)}</b> da carteira. Vale dividir os próximos aportes em outros ativos.`, 8);
-      else add('ok', `Concentração sob controle: o maior ativo (<b>${esc(top.a.codigo)}</b>) tem ${pct(pt, 0)}.`);
+      if (pt > 40) add('bad', `<b>${esc(top.a.codigo)}</b> concentra <b>${pct(pt, 0)}</b> do patrimônio. Acima de 40%, o risco individual de desvalorização é elevado.`, 16);
+      else if (pt > 25) add('warn', `<b>${esc(top.a.codigo)}</b> representa <b>${pct(pt, 0)}</b> da carteira. Vale diluir os próximos aportes em outros papéis.`, 6);
+      else add('ok', `Concentração equilibrada: o maior ativo (<b>${esc(top.a.codigo)}</b>) detém ${pct(pt, 0)} do total.`);
 
-      if (L.length < 5) add('warn', `Só <b>${L.length}</b> ativo(s). Carteiras com menos de 5 posições ficam expostas ao risco individual de cada papel.`, 8);
+      if (L.length < 5) add('warn', `Sua carteira possui apenas <b>${L.length}</b> ativo(s). Recomenda-se expandir para 5+ posições para mitigar volatilidade setorial.`, 6);
       
       const porC = {}; L.forEach(l => porC[l.corr] = (porC[l.corr] || 0) + l.val);
       const rc = Object.entries(porC).sort((a, b) => b[1] - a[1]);
-      if (rc.length > 1 && rc[0][1] / pat > 0.8) add('warn', `<b>${pct(rc[0][1] / pat * 100, 0)}</b> do patrimônio está na custódia <b>${esc(rc[0][0])}</b>. Espalhar entre corretoras reduz risco operacional.`, 4);
-      if (porC['Sem corretora']) add('warn', `Há ativos sem corretora informada (<b>${brl(porC['Sem corretora'])}</b>). Preencha para o agente analisar por custódia.`);
+      if (rc.length > 1 && rc[0][1] / pat > 0.8) add('warn', `<b>${pct(rc[0][1] / pat * 100, 0)}</b> do seu capital está centralizado em <b>${esc(rc[0][0])}</b>. Considere descentralizar custódias.`, 4);
+      if (porC['Sem corretora']) add('warn', `Existem ativos sem corretora preenchida (<b>${brl(porC['Sem corretora'])}</b>). Atribua as custódias para relatórios precisos.`);
 
       const comCot = L.filter(l => !l.semCot);
-      if (comCot.length < L.length) add('warn', `<b>${L.length - comCot.length}</b> ativo(s) sem cotação atual: a valorização deles aparece zerada até você atualizar.`, 6);
+      if (comCot.length < L.length) add('warn', `Há <b>${L.length - comCot.length}</b> ativo(s) sem cotação atualizada na tabela.`, 4);
 
       const prov = soma(L, l => l.prov), yAA = prov * 12 / pat * 100, vsCdi = yAA / cdiAA * 100;
-      if (vsCdi < 60) add('warn', `A renda recorrente equivale a <b>${pct(yAA)} a.a.</b>, só <b>${pct(vsCdi, 0)} do CDI</b> (${pct(cdiAA)}). Parte do retorno depende da valorização das cotas.`, 6);
-      else add('ok', `A renda recorrente equivale a <b>${pct(yAA)} a.a.</b>, cerca de <b>${pct(vsCdi, 0)} do CDI</b> (${pct(cdiAA)}).`);
+      if (vsCdi < 60) add('warn', `Rendimento passivo atual em <b>${pct(yAA)} a.a.</b> (${pct(vsCdi, 0)} do CDI). O foco está em ganho de capital.`, 4);
+      else add('ok', `Excelente geração de caixa: rendimento passivo em <b>${pct(yAA)} a.a.</b> equivalente a <b>${pct(vsCdi, 0)} do CDI</b>.`);
 
       score = Math.max(0, Math.min(100, Math.round(score)));
       const ordem = { bad: 0, warn: 1, ok: 2 };
@@ -1216,7 +1220,7 @@
 
       document.getElementById('tabela-ativos').innerHTML = L.length ? L.map(l => `<tr>
           <td><strong>${esc(l.a.codigo)}</strong> <span class="badge ${l.a.classe === 'FII' ? 'badge-fii' : 'badge-pago'}">${esc(l.a.classe)}</span></td>
-          <td><input class="ghost" style="min-width:96px" list="dl-corr" value="${esc(l.corr)}" placeholder="—" onchange="editarAtivo(${l.a.id},'corretora',this.value)"></td>
+          <td><input class="ghost" style="min-width:110px" list="dl-corr" value="${esc(l.corr)}" placeholder="—" onchange="editarAtivo(${l.a.id},'corretora',this.value)"></td>
           <td class="num">${l.q}</td>
           <td class="num">${brl(l.p)}</td>
           <td class="num"><input class="ghost num" type="number" step="0.01" value="${l.semCot ? '' : l.c}" placeholder="${l.p.toFixed(2)}" onchange="editarAtivo(${l.a.id},'cotacao',this.value)"></td>
@@ -1226,7 +1230,7 @@
           <td class="num" style="color:var(--primary-gold-dark);font-weight:900;">${brl(l.prov)}${l.est ? '<span class="badge badge-est">est.</span>' : ''}</td>
           <td class="num">${pct(l.val > 0 ? l.prov / l.val * 100 : 0, 2)}</td>
           <td><button class="btn-del" title="Remover" onclick="excluirAtivo(${l.a.id})">${ICO_LIXO}</button></td>
-        </tr>`).join('') : '<tr><td colspan="11" class="vazio">Nenhum ativo ainda. Cadastre o primeiro acima.</td></tr>';
+        </tr>`).join('') : '<tr><td colspan="11" class="vazio">Nenhum ativo cadastrado. Adicione o primeiro acima.</td></tr>';
 
       document.getElementById('st-patrimonio').innerText = brl(patTotal);
       document.getElementById('st-dividendos').innerText = brl(divTotal);
@@ -1243,7 +1247,7 @@
       document.getElementById('dl-corr').innerHTML = CORRETORAS.map(c => `<option value="${c}">`).join('');
       
       const sel = document.getElementById('pv-ativo'), atual = sel.value;
-      sel.innerHTML = L.filter(l => l.a.classe !== 'Renda Fixa').map(l => `<option value="${l.a.id}">${esc(l.a.codigo)} (${esc(l.corr)})</option>`).join('') || '<option value="">Cadastre um FII/Ação</option>';
+      sel.innerHTML = L.filter(l => l.a.classe !== 'Renda Fixa').map(l => `<option value="${l.a.id}">${esc(l.a.codigo)} — Custódia: ${esc(l.corr)}</option>`).join('') || '<option value="">Cadastre um FII/Ação</option>';
       if (atual) sel.value = atual;
       atualizarInfoCorretoraProvento();
 
@@ -1257,18 +1261,18 @@
       document.getElementById('st-corretoras').innerHTML = L.length ? Object.entries(porC).sort((a, b) => b[1].val - a[1].val).map(([c, o], k) => `<div class="rk">
           <div class="rk-top"><b>${esc(c)}</b><span class="rk-val">${brl(o.val)}</span></div>
           <div class="rk-bar"><i style="width:${(patTotal > 0 ? o.val / patTotal * 100 : 0).toFixed(1)}%;background:${PALETA[k % PALETA.length]}"></i></div>
-          <div class="rk-sub">${pct(patTotal > 0 ? o.val / patTotal * 100 : 0, 0)} do patrimônio · ${o.n} ativo(s) · rende ${brl(o.prov)}/mês</div></div>`).join('') : '<div class="vazio">Sem ativos.</div>';
+          <div class="rk-sub">${pct(patTotal > 0 ? o.val / patTotal * 100 : 0, 0)} do patrimônio · ${o.n} ativo(s) · rende ${brl(o.prov)}/mês</div></div>`).join('') : '<div class="vazio">Sem ativos cadastrados.</div>';
 
       const ordenado = [...L].sort((a, b) => b.prov - a.prov);
       const maxProv = Math.max(...ordenado.map(l => l.prov), 0.01);
       document.getElementById('st-ranking').innerHTML = ordenado.length ? ordenado.map((l, k) => {
         const parte = divTotal > 0 ? l.prov / divTotal * 100 : 0;
         return `<div class="rk">
-          <div class="rk-top"><b>${esc(l.a.codigo)}</b> <small style="color:var(--text-muted)">(${esc(l.corr)})</small><span class="badge ${l.a.classe === 'FII' ? 'badge-fii' : 'badge-pago'}">${esc(l.a.classe)}</span><span class="rk-val">${brl(l.prov)}/mês</span></div>
+          <div class="rk-top"><b>${esc(l.a.codigo)}</b> <span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">[${esc(l.corr)}]</span><span class="badge ${l.a.classe === 'FII' ? 'badge-fii' : 'badge-pago'}">${esc(l.a.classe)}</span><span class="rk-val">${brl(l.prov)}/mês</span></div>
           <div class="rk-bar"><i style="width:${(l.prov / maxProv * 100).toFixed(1)}%;background:${PALETA[k % PALETA.length]}"></i></div>
-          <div class="rk-sub">${parte.toFixed(0)}% do rendimento · Custódia: <b>${esc(l.corr)}</b> · ${pct(l.val > 0 ? l.prov / l.val * 100 : 0, 2)} a.m. sobre ${brl(l.val)}${l.est ? ' · estimado' : ''}</div>
+          <div class="rk-sub">${parte.toFixed(0)}% do rendimento total · ${pct(l.val > 0 ? l.prov / l.val * 100 : 0, 2)} a.m. sobre ${brl(l.val)}${l.est ? ' · estimado' : ''}</div>
         </div>`;
-      }).join('') : '<div class="vazio">Cadastre ativos para ver o que está rendendo.</div>';
+      }).join('') : '<div class="vazio">Sem ativos para exibir ranking.</div>';
 
       const lanc = [];
       ativos.forEach(a => {
@@ -1276,15 +1280,38 @@
         (a.provs || []).forEach(p => lanc.push({ id: a.id, cod: a.codigo, corr: corrNome, m: p.m, v: p.v, q: parseFloat(a.qtd) || 0 }));
       });
       lanc.sort((a, b) => a.m < b.m ? 1 : -1);
-      document.getElementById('st-hist').innerHTML = lanc.slice(0, 6).map(x => `<div class="hl"><span><strong>${esc(x.cod)}</strong> <small>(${esc(x.corr)})</small></span><span>${mesBR(x.m)}</span><b>${brl(x.v)}/cota</b><button class="btn-del" title="Remover" onclick="excluirProvento(${x.id},'${x.m}')">${ICO_LIXO}</button></div>`).join('');
+      document.getElementById('st-hist').innerHTML = lanc.slice(0, 6).map(x => `<div class="hl"><span><strong>${esc(x.cod)}</strong> <small style="color:var(--text-muted)">(${esc(x.corr)})</small></span><span>${mesBR(x.m)}</span><b>${brl(x.v)}/cota</b><button class="btn-del" title="Remover" onclick="excluirProvento(${x.id},'${x.m}')">${ICO_LIXO}</button></div>`).join('');
 
+      /* Renderização dos Gráficos com Estética Institucional Refinada */
       if (typeof Chart !== 'undefined') {
         const temDados = divTotal > 0;
+        
+        // Cores e fontes globais do Chart.js
+        Chart.defaults.font.family = 'Manrope';
+        Chart.defaults.color = '#64748b';
+
         if (chartProvInstance) chartProvInstance.destroy();
         chartProvInstance = new Chart(document.getElementById('chartProventos').getContext('2d'), {
           type: 'doughnut',
-          data: { labels: temDados ? ordenado.map(l => `${l.a.codigo} (${l.corr})`) : ['Sem rendimento'], datasets: [{ data: temDados ? ordenado.map(l => +l.prov.toFixed(2)) : [1], backgroundColor: temDados ? ordenado.map((_, k) => PALETA[k % PALETA.length]) : ['#e2e8f0'], borderWidth: 2, borderColor: '#fff' }] },
-          options: { responsive: true, maintainAspectRatio: false, cutout: '62%', plugins: { legend: { position: 'bottom', labels: { font: { weight: 'bold' }, boxWidth: 12 } }, tooltip: { enabled: temDados, callbacks: { label: c => ` ${c.label}: ${brl(c.parsed)}/mês` } } } }
+          data: { 
+            labels: temDados ? ordenado.map(l => `${l.a.codigo} (${l.corr})`) : ['Sem rendimento'], 
+            datasets: [{ 
+              data: temDados ? ordenado.map(l => +l.prov.toFixed(2)) : [1], 
+              backgroundColor: temDados ? ordenado.map((_, k) => PALETA[k % PALETA.length]) : ['#e2e8f0'], 
+              borderWidth: 3, 
+              borderColor: '#ffffff',
+              hoverOffset: 6
+            }] 
+          },
+          options: { 
+            responsive: true, 
+            maintainAspectRatio: false, 
+            cutout: '68%', 
+            plugins: { 
+              legend: { position: 'bottom', labels: { font: { weight: '700', size: 11 }, boxWidth: 10, padding: 16 } }, 
+              tooltip: { enabled: temDados, backgroundColor: '#0f172a', titleFont: { weight: '800' }, bodyFont: { weight: '600' }, padding: 12, cornerRadius: 8, callbacks: { label: c => ` ${c.label}: ${brl(c.parsed)}/mês` } } 
+            } 
+          }
         });
 
         const porMes = {};
@@ -1292,24 +1319,85 @@
         const meses = Object.keys(porMes).sort().slice(-12);
         document.getElementById('st-mes-vazio').style.display = meses.length ? 'none' : 'block';
         document.getElementById('chartMes').parentElement.style.display = meses.length ? 'block' : 'none';
+        
         if (chartMesInstance) chartMesInstance.destroy();
         if (meses.length) chartMesInstance = new Chart(document.getElementById('chartMes').getContext('2d'), {
           type: 'bar',
-          data: { labels: meses.map(mesBR), datasets: [{ data: meses.map(m => +porMes[m].toFixed(2)), backgroundColor: '#c5a059', borderRadius: 6 }] },
-          options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ' ' + brl(c.parsed.y) } } } }
+          data: { 
+            labels: meses.map(mesBR), 
+            datasets: [{ 
+              data: meses.map(m => +porMes[m].toFixed(2)), 
+              backgroundColor: '#c5a059', 
+              borderRadius: 8,
+              borderSkipped: false
+            }] 
+          },
+          options: { 
+            responsive: true, 
+            maintainAspectRatio: false, 
+            plugins: { 
+              legend: { display: false }, 
+              tooltip: { backgroundColor: '#0f172a', padding: 12, cornerRadius: 8, callbacks: { label: c => ' Recebido: ' + brl(c.parsed.y) } } 
+            },
+            scales: {
+              x: { grid: { display: false } },
+              y: { grid: { color: '#edf2f7' }, ticks: { callback: v => 'R$ ' + v } }
+            }
+          }
         });
 
         const sn = snaps.slice(-90), evoOk = sn.length >= 2;
         document.getElementById('st-evo-vazio').style.display = evoOk ? 'none' : 'block';
         document.getElementById('chartEvo').parentElement.style.display = evoOk ? 'block' : 'none';
+        
         if (chartEvoInstance) chartEvoInstance.destroy();
-        if (evoOk) chartEvoInstance = new Chart(document.getElementById('chartEvo').getContext('2d'), {
-          type: 'line',
-          data: { labels: sn.map(s => s.d.split('-').reverse().slice(0, 2).join('/')), datasets: [
-            { label: 'Valor de mercado', data: sn.map(s => s.val), borderColor: '#c5a059', backgroundColor: 'rgba(197,160,89,.12)', fill: true, tension: .3, pointRadius: 2 },
-            { label: 'Investido (custo)', data: sn.map(s => s.inv), borderColor: '#0f172a', borderDash: [5, 4], tension: .3, pointRadius: 0 }] },
-          options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { weight: 'bold' }, boxWidth: 12 } }, tooltip: { callbacks: { label: c => ` ${c.dataset.label}: ${brl(c.parsed.y)}` } } } }
-        });
+        if (evoOk) {
+          const ctxEvo = document.getElementById('chartEvo').getContext('2d');
+          const gradient = ctxEvo.createLinearGradient(0, 0, 0, 220);
+          gradient.addColorStop(0, 'rgba(197, 160, 89, 0.25)');
+          gradient.addColorStop(1, 'rgba(197, 160, 89, 0.0)');
+
+          chartEvoInstance = new Chart(ctxEvo, {
+            type: 'line',
+            data: { 
+              labels: sn.map(s => s.d.split('-').reverse().slice(0, 2).join('/')), 
+              datasets: [
+                { 
+                  label: 'Valor de mercado', 
+                  data: sn.map(s => s.val), 
+                  borderColor: '#c5a059', 
+                  backgroundColor: gradient, 
+                  fill: true, 
+                  tension: .35, 
+                  borderWidth: 3,
+                  pointRadius: 0,
+                  pointHoverRadius: 5
+                },
+                { 
+                  label: 'Custo investido', 
+                  data: sn.map(s => s.inv), 
+                  borderColor: '#0f172a', 
+                  borderDash: [6, 4], 
+                  borderWidth: 2,
+                  tension: .35, 
+                  pointRadius: 0 
+                }
+              ] 
+            },
+            options: { 
+              responsive: true, 
+              maintainAspectRatio: false, 
+              plugins: { 
+                legend: { position: 'bottom', labels: { font: { weight: '700', size: 11 }, boxWidth: 12, padding: 16 } }, 
+                tooltip: { backgroundColor: '#0f172a', padding: 12, cornerRadius: 8, callbacks: { label: c => ` ${c.dataset.label}: ${brl(c.parsed.y)}` } } 
+              },
+              scales: {
+                x: { grid: { display: false } },
+                y: { grid: { color: '#edf2f7' } }
+              }
+            }
+          });
+        }
       }
 
       const r = analisar(L), sc = document.getElementById('st-score');
@@ -1327,7 +1415,7 @@
       const a = ativos.find(x => String(x.id) === String(selId));
       if (a) {
         const corr = formatarCorretora(a.corretora);
-        infoEl.textContent = `🏦 Custódia deste ativo: ${corr}`;
+        infoEl.textContent = `🏦 Custódia vinculada a este ativo: ${corr}`;
       } else {
         infoEl.textContent = '';
       }
@@ -1415,10 +1503,17 @@
           datasets: [{
             data: [cats.Fixa, cats.Cartao, cats.Variavel, cats.Outros],
             backgroundColor: ['#c5a059', '#d97706', '#059669', '#dc2626'],
-            borderWidth: 0
+            borderWidth: 3,
+            borderColor: '#ffffff',
+            hoverOffset: 6
           }]
         },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { font: { weight: 'bold' } } } } }
+        options: { 
+          responsive: true, 
+          maintainAspectRatio: false, 
+          cutout: '68%',
+          plugins: { legend: { position: 'right', labels: { font: { weight: '700', size: 11 }, boxWidth: 10, padding: 14 } } } 
+        }
       });
     }
 
