@@ -319,7 +319,6 @@
     
     td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 
-
     /* ===== State PRO ===== */
     .agente { display: grid; grid-template-columns: 190px 1fr; gap: 26px; align-items: start; }
     .score { width: 150px; height: 150px; border-radius: 50%; display: grid; place-items: center; margin: 4px auto; background: conic-gradient(var(--sc, #94a3b8) calc(var(--p, 0) * 1%), #e8ecf2 0); }
@@ -413,9 +412,9 @@
     <div class="sync" id="sync-status">💾 Salvo só neste aparelho</div>
 
     <ul class="nav-menu">
-      <li><button onclick="mudarAba('gastos', event)" class="active">📊 Contas a Pagar</button></li>
-      <li><button onclick="mudarAba('state', event)">🏛️ State & Ativos</button></li>
-      <li><button onclick="mudarAba('empresarial', event)">🏢 Faturamento PJ</button></li>
+      <li><button onclick="mudarAba('gastos', event)" id="btn-tab-gastos">📊 Contas a Pagar</button></li>
+      <li><button onclick="mudarAba('state', event)" id="btn-tab-state">🏛️ State & Ativos</button></li>
+      <li><button onclick="mudarAba('empresarial', event)" id="btn-tab-empresarial">🏢 Faturamento PJ</button></li>
     </ul>
   </aside>
 
@@ -423,7 +422,7 @@
   <main>
     
     <!-- ABA 1: CONTAS A PAGAR -->
-    <section id="aba-gastos" class="tab-content active">
+    <section id="aba-gastos" class="tab-content">
       <header>
         <div>
           <h1>Contas a Pagar & Gestão de Caixa</h1>
@@ -527,7 +526,7 @@
       <header>
         <div>
           <h1>State & Gestão de Ativos</h1>
-          <p>Consolidação patrimonial, valorização e proventos com leitura de corretora.</p>
+          <p>Consolidação patrimonial, valorização, proventos automáticos e perfil analítico.</p>
         </div>
       </header>
 
@@ -548,12 +547,12 @@
       </div>
 
       <div class="analysis-card">
-        <div class="analysis-header">Parecer do agente de carteira</div>
+        <div class="analysis-header">Parecer do agente de carteira & Alertas Analíticos</div>
         <div class="agente">
           <div class="score" id="st-score"><div><b id="st-nota">–</b><small id="st-grau">sem dados</small></div></div>
           <div id="state-insights"></div>
         </div>
-        <div class="nota">Leitura automática por regras, calculada no seu navegador (sem custo de API). Não é recomendação de investimento.</div>
+        <div class="nota">Leitura automática de alocação (FIIs vs Ações), limites de concentração e resiliência de rendimentos calculada localmente.</div>
       </div>
 
       <div class="dual">
@@ -587,7 +586,7 @@
               <option value="CDB">Renda Fixa (CDB)</option>
             </select>
             <input type="text" id="st-codigo" placeholder="Ticker (ex: MXRF11, PETR4)" required>
-            <input type="text" id="st-corretora" list="dl-corr" placeholder="Corretora / banco (BTG, íon...)">
+            <input type="text" id="st-corretora" list="dl-corr" placeholder="Corretora / banco (BTG, Íon...)">
             <input type="number" step="any" id="st-qtd" placeholder="Quantidade / Cotas" required>
             <input type="number" step="0.01" id="st-preco" placeholder="Preço médio (R$)" required>
             <input type="number" step="0.01" id="st-cot" placeholder="Cotação atual (R$)">
@@ -599,11 +598,12 @@
         <div class="form-container" style="margin-bottom:0">
           <h4>+ Lançar provento recebido</h4>
           <form onsubmit="lancarProvento(event)" class="inline-form" style="grid-template-columns:1fr 1fr">
-            <select id="pv-ativo" required></select>
+            <select id="pv-ativo" onchange="atualizarInfoCorretoraProvento()" required></select>
             <input type="month" id="pv-mes" required>
             <input type="number" step="0.0001" id="pv-valor" placeholder="Provento por cota (R$)" required>
             <button type="submit" class="btn-action">Lançar</button>
           </form>
+          <div id="pv-corretora-info" style="font-size:0.8rem; font-weight:700; color:var(--primary-gold-dark); margin-top:8px;"></div>
           <div id="st-hist" style="margin-top:12px"></div>
         </div>
       </div>
@@ -621,7 +621,7 @@
         <table>
           <thead>
             <tr>
-              <th>Ativo</th><th>Corretora</th><th class="num">Qtd</th><th class="num">Preço médio</th><th class="num">Cotação</th>
+              <th>Ativo</th><th>Corretora / Banco</th><th class="num">Qtd</th><th class="num">Preço médio</th><th class="num">Cotação</th>
               <th class="num">Valor atual</th><th class="num">Valorização</th><th class="num">Prov./cota (média)</th>
               <th class="num">Rende / mês</th><th class="num">DY a.m.</th><th></th>
             </tr>
@@ -736,15 +736,27 @@
 
     let bancoMensal = JSON.parse(localStorage.getItem('gd_local_mensal')) || {};
     let ativos = JSON.parse(localStorage.getItem('gd_local_ativos')) || [
-      { id: 1, codigo: "MXRF11", tipo: "RV", qtd: 100, preco: 10.20, taxa: 0.9, classe: "FII" },
-      { id: 2, codigo: "CDB ITAÚ", tipo: "CDB", qtd: 1, preco: 5000.00, taxa: 0.85, classe: "Renda Fixa" }
+      { id: 1, codigo: "MXRF11", tipo: "RV", qtd: 100, preco: 10.20, taxa: 0.9, classe: "FII", corretora: "BTG" },
+      { id: 2, codigo: "CDB ITAÚ", tipo: "CDB", qtd: 1, preco: 5000.00, taxa: 0.85, classe: "Renda Fixa", corretora: "Itaú" }
     ];
 
     let snaps = JSON.parse(localStorage.getItem('gd_local_snaps')) || [];
 
+    // Função para corrigir nomes de corretoras/bancos (Capitaliza a primeira letra e ajusta abreviações comuns)
+    function formatarCorretora(str) {
+      if (!str) return 'Sem corretora';
+      let limpo = String(str).trim();
+      if (!limpo) return 'Sem corretora';
+      const upper = limpo.toUpperCase();
+      if (upper === 'BTG' || upper === 'XP' || upper === 'C6') return upper;
+      if (upper === 'ION' || upper === 'ÍON') return 'Íon';
+      return limpo.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+    }
+
     function statusNuvem(t, cls) { const el = document.getElementById('sync-status'); if (el) { el.className = 'sync ' + (cls || ''); el.innerHTML = t; } }
 
     function salvarAutomatico() {
+      ativos.forEach(a => { if (a.corretora) a.corretora = formatarCorretora(a.corretora); });
       localStorage.setItem('gd_local_mensal', JSON.stringify(bancoMensal));
       localStorage.setItem('gd_local_ativos', JSON.stringify(ativos));
       localStorage.setItem('gd_local_snaps', JSON.stringify(snaps));
@@ -766,6 +778,7 @@
     function aplicarRemoto(dados) {
       const d = JSON.parse(dados);
       bancoMensal = d.bancoMensal || {}; ativos = d.ativos || []; snaps = d.snaps || [];
+      ativos.forEach(a => { if (a.corretora) a.corretora = formatarCorretora(a.corretora); });
       localStorage.setItem('gd_local_snaps', JSON.stringify(snaps));
       localStorage.setItem('gd_local_mensal', JSON.stringify(bancoMensal));
       localStorage.setItem('gd_local_ativos', JSON.stringify(ativos));
@@ -900,8 +913,24 @@
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.nav-menu button').forEach(el => el.classList.remove('active'));
       document.getElementById('aba-' + id).classList.add('active');
-      event.currentTarget.classList.add('active');
+      
+      // Salva a aba ativa no localStorage para manter após refresh
+      localStorage.setItem('gd_aba_ativa', id);
+
+      if (event && event.currentTarget) {
+        event.currentTarget.classList.add('active');
+      } else {
+        const btn = document.getElementById('btn-tab-' + id);
+        if (btn) btn.classList.add('active');
+      }
+
       if (id === 'state') renderizarState();
+    }
+
+    function restaurarAbaAtiva() {
+      const abaSalva = localStorage.getItem('gd_aba_ativa') || 'gastos';
+      const btn = document.getElementById('btn-tab-' + abaSalva);
+      mudarAba(abaSalva, btn ? { currentTarget: btn } : null);
     }
 
     function alterarMes(delta) {
@@ -1100,10 +1129,10 @@
       salvarAutomatico(); fecharModal(); renderizarDashboard();
     }
 
-    /* ===== State PRO: agente de carteira (100% no navegador, sem API paga) ===== */
+    /* ===== State PRO: agente de carteira analítico & automático ===== */
     const CLASSE_COR = { 'FII': '#c5a059', 'Ação': '#0f172a', 'Renda Fixa': '#059669' };
     const PALETA = ['#c5a059', '#0f172a', '#059669', '#d97706', '#6366f1', '#dc2626', '#0ea5e9', '#a16207'];
-    const CORRETORAS = ['BTG', 'íon', 'XP', 'Inter', 'Nubank', 'Rico', 'Clear', 'Genial', 'C6', 'Itaú', 'Outra'];
+    const CORRETORAS = ['BTG', 'Íon', 'XP', 'Inter', 'Nubank', 'Rico', 'Clear', 'Genial', 'C6', 'Itaú', 'Outra'];
     let chartProvInstance = null, chartMesInstance = null, chartEvoInstance = null;
     let cdiAA = parseFloat(localStorage.getItem('gd_cdi')) || 14.5;
     let brapiToken = localStorage.getItem('gd_brapi') || '';
@@ -1125,7 +1154,7 @@
         const semCot = !(parseFloat(a.cotacao) > 0), c = semCot ? p : parseFloat(a.cotacao);
         const inv = q * p, val = q * c, mp = mediaProv(a);
         const prov = mp ? mp.avg * q : (a.classe === 'Renda Fixa' ? val : inv) * t / 100;
-        return { a, q, p, t, c, inv, val, pnl: val - inv, pnlP: inv > 0 ? (val - inv) / inv * 100 : 0, mp, prov, est: !mp, semCot, corr: (a.corretora || '').trim() || 'Sem corretora' };
+        return { a, q, p, t, c, inv, val, pnl: val - inv, pnlP: inv > 0 ? (val - inv) / inv * 100 : 0, mp, prov, est: !mp, semCot, corr: formatarCorretora(a.corretora) };
       });
     }
 
@@ -1141,41 +1170,37 @@
       if (!L.length || pat <= 0) return { score: null, it: [{ n: 'warn', t: 'Cadastre ativos para o agente analisar a carteira.' }] };
       const it = []; let score = 100;
       const add = (n, t, pen = 0) => { it.push({ n, t }); score -= pen; };
+      
+      const patRV = soma(L.filter(l => l.a.classe !== 'Renda Fixa'), l => l.val);
+      const patFII = soma(L.filter(l => l.a.classe === 'FII'), l => l.val);
+      const patAcao = soma(L.filter(l => l.a.classe === 'Ação'), l => l.val);
+      
+      if (patRV > 0) {
+        const pFII = (patFII / patRV) * 100;
+        const pAcao = (patAcao / patRV) * 100;
+        add('ok', `Perfil de Renda Variável: <strong>${pct(pFII, 0)} em FIIs</strong> e <strong>${pct(pAcao, 0)} em Ações</strong>.`);
+        if (pFII > 80) add('warn', `Exposição muito alta a Fundos Imobiliários (${pct(pFII, 0)} da RV). Considere diversificar também em Ações focadas em valor ou crescimento.`, 4);
+        if (pAcao > 80 && patAcao > 0) add('warn', `Exposição forte em Ações (${pct(pAcao, 0)} da RV). Garanta aportes recorrentes em FIIs para equilibrar a renda mensal passiva.`, 4);
+      }
+
       const ord = [...L].sort((a, b) => b.val - a.val), top = ord[0], pt = top.val / pat * 100;
       if (pt > 40) add('bad', `<b>${esc(top.a.codigo)}</b> concentra <b>${pct(pt, 0)}</b> do patrimônio. Acima de 40% em um só ativo, uma má notícia nele pesa demais no todo.`, 18);
       else if (pt > 25) add('warn', `<b>${esc(top.a.codigo)}</b> já é <b>${pct(pt, 0)}</b> da carteira. Vale dividir os próximos aportes em outros ativos.`, 8);
       else add('ok', `Concentração sob controle: o maior ativo (<b>${esc(top.a.codigo)}</b>) tem ${pct(pt, 0)}.`);
 
       if (L.length < 5) add('warn', `Só <b>${L.length}</b> ativo(s). Carteiras com menos de 5 posições ficam expostas ao risco individual de cada papel.`, 8);
-      const nFII = L.filter(l => l.a.classe === 'FII').length;
-      if (nFII === 1) add('warn', `Apenas <b>1 FII</b>: um único fundo define toda a sua renda de FIIs. Considere diversificar entre papel, tijolo e fundos de fundos.`, 4);
-
+      
       const porC = {}; L.forEach(l => porC[l.corr] = (porC[l.corr] || 0) + l.val);
       const rc = Object.entries(porC).sort((a, b) => b[1] - a[1]);
       if (rc.length > 1 && rc[0][1] / pat > 0.8) add('warn', `<b>${pct(rc[0][1] / pat * 100, 0)}</b> do patrimônio está na custódia <b>${esc(rc[0][0])}</b>. Espalhar entre corretoras reduz risco operacional.`, 4);
       if (porC['Sem corretora']) add('warn', `Há ativos sem corretora informada (<b>${brl(porC['Sem corretora'])}</b>). Preencha para o agente analisar por custódia.`);
-      L.filter(l => l.a.classe === 'Renda Fixa' && l.val > 250000).forEach(l => add('warn', `<b>${esc(l.a.codigo)}</b> passa de R$ 250 mil em um emissor, acima do teto de cobertura do FGC.`, 4));
 
       const comCot = L.filter(l => !l.semCot);
       if (comCot.length < L.length) add('warn', `<b>${L.length - comCot.length}</b> ativo(s) sem cotação atual: a valorização deles aparece zerada até você atualizar.`, 6);
-      comCot.filter(l => l.pnlP < -10 && l.a.classe !== 'Renda Fixa').forEach(l => add('warn', `<b>${esc(l.a.codigo)}</b> está <b>${pct(Math.abs(l.pnlP))}</b> abaixo do seu preço médio. Reavalie a tese antes de aportar mais.`, 4));
-      const provAcum = soma(L, l => l.q * soma(l.a.provs || [], x => x.v)), inv = soma(L, l => l.inv);
-      if (comCot.length) {
-        const ret = (pat + provAcum - inv) / inv * 100;
-        add(ret >= 0 ? 'ok' : 'warn', `Retorno total (cotas + proventos lançados): <b>${sgn(ret)}</b> sobre o custo de ${brl(inv)}.`, ret < -5 ? 6 : 0);
-      }
 
       const prov = soma(L, l => l.prov), yAA = prov * 12 / pat * 100, vsCdi = yAA / cdiAA * 100;
       if (vsCdi < 60) add('warn', `A renda recorrente equivale a <b>${pct(yAA)} a.a.</b>, só <b>${pct(vsCdi, 0)} do CDI</b> (${pct(cdiAA)}). Parte do retorno depende da valorização das cotas.`, 6);
       else add('ok', `A renda recorrente equivale a <b>${pct(yAA)} a.a.</b>, cerca de <b>${pct(vsCdi, 0)} do CDI</b> (${pct(cdiAA)}).`);
-
-      L.filter(l => l.a.classe !== 'Renda Fixa' && l.mp && l.mp.n >= 3).forEach(l => {
-        const m = l.mp.avg, dp = Math.sqrt(soma(l.mp.vals, v => (v - m) ** 2) / l.mp.n), cv = m > 0 ? dp / m : 0;
-        if (l.mp.ult < m * 0.85) add('warn', `<b>${esc(l.a.codigo)}</b>: o último provento (${brl(l.mp.ult)}) ficou <b>${pct((1 - l.mp.ult / m) * 100, 0)}</b> abaixo da média de ${brl(m)}/cota.`, 5);
-        else if (cv > 0.3 && l.mp.n >= 4) add('warn', `<b>${esc(l.a.codigo)}</b> paga de forma irregular (variação de ${pct(cv * 100, 0)} em torno da média).`, 3);
-      });
-      const est = L.filter(l => l.est && l.a.classe !== 'Renda Fixa');
-      if (est.length) add('warn', `O rendimento de <b>${est.map(l => esc(l.a.codigo)).join(', ')}</b> é estimado pela taxa digitada. Lance os proventos reais para a média ficar precisa.`, 3);
 
       score = Math.max(0, Math.min(100, Math.round(score)));
       const ordem = { bad: 0, warn: 1, ok: 2 };
@@ -1191,7 +1216,7 @@
 
       document.getElementById('tabela-ativos').innerHTML = L.length ? L.map(l => `<tr>
           <td><strong>${esc(l.a.codigo)}</strong> <span class="badge ${l.a.classe === 'FII' ? 'badge-fii' : 'badge-pago'}">${esc(l.a.classe)}</span></td>
-          <td><input class="ghost" style="min-width:96px" list="dl-corr" value="${esc(l.a.corretora || '')}" placeholder="—" onchange="editarAtivo(${l.a.id},'corretora',this.value)"></td>
+          <td><input class="ghost" style="min-width:96px" list="dl-corr" value="${esc(l.corr)}" placeholder="—" onchange="editarAtivo(${l.a.id},'corretora',this.value)"></td>
           <td class="num">${l.q}</td>
           <td class="num">${brl(l.p)}</td>
           <td class="num"><input class="ghost num" type="number" step="0.01" value="${l.semCot ? '' : l.c}" placeholder="${l.p.toFixed(2)}" onchange="editarAtivo(${l.a.id},'cotacao',this.value)"></td>
@@ -1216,9 +1241,11 @@
       document.getElementById('st-cdi').value = cdiAA;
       document.getElementById('st-token').value = brapiToken;
       document.getElementById('dl-corr').innerHTML = CORRETORAS.map(c => `<option value="${c}">`).join('');
+      
       const sel = document.getElementById('pv-ativo'), atual = sel.value;
-      sel.innerHTML = L.filter(l => l.a.classe !== 'Renda Fixa').map(l => `<option value="${l.a.id}">${esc(l.a.codigo)}</option>`).join('') || '<option value="">Cadastre um FII/Ação</option>';
+      sel.innerHTML = L.filter(l => l.a.classe !== 'Renda Fixa').map(l => `<option value="${l.a.id}">${esc(l.a.codigo)} (${esc(l.corr)})</option>`).join('') || '<option value="">Cadastre um FII/Ação</option>';
       if (atual) sel.value = atual;
+      atualizarInfoCorretoraProvento();
 
       const porClasse = {};
       L.forEach(l => { porClasse[l.a.classe] = (porClasse[l.a.classe] || 0) + l.prov; });
@@ -1237,23 +1264,26 @@
       document.getElementById('st-ranking').innerHTML = ordenado.length ? ordenado.map((l, k) => {
         const parte = divTotal > 0 ? l.prov / divTotal * 100 : 0;
         return `<div class="rk">
-          <div class="rk-top"><b>${esc(l.a.codigo)}</b><span class="badge ${l.a.classe === 'FII' ? 'badge-fii' : 'badge-pago'}">${esc(l.a.classe)}</span><span class="rk-val">${brl(l.prov)}/mês</span></div>
+          <div class="rk-top"><b>${esc(l.a.codigo)}</b> <small style="color:var(--text-muted)">(${esc(l.corr)})</small><span class="badge ${l.a.classe === 'FII' ? 'badge-fii' : 'badge-pago'}">${esc(l.a.classe)}</span><span class="rk-val">${brl(l.prov)}/mês</span></div>
           <div class="rk-bar"><i style="width:${(l.prov / maxProv * 100).toFixed(1)}%;background:${PALETA[k % PALETA.length]}"></i></div>
-          <div class="rk-sub">${parte.toFixed(0)}% do rendimento · ${pct(l.val > 0 ? l.prov / l.val * 100 : 0, 2)} a.m. sobre ${brl(l.val)} · ${brl(l.prov * 12)} por ano${l.est ? ' · estimado' : ''}</div>
+          <div class="rk-sub">${parte.toFixed(0)}% do rendimento · Custódia: <b>${esc(l.corr)}</b> · ${pct(l.val > 0 ? l.prov / l.val * 100 : 0, 2)} a.m. sobre ${brl(l.val)}${l.est ? ' · estimado' : ''}</div>
         </div>`;
       }).join('') : '<div class="vazio">Cadastre ativos para ver o que está rendendo.</div>';
 
       const lanc = [];
-      ativos.forEach(a => (a.provs || []).forEach(p => lanc.push({ id: a.id, cod: a.codigo, m: p.m, v: p.v, q: parseFloat(a.qtd) || 0 })));
+      ativos.forEach(a => {
+        const corrNome = formatarCorretora(a.corretora);
+        (a.provs || []).forEach(p => lanc.push({ id: a.id, cod: a.codigo, corr: corrNome, m: p.m, v: p.v, q: parseFloat(a.qtd) || 0 }));
+      });
       lanc.sort((a, b) => a.m < b.m ? 1 : -1);
-      document.getElementById('st-hist').innerHTML = lanc.slice(0, 6).map(x => `<div class="hl"><span>${esc(x.cod)}</span><span>${mesBR(x.m)}</span><b>${brl(x.v)}/cota</b><button class="btn-del" title="Remover" onclick="excluirProvento(${x.id},'${x.m}')">${ICO_LIXO}</button></div>`).join('');
+      document.getElementById('st-hist').innerHTML = lanc.slice(0, 6).map(x => `<div class="hl"><span><strong>${esc(x.cod)}</strong> <small>(${esc(x.corr)})</small></span><span>${mesBR(x.m)}</span><b>${brl(x.v)}/cota</b><button class="btn-del" title="Remover" onclick="excluirProvento(${x.id},'${x.m}')">${ICO_LIXO}</button></div>`).join('');
 
       if (typeof Chart !== 'undefined') {
         const temDados = divTotal > 0;
         if (chartProvInstance) chartProvInstance.destroy();
         chartProvInstance = new Chart(document.getElementById('chartProventos').getContext('2d'), {
           type: 'doughnut',
-          data: { labels: temDados ? ordenado.map(l => l.a.codigo) : ['Sem rendimento'], datasets: [{ data: temDados ? ordenado.map(l => +l.prov.toFixed(2)) : [1], backgroundColor: temDados ? ordenado.map((_, k) => PALETA[k % PALETA.length]) : ['#e2e8f0'], borderWidth: 2, borderColor: '#fff' }] },
+          data: { labels: temDados ? ordenado.map(l => `${l.a.codigo} (${l.corr})`) : ['Sem rendimento'], datasets: [{ data: temDados ? ordenado.map(l => +l.prov.toFixed(2)) : [1], backgroundColor: temDados ? ordenado.map((_, k) => PALETA[k % PALETA.length]) : ['#e2e8f0'], borderWidth: 2, borderColor: '#fff' }] },
           options: { responsive: true, maintainAspectRatio: false, cutout: '62%', plugins: { legend: { position: 'bottom', labels: { font: { weight: 'bold' }, boxWidth: 12 } }, tooltip: { enabled: temDados, callbacks: { label: c => ` ${c.label}: ${brl(c.parsed)}/mês` } } } }
         });
 
@@ -1290,14 +1320,29 @@
       document.getElementById('state-insights').innerHTML = r.it.map(x => `<div class="ins ${x.n}"><i></i><div>${x.t}</div></div>`).join('');
     }
 
+    function atualizarInfoCorretoraProvento() {
+      const selId = document.getElementById('pv-ativo').value;
+      const infoEl = document.getElementById('pv-corretora-info');
+      if (!selId) { infoEl.textContent = ''; return; }
+      const a = ativos.find(x => String(x.id) === String(selId));
+      if (a) {
+        const corr = formatarCorretora(a.corretora);
+        infoEl.textContent = `🏦 Custódia deste ativo: ${corr}`;
+      } else {
+        infoEl.textContent = '';
+      }
+    }
+
     function adicionarAtivo(e) {
       e.preventDefault();
       const codigo = document.getElementById('st-codigo').value.trim().toUpperCase();
       const tipo = document.getElementById('st-tipo').value;
       const cot = parseFloat(document.getElementById('st-cot').value);
+      const corrInput = document.getElementById('st-corretora').value;
+      
       ativos.push({
         id: Date.now(), codigo, tipo,
-        corretora: document.getElementById('st-corretora').value.trim(),
+        corretora: formatarCorretora(corrInput),
         qtd: parseFloat(document.getElementById('st-qtd').value),
         preco: parseFloat(document.getElementById('st-preco').value),
         cotacao: cot > 0 ? cot : undefined,
@@ -1312,7 +1357,8 @@
     function editarAtivo(id, campo, val) {
       const a = ativos.find(x => x.id === id); if (!a) return;
       if (campo === 'cotacao') { const n = parseFloat(val); a.cotacao = n > 0 ? n : undefined; registrarSnap(); }
-      else a[campo] = String(val).trim();
+      else if (campo === 'corretora') { a.corretora = formatarCorretora(val); }
+      else { a[campo] = String(val).trim(); }
       salvarAutomatico(); renderizarState();
     }
 
@@ -1380,6 +1426,7 @@
       atualizarRelogio();
       renderizarDashboard();
       renderizarState();
+      restaurarAbaAtiva();
       if (NUVEM) iniciarNuvem(); else statusNuvem('💾 Salvo só neste aparelho', 'erro');
     });
   </script>
