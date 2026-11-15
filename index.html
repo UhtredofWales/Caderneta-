@@ -410,6 +410,9 @@
     #aba-state table input.ghost.num { width: 100%; min-width: 84px; }
 
 
+    #aba-state td input.ghost.tk { min-width: 120px; font-weight: 800; }
+    #aba-state td select.ghost.tp { width: auto; margin: 2px 0 0 4px; padding: 2px 6px; font-size: .72rem; cursor: pointer; }
+
     @media (max-width: 860px) {
       .agente, .dual { grid-template-columns: 1fr; }
       body { flex-direction: column; }
@@ -1505,8 +1508,8 @@
 
       document.getElementById('tabela-ativos').innerHTML = L.length ? L.map(l => `<tr>
           <td>
-            <strong>${esc(l.a.codigo)}</strong> 
-            <span class="badge ${l.classe === 'FII' ? 'badge-fii' : (l.classe === 'Renda Fixa' ? 'badge-rf' : (l.classe === 'ETF' ? 'badge-etf' : 'badge-acao'))}">${esc(l.classe)}</span>
+            <input class="ghost tk" value="${esc(l.a.codigo)}" title="Editar nome/ticker do ativo" onchange="editarAtivo(${l.a.id},'codigo',this.value)">
+            <select class="ghost tp badge ${l.classe === 'FII' ? 'badge-fii' : (l.classe === 'Renda Fixa' ? 'badge-rf' : (l.classe === 'ETF' ? 'badge-etf' : 'badge-acao'))}" title="Editar classe do ativo" onchange="editarAtivo(${l.a.id},'tipo',this.value)">${TIPOS.map(([k, n]) => `<option value="${k}" ${k === (TIPOS.some(t => t[0] === l.a.tipo) ? l.a.tipo : 'ACAO') ? 'selected' : ''}>${n}</option>`).join('')}</select>
           </td>
           <td><input class="ghost" style="min-width:110px" list="dl-corr" value="${esc(l.corr)}" placeholder="—" onchange="editarAtivo(${l.a.id},'corretora',this.value)"></td>
           <td class="num">${l.q}</td>
@@ -1734,8 +1737,22 @@
       }
     }
 
+    const TIPOS = [['FII', 'FII'], ['ACAO', 'Ação'], ['ETF', 'ETF'], ['CDB', 'CDB'], ['LCI_LCA', 'LCI/LCA'], ['TESOURO', 'Tesouro']];
+    const grupoTaxa = t => (t === 'CDB' || t === 'LCI_LCA') ? 'cdi' : t === 'TESOURO' ? 'aa' : 'am';
+    function mudarTipo(a, novo) {
+      const g0 = grupoTaxa(a.tipo); a.tipo = novo;
+      a.classe = (novo === 'CDB' || novo === 'TESOURO' || novo === 'LCI_LCA') ? 'Renda Fixa' : (novo === 'FII' ? 'FII' : (novo === 'ETF' ? 'ETF' : 'Ação'));
+      const g1 = grupoTaxa(novo);
+      if (g0 !== g1) {
+        const un = { cdi: '% do CDI (ex: 100)', aa: '% ao ano (ex: 10,5)', am: '% ao mês de yield estimado (ex: 0,8)' }[g1];
+        const n = parseFloat(String(prompt('Você mudou o tipo do ativo. Informe a taxa em ' + un + ':', a.taxa)).replace(',', '.'));
+        if (n >= 0) a.taxa = n;
+      }
+    }
     function editarAtivo(id, campo, val) {
       const a = ativos.find(x => x.id === id); if (!a) return;
+      if (campo === 'codigo') { const v = String(val).trim().toUpperCase(); if (!v) return renderizarState(); a.codigo = v; salvarAutomatico(); renderizarState(); return; }
+      if (campo === 'tipo') { mudarTipo(a, val); registrarSnap(); salvarAutomatico(); renderizarState(); return; }
       if (campo === 'cotacao' || campo === 'fechamento') { 
         const n = parseFloat(val); 
         a.cotacao = n > 0 ? n : a.preco; 
