@@ -19,6 +19,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg-app: #f1f3f7;          
@@ -413,6 +414,91 @@
     #aba-state td input.ghost.tk { min-width: 120px; font-weight: 800; }
     #aba-state td select.ghost.tp { width: auto; margin: 2px 0 0 4px; padding: 2px 6px; font-size: .72rem; cursor: pointer; }
 
+    /* ===== State: edição private banking ===== */
+    #aba-state { --ink: #0b1220; --gold: #c5a059; --gold-hi: #ecdcae; --hair: #e8e2d2; --paper: #fffdf8; --serif: 'Fraunces', Georgia, 'Times New Roman', serif; }
+    #aba-state header { border-bottom: 1px solid var(--hair); }
+    #aba-state header h1 { font-family: var(--serif); font-weight: 600; font-size: 2.05rem; letter-spacing: -.015em; }
+    #aba-state .hero-main { position: relative; overflow: hidden; border-radius: 18px; padding: 30px 34px; background: radial-gradient(110% 130% at 100% 0%, #213461 0%, transparent 56%), linear-gradient(160deg, #0a1120, #111b33); box-shadow: inset 0 0 0 1px rgba(197,160,89,.38), 0 26px 48px -30px rgba(11,18,32,.75); }
+    #aba-state .hero-label { color: var(--gold-hi); font-size: .86rem; font-weight: 600; }
+    #aba-state .hero-value { font-family: var(--serif); font-weight: 600; font-size: 3.5rem; color: #f6ebcb; letter-spacing: -.02em; font-variant-numeric: lining-nums tabular-nums; }
+    #aba-state .hero-sub { color: #b9c3d9; }
+    #aba-state .chip { background: transparent; border: 1px solid rgba(197,160,89,.42); color: #e8dfc4; }
+    #aba-state .hero-side { background: var(--paper); border: 1px solid var(--hair); border-radius: 18px; padding: 6px 26px; box-shadow: 0 14px 30px -24px rgba(11,18,32,.45); }
+    #aba-state .stat { border-bottom: 1px solid var(--hair); padding: 14px 0; }
+    #aba-state .stat b { font-family: var(--serif); font-weight: 600; font-size: 1.3rem; font-variant-numeric: lining-nums tabular-nums; }
+    .rota { margin-top: 28px; }
+    .rota-top { display: flex; justify-content: space-between; align-items: baseline; font-size: .84rem; font-weight: 600; color: #b9c3d9; }
+    .rota-top b { font-family: var(--serif); font-size: 1.15rem; color: var(--gold-hi); font-weight: 600; }
+    .rota-track { display: flex; align-items: flex-end; gap: 4px; margin-top: 12px; }
+    .rota-step { flex: 1; border-radius: 3px; background: rgba(255,255,255,.1); position: relative; overflow: hidden; }
+    .rota-step i { position: absolute; inset: 0 auto 0 0; background: linear-gradient(90deg, #c5a059, #f2e2b4); transition: width .9s cubic-bezier(.2,.7,.2,1); }
+    .rota-lbl { display: flex; gap: 4px; margin-top: 7px; font-size: .68rem; font-weight: 700; color: #8d99b4; }
+    .rota-lbl span { flex: 1; text-align: right; }
+    .rota-lbl span.on { color: var(--gold-hi); }
+    .rota-sub { margin-top: 12px; font-size: .86rem; color: #d3dbec; }
+    .rota-sub b { color: #fff; }
+    #aba-state .analysis-card, #aba-state .safra-card, #aba-state .form-container, #aba-state .ledger { background: var(--paper); border: 1px solid var(--hair); border-radius: 16px; box-shadow: 0 14px 30px -26px rgba(11,18,32,.5); }
+    #aba-state .analysis-header, #aba-state .form-container h4, #aba-state .safra-card .card-label, #aba-state .ledger-top h3 { font-family: var(--serif); text-transform: none; letter-spacing: 0; font-size: 1.14rem; font-weight: 600; color: var(--ink); }
+    #aba-state .analysis-header, #aba-state .form-container h4, #aba-state .safra-card .card-label { padding-bottom: 12px; margin-bottom: 14px; border-bottom: 1px solid var(--hair); }
+    #aba-state .ledger-top { border-bottom: 1px solid var(--hair); }
+    #aba-state .score b { font-family: var(--serif); font-weight: 600; }
+    #aba-state .btn-action { background: linear-gradient(180deg, #e6cc8d, #b8923f); color: #1d1606; border: none; border-radius: 10px; font-weight: 800; padding: 11px 22px; box-shadow: 0 10px 20px -12px rgba(154,123,56,.95), inset 0 1px 0 rgba(255,255,255,.5); transition: transform .15s, filter .15s, box-shadow .15s; }
+    #aba-state .btn-action:hover { background: linear-gradient(180deg, #ecd397, #bf9843); filter: brightness(1.04); transform: translateY(-1px); }
+    #aba-state .btn-action:active { transform: none; }
+    #aba-state .btn-action:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+    #aba-state .inline-form input, #aba-state .inline-form select, #aba-state .toolbar input { background: #fff; border: 1px solid var(--hair); border-radius: 10px; }
+    #aba-state .inline-form input:focus, #aba-state .inline-form select:focus, #aba-state .toolbar input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(197,160,89,.24); }
+    #aba-state table th { text-transform: none; letter-spacing: 0; font-size: .78rem; font-weight: 700; color: #6b6450; background: #faf6ea; border-bottom: 1px solid var(--hair); }
+    #aba-state table td { border-bottom: 1px solid #f1ecde; }
+    #aba-state table tbody tr:hover { background: #fcf9f1; }
+    #aba-state .hl, #aba-state .rk, #aba-state .ins { border-color: var(--hair); }
+    /* ===== Extrato: edição private banking ===== */
+    #aba-extrato { --ink: #0b1220; --gold: #c5a059; --gold-hi: #ecdcae; --hair: #e8e2d2; --paper: #fffdf8; --serif: 'Fraunces', Georgia, 'Times New Roman', serif; }
+    #aba-extrato header { border-bottom: 1px solid var(--hair); }
+    #aba-extrato header h1 { font-family: var(--serif); font-weight: 600; font-size: 2.05rem; letter-spacing: -.015em; }
+    #aba-extrato .hero-main { position: relative; overflow: hidden; border-radius: 18px; padding: 30px 34px; background: radial-gradient(110% 130% at 100% 0%, #213461 0%, transparent 56%), linear-gradient(160deg, #0a1120, #111b33); box-shadow: inset 0 0 0 1px rgba(197,160,89,.38), 0 26px 48px -30px rgba(11,18,32,.75); }
+    #aba-extrato .hero-label { color: var(--gold-hi); font-size: .86rem; font-weight: 600; }
+    #aba-extrato .hero-value { font-family: var(--serif); font-weight: 600; font-size: 3.5rem; color: #f6ebcb; letter-spacing: -.02em; font-variant-numeric: lining-nums tabular-nums; }
+    #aba-extrato .hero-sub { color: #b9c3d9; }
+    #aba-extrato .chip { background: transparent; border: 1px solid rgba(197,160,89,.42); color: #e8dfc4; }
+    #aba-extrato .hero-side { background: var(--paper); border: 1px solid var(--hair); border-radius: 18px; padding: 6px 26px; box-shadow: 0 14px 30px -24px rgba(11,18,32,.45); }
+    #aba-extrato .stat { border-bottom: 1px solid var(--hair); padding: 14px 0; }
+    #aba-extrato .stat b { font-family: var(--serif); font-weight: 600; font-size: 1.3rem; font-variant-numeric: lining-nums tabular-nums; }
+    .rota { margin-top: 28px; }
+    .rota-top { display: flex; justify-content: space-between; align-items: baseline; font-size: .84rem; font-weight: 600; color: #b9c3d9; }
+    .rota-top b { font-family: var(--serif); font-size: 1.15rem; color: var(--gold-hi); font-weight: 600; }
+    .rota-track { display: flex; align-items: flex-end; gap: 4px; margin-top: 12px; }
+    .rota-step { flex: 1; border-radius: 3px; background: rgba(255,255,255,.1); position: relative; overflow: hidden; }
+    .rota-step i { position: absolute; inset: 0 auto 0 0; background: linear-gradient(90deg, #c5a059, #f2e2b4); transition: width .9s cubic-bezier(.2,.7,.2,1); }
+    .rota-lbl { display: flex; gap: 4px; margin-top: 7px; font-size: .68rem; font-weight: 700; color: #8d99b4; }
+    .rota-lbl span { flex: 1; text-align: right; }
+    .rota-lbl span.on { color: var(--gold-hi); }
+    .rota-sub { margin-top: 12px; font-size: .86rem; color: #d3dbec; }
+    .rota-sub b { color: #fff; }
+    #aba-extrato .analysis-card, #aba-extrato .safra-card, #aba-extrato .form-container, #aba-extrato .ledger { background: var(--paper); border: 1px solid var(--hair); border-radius: 16px; box-shadow: 0 14px 30px -26px rgba(11,18,32,.5); }
+    #aba-extrato .analysis-header, #aba-extrato .form-container h4, #aba-extrato .safra-card .card-label, #aba-extrato .ledger-top h3 { font-family: var(--serif); text-transform: none; letter-spacing: 0; font-size: 1.14rem; font-weight: 600; color: var(--ink); }
+    #aba-extrato .analysis-header, #aba-extrato .form-container h4, #aba-extrato .safra-card .card-label { padding-bottom: 12px; margin-bottom: 14px; border-bottom: 1px solid var(--hair); }
+    #aba-extrato .ledger-top { border-bottom: 1px solid var(--hair); }
+    #aba-extrato .score b { font-family: var(--serif); font-weight: 600; }
+    #aba-extrato .btn-action { background: linear-gradient(180deg, #e6cc8d, #b8923f); color: #1d1606; border: none; border-radius: 10px; font-weight: 800; padding: 11px 22px; box-shadow: 0 10px 20px -12px rgba(154,123,56,.95), inset 0 1px 0 rgba(255,255,255,.5); transition: transform .15s, filter .15s, box-shadow .15s; }
+    #aba-extrato .btn-action:hover { background: linear-gradient(180deg, #ecd397, #bf9843); filter: brightness(1.04); transform: translateY(-1px); }
+    #aba-extrato .btn-action:active { transform: none; }
+    #aba-extrato .btn-action:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+    #aba-extrato .inline-form input, #aba-extrato .inline-form select, #aba-extrato .toolbar input { background: #fff; border: 1px solid var(--hair); border-radius: 10px; }
+    #aba-extrato .inline-form input:focus, #aba-extrato .inline-form select:focus, #aba-extrato .toolbar input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(197,160,89,.24); }
+    #aba-extrato table th { text-transform: none; letter-spacing: 0; font-size: .78rem; font-weight: 700; color: #6b6450; background: #faf6ea; border-bottom: 1px solid var(--hair); }
+    #aba-extrato table td { border-bottom: 1px solid #f1ecde; }
+    #aba-extrato table tbody tr:hover { background: #fcf9f1; }
+    #aba-extrato .hl, #aba-extrato .rk, #aba-extrato .ins { border-color: var(--hair); }
+    #ex-texto { width: 100%; margin-top: 10px; background: #fff; border: 1px solid var(--hair); border-radius: 10px; padding: 10px 12px; font-size: .82rem; font-weight: 600; outline: none; resize: vertical; }
+    #ex-texto:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(197,160,89,.24); }
+    #aba-extrato .btn-sec { background: #efe9d8; color: #0b1220; box-shadow: none; }
+    #aba-extrato .btn-sec:hover { background: #e8e0c8; }
+    .pro-bloco { margin-bottom: 18px; }
+    .pro-bloco h5 { font-family: 'Fraunces', Georgia, serif; font-size: 1rem; font-weight: 600; margin-bottom: 6px; }
+
+    @media (max-width: 860px) { #aba-state .hero-value { font-size: 2.4rem; } #aba-state .hero-main { padding: 24px 22px; } }
+
     @media (max-width: 860px) {
       .agente, .dual { grid-template-columns: 1fr; }
       body { flex-direction: column; }
@@ -491,6 +577,7 @@
       <li><button onclick="mudarAba('gastos', event)" id="btn-tab-gastos">📊 Contas a Pagar</button></li>
       <li><button onclick="mudarAba('state', event)" id="btn-tab-state">🏛️ State & Ativos</button></li>
       <li><button onclick="mudarAba('recomendador', event)" id="btn-tab-recomendador">🎯 Agente Recomendador</button></li>
+      <li><button onclick="mudarAba('extrato', event)" id="btn-tab-extrato">🧾 Extrato & Saúde</button></li>
     </ul>
   </aside>
 
@@ -633,6 +720,12 @@
           <div class="hero-value" id="st-dividendos">R$ 0,00</div>
           <div class="hero-sub"><b id="st-anual">R$ 0,00</b> por ano · <b id="st-yield">0,00%</b> ao mês sobre o valor de mercado</div>
           <div class="chips" id="st-classes"></div>
+          <div class="rota">
+            <div class="rota-top"><span>Rota ao primeiro milhão</span><b id="rota-pct">0%</b></div>
+            <div class="rota-track" id="rota-track"></div>
+            <div class="rota-lbl" id="rota-lbl"></div>
+            <div class="rota-sub" id="rota-sub"></div>
+          </div>
         </div>
         <div class="hero-side">
           <div class="stat"><span>Valor total de mercado</span><b id="st-patrimonio">R$ 0,00</b></div>
@@ -799,6 +892,53 @@
         </div>
         <div id="rec-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:18px;">
           <!-- Injetado por JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ABA: EXTRATO & SAÚDE -->
+    <section id="aba-extrato" class="tab-content">
+      <header>
+        <div>
+          <h1>Extrato & Saúde Financeira</h1>
+          <p>Diagnóstico do seu extrato: riscos, erros, gastos e um plano de prosperidade.</p>
+        </div>
+      </header>
+
+      <div class="form-container">
+        <h4>Importar extrato</h4>
+        <div class="toolbar">
+          <input type="file" id="ex-file" accept=".csv,.ofx,.txt" onchange="lerArquivoExtrato(this)">
+          <span class="sp"></span>
+          <button class="btn-action" onclick="analisarTexto()">Analisar texto colado</button>
+          <button class="btn-action btn-sec" onclick="limparExtrato()">Limpar</button>
+        </div>
+        <textarea id="ex-texto" rows="3" placeholder="Ou cole aqui as linhas do extrato (data, descrição e valor)"></textarea>
+        <div class="nota" id="ex-nota">Aceita CSV, OFX e texto. Tudo é lido no seu navegador e fica só neste aparelho, sem ir para a nuvem nem para nenhuma IA. PDF não é lido: no app do banco, exporte em CSV ou OFX.</div>
+      </div>
+
+      <div id="ex-out" style="display:none">
+        <div class="metrics-grid" id="ex-metrics"></div>
+
+        <div class="analysis-card">
+          <div class="analysis-header">Parecer do analista de extrato</div>
+          <div class="agente">
+            <div class="score" id="ex-score"><div><b id="ex-nota-n">–</b><small id="ex-grau"></small></div></div>
+            <div id="ex-ins"></div>
+          </div>
+        </div>
+
+        <div class="dual">
+          <div class="analysis-card"><div class="analysis-header">Para onde o dinheiro foi</div><div id="ex-cats"></div></div>
+          <div class="analysis-card"><div class="analysis-header">Maiores saídas e recorrências</div><div id="ex-top"></div></div>
+        </div>
+
+        <div class="analysis-card">
+          <div class="analysis-header">Agente de prosperidade</div>
+          <div class="dual" style="margin-bottom:0">
+            <div id="pro-esq"></div>
+            <div id="pro-dir"></div>
+          </div>
         </div>
       </div>
     </section>
@@ -1106,6 +1246,7 @@
 
       if (id === 'state') renderizarState();
       if (id === 'recomendador') renderizarRecomendacoes();
+      if (id === 'extrato') renderizarExtrato();
     }
 
     function restaurarAbaAtiva() {
@@ -1913,7 +2054,161 @@
       r += pv.length ? pv.map(p => `<div class="hl"><span><b>${esc(p.c)}</b></span><span>P/VP ${p.x.toFixed(2).replace('.', ',')}</span><b class="${p.x < 0.9 ? 'pos' : p.x > 1.1 ? 'neg' : ''}">${p.x < 0.9 ? 'desconto' : p.x > 1.1 ? 'ágio' : 'justo'}</b></div>`).join('') : '<div class="nota">Informe o VP/cota na tabela para ver o P/VP dos FIIs.</div>';
       document.getElementById('ra-out').innerHTML = r;
     }
-    { const _rs = renderizarState; renderizarState = function () { _rs(); renderMetasState(); }; }
+    /* ===== Extrato & Saúde: leitura e análise 100% local ===== */
+    let extrato = []; try { extrato = JSON.parse(localStorage.getItem('gd_extrato') || '[]'); } catch (e) {}
+    const EX_CATS = [
+      ['Tarifas e juros', /tarifa|juros|\biof\b|multa|encargo|anuidade|\bmora\b|cesta de serv|manuten[cç][aã]o de conta/i],
+      ['Investimentos', /aplica[cç]|resgate|\bcdb\b|tesouro|corretora|\bxp\b|\brico\b|btg|[ií]on\b|nuinvest|\bfii\b|invest/i],
+      ['Assinaturas', /netflix|spotify|prime video|amazon prime|disney|hbo|youtube|apple\.com|icloud|google (one|storage)|deezer|globoplay|paramount|crunchyroll|chatgpt|openai|adobe|canva/i],
+      ['Delivery e restaurantes', /ifood|rappi|uber ?eats|restaur|lanch|pizza|burger|burguer|mcdonald|sushi|cafeteria|starbucks/i],
+      ['Compras', /amazon|mercado ?livre|shopee|magalu|magazine|aliexpress|shein|americanas|renner|zara|netshoes/i],
+      ['Mercado', /mercado|supermerc|atacad|carrefour|assa[ií]|hortifruti|a[cç]ougue|padaria|p[aã]o de a[cç]/i],
+      ['Transporte', /\buber\b|\b99\b|cabify|posto|combust|shell|ipiranga|estaciona|ped[aá]gio|sem parar|conectcar|metr[oô]|bilhete/i],
+      ['Moradia e contas', /energia|cpfl|enel|cemig|[aá]gua|sabesp|\bvivo\b|\bclaro\b|\btim\b|\boi\b|internet|aluguel|condom[ií]nio|iptu|g[aá]s\b/i],
+      ['Saúde', /farm|drog|unimed|hospital|cl[ií]nica|dentist|laborat|psic/i],
+      ['Educação', /\bpuc\b|faculdade|curso|udemy|alura|escola|\bfies\b|mensalidade/i],
+      ['Lazer', /cinema|ingresso|steam|playstation|xbox|nintendo|massagem|academia|smartfit|show|teatro|hotel|airbnb|booking/i],
+      ['Fatura de cartão', /fatura|cart[aã]o/i],
+      ['Saques', /saque/i],
+      ['Transferências (Pix/TED)', /pix|\bted\b|\bdoc\b|transfer/i]
+    ];
+    const MONEY = /-?\s?(?:R\$\s?)?\d{1,3}(?:\.\d{3})+,\d{2}-?|-?\s?(?:R\$\s?)?\d+,\d{2}-?|-?\d+\.\d{2}(?!\d)/g;
+    function numBR(t) { const neg = /-/.test(t); let c = t.replace(/[^\d.,]/g, ''); if (/,\d{2}$/.test(c)) c = c.replace(/\./g, '').replace(',', '.'); const n = parseFloat(c); return isNaN(n) ? null : (neg ? -n : n); }
+
+    function parseExtrato(txt) {
+      const out = [];
+      if (/<STMTTRN>/i.test(txt)) {
+        (txt.match(/<STMTTRN>[\s\S]*?(?=<\/STMTTRN>|<STMTTRN>|<\/BANKTRANLIST>|$)/gi) || []).forEach(b => {
+          const g = t => ((b.match(new RegExp('<' + t + '>([^<\\r\\n]*)', 'i')) || [])[1] || '').trim();
+          const d = g('DTPOSTED').slice(0, 8), v = parseFloat(g('TRNAMT').replace(',', '.'));
+          if (d.length === 8 && !isNaN(v)) out.push({ d: d.slice(0, 4) + '-' + d.slice(4, 6) + '-' + d.slice(6, 8), desc: g('MEMO') || g('NAME'), v });
+        });
+        return out;
+      }
+      txt.split(/\r?\n/).forEach(l => {
+        const m = l.match(/(\d{2})\/(\d{2})\/(\d{4})|(\d{4})-(\d{2})-(\d{2})|(\d{2})\/(\d{2})\/(\d{2})(?!\d)/); if (!m) return;
+        const d = m[1] ? `${m[3]}-${m[2]}-${m[1]}` : m[4] ? `${m[4]}-${m[5]}-${m[6]}` : `20${m[9]}-${m[8]}-${m[7]}`;
+        const rest = l.replace(m[0], ' '), toks = rest.match(MONEY); if (!toks) return;
+        let v = numBR(toks[0]); if (v === null) return;
+        if (v > 0 && /d[ée]bito|\bD\b|enviad|sa[ií]da|compra/i.test(rest) && !/cr[eé]dito|recebid/i.test(rest)) v = -v;
+        let desc = rest; toks.forEach(t => desc = desc.replace(t, ' ')); desc = desc.replace(/["';|\t]+/g, ' ').replace(/\s+/g, ' ').trim();
+        if (/saldo (anterior|final|do dia|dispon)/i.test(desc)) return;
+        out.push({ d, desc, v });
+      });
+      return out;
+    }
+
+    function catOf(t) {
+      if (t.v > 0) {
+        if (/invest|resgate|aplica|cdb|tesouro/i.test(t.desc)) return 'Resgates';
+        if (/sal[aá]rio|folha|pagto|proventos|remunera|13[ºo°]|f[eé]rias/i.test(t.desc)) return 'Salário';
+        if (/rendimento|dividendo|jscp|cashback/i.test(t.desc)) return 'Rendimentos';
+        return 'Outras entradas';
+      }
+      const r = EX_CATS.find(([, re]) => re.test(t.desc)); return r ? r[0] : 'Outros';
+    }
+
+    function analisarExtrato(T) {
+      const R = T.map(t => ({ ...t, c: catOf(t) })), nm = Math.max(1, new Set(R.map(t => t.d.slice(0, 7))).size);
+      const ent = R.filter(t => t.v > 0 && t.c !== 'Resgates'), sai = R.filter(t => t.v < 0 && t.c !== 'Investimentos'), apo = R.filter(t => t.v < 0 && t.c === 'Investimentos');
+      const E = soma(ent, t => t.v), S = soma(sai, t => -t.v), A = soma(apo, t => -t.v), cat = {};
+      sai.forEach(t => cat[t.c] = (cat[t.c] || 0) - t.v);
+      const dm = {}; R.forEach(t => { (dm[t.d + '|' + t.desc + '|' + t.v] = dm[t.d + '|' + t.desc + '|' + t.v] || []).push(t); });
+      const dups = Object.values(dm).filter(g => g.length > 1 && g[0].v < 0);
+      const rm = {}; sai.forEach(t => { const k = t.desc.toLowerCase().replace(/[\d\/\-.,*]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 28); (rm[k] = rm[k] || []).push(t); });
+      const recs = Object.entries(rm).map(([k, g]) => ({ k, g, n: new Set(g.map(t => t.d.slice(0, 7))).size, v: soma(g, t => -t.v) / g.length })).filter(x => x.n >= 2 || x.g[0].c === 'Assinaturas').sort((a, b) => b.v - a.v).slice(0, 6);
+      const top = [...sai].sort((a, b) => a.v - b.v).slice(0, 5);
+      const it = []; let sc = 100; const add = (n, t, p = 0) => { it.push({ n, t }); sc -= p; };
+      const tax = E > 0 ? (E - S) / E * 100 : 0, tf = cat['Tarifas e juros'] || 0, Em = E / nm, rb = rendaDoMes();
+      if (E <= 0) add('warn', 'Não identifiquei entradas no período. Confira se o arquivo traz créditos e débitos com sinal.', 10);
+      else if (tax < 0) add('bad', `Você gastou <b>${brl(S - E)}</b> a mais do que entrou (poupança de ${pct(tax)}). O mês só fecha consumindo saldo ou crédito.`, 30);
+      else if (tax < 10) add('warn', `Taxa de poupança de <b>${pct(tax)}</b>, abaixo do mínimo saudável de 10%. A referência é 20%.`, 14);
+      else if (tax < 20) add('ok', `Taxa de poupança de <b>${pct(tax)}</b>: saudável, falta pouco para os 20% de referência.`, 3);
+      else add('ok', `Ótima taxa de poupança: <b>${pct(tax)}</b> da renda.`);
+      if (tf > 0) { const mau = E > 0 && tf / E > 0.015; add(mau ? 'bad' : 'warn', `Tarifas, juros, IOF e multas somam <b>${brl(tf)}</b> (${pct(E > 0 ? tf / E * 100 : 0)} da renda). É dinheiro sem retorno: revise pacote de serviços e atrasos.`, mau ? 10 : 4); }
+      if (dups.length) add('bad', `<b>${dups.length}</b> possível(is) cobrança(s) duplicada(s): ${dups.slice(0, 3).map(g => esc(g[0].desc) + ' ' + brl(-g[0].v) + ' (' + g.length + 'x em ' + g[0].d.split('-').reverse().join('/') + ')').join('; ')}. Confira se não é erro de cobrança.`, 8);
+      if (R.some(t => /cheque especial|limite (da conta|utilizado)|saldo devedor/i.test(t.desc))) add('bad', 'Há lançamentos de cheque especial ou limite da conta. Esse crédito tem juros muito altos: priorize zerar.', 12);
+      if (S > 0 && (cat['Saques'] || 0) / S > 0.1) add('warn', `Saques em dinheiro são <b>${pct(cat['Saques'] / S * 100, 0)}</b> das saídas e não deixam rastro de onde foi o gasto.`, 3);
+      if (E > 0 && (cat['Assinaturas'] || 0) / E > 0.05) add('warn', `Assinaturas consomem <b>${pct(cat['Assinaturas'] / E * 100)}</b> da renda. Cancele o que não usou no último mês.`, 5);
+      const des = (cat['Delivery e restaurantes'] || 0) + (cat['Lazer'] || 0) + (cat['Compras'] || 0);
+      if (E > 0 && des / E > 0.25) add('warn', `Delivery, lazer e compras somam <b>${pct(des / E * 100, 0)}</b> da renda (referência: até 30% para todos os desejos).`, 6);
+      if (S > 0 && (cat['Fatura de cartão'] || 0) / S > 0.35) add('warn', `A fatura do cartão é <b>${pct(cat['Fatura de cartão'] / S * 100, 0)}</b> das saídas e esconde o gasto real. Analise a fatura separadamente.`);
+      if (E > 0 && rb > 0 && Math.abs(Em - rb) / rb > 0.1) add('warn', `Suas entradas médias no extrato (<b>${brl(Em)}</b>/mês) diferem da renda cadastrada (<b>${brl(rb)}</b>). Atualize a renda em Contas a Pagar para o saldo do app ficar certo.`);
+      if (!it.some(x => x.n !== 'ok')) add('ok', 'Nenhum risco relevante encontrado neste extrato.');
+      const ord = { bad: 0, warn: 1, ok: 2 };
+      return { R, nm, E, S, A, net: E - S, tax, cat, dups, recs, top, Em, sc: Math.max(0, Math.min(100, Math.round(sc))), it: it.sort((x, y) => ord[x.n] - ord[y.n]), n: R.length, de: R.map(t => t.d).sort()[0], ate: R.map(t => t.d).sort().pop() };
+    }
+
+    function agenteProsperidade(a) {
+      const m = a.nm, Em = a.E / m, g = c => (a.cat[c] || 0) / m;
+      const nec = ['Moradia e contas', 'Mercado', 'Saúde', 'Educação', 'Transporte'].reduce((t, c) => t + g(c), 0);
+      const des = ['Delivery e restaurantes', 'Lazer', 'Compras', 'Assinaturas'].reduce((t, c) => t + g(c), 0);
+      const poup = a.net / m, alvo = Em * 0.2, gap = Math.max(0, alvo - poup);
+      const i = Math.pow(1 + cdiAA * 0.85 / 100, 1 / 12) - 1, fv = (p, n) => p * (Math.pow(1 + i, n) - 1) / i;
+      const lin = (nome, v, ref, bom) => `<div class="hl"><span><b>${nome}</b></span><span>${pct(Em > 0 ? v / Em * 100 : 0, 0)} da renda</span><b class="${bom(Em > 0 ? v / Em * 100 : 0) ? 'pos' : 'neg'}">meta ${ref}</b></div>`;
+      const esq = `<div class="pro-bloco"><h5>Regra 50/30/20 sobre o seu extrato</h5>${lin('Necessidades', nec, 'até 50%', x => x <= 50)}${lin('Desejos', des, 'até 30%', x => x <= 30)}${lin('Poupança e aportes', poup, 'a partir de 20%', x => x >= 20)}<div class="nota">Cartão, Pix, saques e "outros" ficam fora dessa conta porque o extrato não diz o que foram.</div></div>
+        <div class="pro-bloco"><h5>Efeito de poupar 20% todo mês</h5><div class="analysis-item">Guardando <strong>${brl(alvo)}</strong>/mês a ${pct(cdiAA * 0.85)} a.a. (85% do CDI, estimativa): <strong>${brl(fv(alvo, 12))}</strong> em 1 ano, <strong>${brl(fv(alvo, 36))}</strong> em 3 anos e <strong>${brl(fv(alvo, 60))}</strong> em 5 anos.</div>${gap > 0 ? `<div class="analysis-item">Hoje faltam <strong>${brl(gap)}</strong>/mês para chegar nesses 20%.</div>` : ''}</div>`;
+      const corte = des * 0.2, tf = g('Tarifas e juros'), lista = soma(carteiraCalc(), l => l.val);
+      const lv = bancoMensal[chaveAtual()] || [], comV = lv.filter(x => parseInt(x.venc) > 0).length, gasto = lv.reduce((t, x) => t + (parseFloat(x.valor) || 0), 0), resAlvo = (metas.reservaMeses || 0) * gasto;
+      const pas = [];
+      if (a.dups.length || tf > 0) pas.push(`Estancar vazamentos: contestar cobranças duplicadas e eliminar ${brl(tf)}/mês de tarifas e juros.`);
+      if (resAlvo > 0 && (metas.reservaAtual || 0) < resAlvo) pas.push(`Montar a reserva de emergência: faltam ${brl(resAlvo - (metas.reservaAtual || 0))} para ${metas.reservaMeses} meses de despesa.`);
+      if (corte > 0) pas.push(`Cortar 20% dos desejos libera <b>${brl(corte)}</b>/mês (${brl(corte * 12)} por ano).`);
+      if (gap > 0) pas.push(`Automatizar o aporte logo após o salário: ${brl(gap)}/mês levam a poupança aos 20%.`);
+      pas.push('Direcionar o aporte à classe mais abaixo do alvo na aba State, mantendo a diversificação.');
+      const chk = (ok, t) => `<div class="hl"><span>${ok ? '✓' : '○'} ${t}</span></div>`;
+      const dir = `<div class="pro-bloco"><h5>Próximos passos, em ordem de prioridade</h5>${pas.slice(0, 5).map((p, k) => `<div class="ins ${k === 0 ? 'warn' : 'ok'}"><i></i><div>${p}</div></div>`).join('')}</div>
+        <div class="pro-bloco"><h5>Organização</h5>${chk(lv.length > 0 && comV / lv.length >= 0.8, `Vencimentos preenchidos nas contas (${comV}/${lv.length})`)}${chk(resAlvo > 0 && (metas.reservaAtual || 0) >= resAlvo, 'Reserva de emergência completa')}${chk(Math.abs(Object.values(metas.alvos || {}).reduce((t, x) => t + (x || 0), 0) - 100) < 0.5, 'Alocação alvo somando 100%')}${chk(lista > 0, 'Carteira de ativos cadastrada')}</div>`;
+      return { esq, dir };
+    }
+    const carteiraCalc = () => { try { return calcAtivos(); } catch (e) { return []; } };
+
+    function renderizarExtrato() {
+      const out = document.getElementById('ex-out');
+      if (!extrato.length) { out.style.display = 'none'; return; }
+      const a = analisarExtrato(extrato), bar = (nome, v, tot, k) => `<div class="rk"><div class="rk-top"><b>${esc(nome)}</b><span class="rk-val">${brl(v)}</span></div><div class="rk-bar"><i style="width:${tot > 0 ? (v / tot * 100).toFixed(1) : 0}%;background:${PALETA[k % PALETA.length]}"></i></div><div class="rk-sub">${pct(tot > 0 ? v / tot * 100 : 0, 0)} das saídas${a.nm > 1 ? ' · ' + brl(v / a.nm) + ' por mês' : ''}</div></div>`;
+      out.style.display = 'block';
+      const dt = d => d.split('-').reverse().join('/');
+      document.getElementById('ex-metrics').innerHTML = [['Entradas', brl(a.E), 'success'], ['Saídas', brl(a.S), 'danger'], ['Resultado do período', brl(a.net), a.net >= 0 ? 'success' : 'danger'], ['Taxa de poupança', pct(a.tax), a.tax >= 20 ? 'success' : a.tax >= 10 ? 'warning' : 'danger']]
+        .map(([l, v, c]) => `<div class="safra-card ${c}"><span class="card-label">${l}</span><div class="card-value">${v}</div></div>`).join('');
+      const sc = document.getElementById('ex-score'), cor = a.sc >= 85 ? '#059669' : a.sc >= 70 ? '#c5a059' : a.sc >= 50 ? '#d97706' : '#dc2626';
+      sc.style.setProperty('--p', a.sc); sc.style.setProperty('--sc', cor);
+      document.getElementById('ex-nota-n').innerText = a.sc;
+      document.getElementById('ex-grau').innerText = a.sc >= 85 ? 'Sólida' : a.sc >= 70 ? 'Saudável' : a.sc >= 50 ? 'Atenção' : 'Frágil';
+      document.getElementById('ex-ins').innerHTML = a.it.map(x => `<div class="ins ${x.n}"><i></i><div>${x.t}</div></div>`).join('') + `<div class="nota">${a.n} lançamentos de ${dt(a.de)} a ${dt(a.ate)}. Leitura automática por regras, não é recomendação financeira.</div>`;
+      const cs = Object.entries(a.cat).sort((x, y) => y[1] - x[1]);
+      document.getElementById('ex-cats').innerHTML = cs.length ? cs.map(([n, v], k) => bar(n, v, a.S, k)).join('') : '<div class="vazio">Sem saídas.</div>';
+      document.getElementById('ex-top').innerHTML = '<div class="analysis-item">Maiores saídas</div>' + a.top.map(t => `<div class="hl"><span>${esc(t.desc)}</span><span>${dt(t.d)}</span><b>${brl(-t.v)}</b></div>`).join('')
+        + '<div class="analysis-item" style="margin-top:14px">Recorrências e assinaturas</div>' + (a.recs.length ? a.recs.map(r => `<div class="hl"><span>${esc(r.g[0].desc)}</span><span>${r.g.length}x</span><b>${brl(r.v)}</b></div>`).join('') : '<div class="nota">Nenhuma recorrência clara. Importe mais de um mês para o app detectá-las.</div>');
+      const p = agenteProsperidade(a); document.getElementById('pro-esq').innerHTML = p.esq; document.getElementById('pro-dir').innerHTML = p.dir;
+    }
+
+    function usarExtrato(txt) {
+      const T = parseExtrato(txt), nota = document.getElementById('ex-nota');
+      if (!T.length) { nota.textContent = 'Não consegui identificar lançamentos. Cada linha precisa ter data e valor (ex.: 05/11/2026;Mercado;-45,90).'; return; }
+      extrato = T; try { localStorage.setItem('gd_extrato', JSON.stringify(T)); } catch (e) {}
+      nota.textContent = `${T.length} lançamentos lidos. Confira os totais abaixo com o seu banco; se algum sinal estiver trocado, ajuste o arquivo e importe de novo.`;
+      renderizarExtrato();
+    }
+    function analisarTexto() { usarExtrato(document.getElementById('ex-texto').value); }
+    function lerArquivoExtrato(inp) {
+      const f = inp.files[0]; if (!f) return; const r = new FileReader();
+      r.onload = () => { let t; try { t = new TextDecoder('utf-8', { fatal: true }).decode(r.result); } catch (e) { t = new TextDecoder('windows-1252').decode(r.result); } usarExtrato(t); inp.value = ''; };
+      r.readAsArrayBuffer(f);
+    }
+    function limparExtrato() { if (!confirm('Apagar o extrato importado deste aparelho?')) return; extrato = []; localStorage.removeItem('gd_extrato'); document.getElementById('ex-texto').value = ''; renderizarExtrato(); }
+
+    function renderRota() {
+      const el = document.getElementById('rota-track'); if (!el) return;
+      const pat = soma(calcAtivos(), l => l.val), M = [10000, 50000, 100000, 250000, 500000, 1000000], nm = ['10 mil', '50 mil', '100 mil', '250 mil', '500 mil', '1 mi'];
+      let prev = 0;
+      el.innerHTML = M.map((m, k) => { const f = Math.max(0, Math.min(1, (pat - prev) / (m - prev))); prev = m; return `<div class="rota-step" style="height:${8 + k * 3}px"><i style="width:${(f * 100).toFixed(1)}%"></i></div>`; }).join('');
+      document.getElementById('rota-lbl').innerHTML = M.map((m, k) => `<span class="${pat >= m ? 'on' : ''}">${nm[k]}</span>`).join('');
+      document.getElementById('rota-pct').textContent = pct(Math.min(100, pat / 1e6 * 100), 1) + ' do milhão';
+      const prox = M.find(m => pat < m);
+      document.getElementById('rota-sub').innerHTML = prox ? `Próximo marco: <b>${brl(prox)}</b> · faltam <b>${brl(prox - pat)}</b>` : 'Primeiro milhão conquistado. 🏆';
+    }
+    { const _rs = renderizarState; renderizarState = function () { _rs(); renderMetasState(); renderRota(); }; }
 
     /* Backup manual */
     function exportarBackup() {
