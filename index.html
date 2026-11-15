@@ -359,6 +359,39 @@
     .rec-metrics { display: flex; gap: 12px; font-size: 0.78rem; font-weight: 800; color: var(--text-muted); margin-bottom: 12px; background: #f8fafc; padding: 8px 12px; border-radius: 8px; }
     .rec-metrics span b { color: var(--text-main); }
     
+    /* ===== Contas a pagar: modo compacto e renda editável ===== */
+    .backup { display: flex; gap: 12px; justify-content: center; margin: -8px 0 16px; }
+    .backup .sync-out { margin: 0; }
+    .ghost.venc { width: 52px; text-align: center; padding: 3px 4px; }
+    .badge-venc { background: #fef3c7; color: #92400e; }
+    .badge-atraso { background: #dc2626; color: #fff; }
+    .c-val { display: flex; align-items: center; gap: 6px; }
+    .pend-sum { font-size: .8rem; font-weight: 700; color: var(--primary-gold-dark); margin-left: 10px; }
+    .renda-nota { display: block; font-size: .7rem; font-weight: 600; margin-top: 2px; color: var(--text-muted); }
+    .renda-in { width: 150px; font-size: 1.1rem; font-weight: 800; background: #fff; border-color: var(--card-border); }
+    .ledger.compacto .lrow { padding-top: 4px; padding-bottom: 4px; align-items: center; }
+    .ledger.compacto .lhead { padding-top: 7px; padding-bottom: 7px; }
+    .ledger.compacto .lgrp { padding: 8px 18px; font-size: .82rem; }
+    .ledger.compacto .chk { width: 20px; height: 20px; margin-top: 0; font-size: .7rem; border-width: 1.5px; }
+    .ledger.compacto .ghost { padding: 3px 8px; font-size: .84rem; }
+    .ledger.compacto select.ghost { font-size: .76rem; }
+    .ledger.compacto .c-main { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; min-width: 0; }
+    .ledger.compacto .c-main .g-nome { flex: 0 1 190px; min-width: 110px; width: auto; }
+    .ledger.compacto .tags { padding: 0; gap: 4px; }
+    .ledger.compacto .tag { padding: 1px 3px 1px 8px; font-size: .68rem; gap: 3px; }
+    .ledger.compacto .tag-add { width: 70px; padding: 1px 8px; font-size: .68rem; }
+    .ledger.compacto .c-par { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .ledger.compacto .c-par .pbar { margin: 0; width: 44px; height: 5px; flex: none; }
+    .ledger.compacto .c-par .pinfo { padding: 0; font-size: .68rem; }
+    .ledger.compacto .c-val { display: flex; align-items: center; justify-content: flex-end; gap: 6px; }
+    .ledger.compacto .c-val .ghost.num { width: 92px; }
+    .ledger.compacto .badge { font-size: .68rem; padding: 2px 7px; white-space: nowrap; }
+    .ledger.compacto .c-acoes { padding-top: 0; }
+    .ledger.compacto .btn-del { padding: 3px; }
+    @media (min-width: 861px) {
+      .ledger.compacto .lhead, .ledger.compacto .lrow { grid-template-columns: 26px minmax(230px, 2fr) 116px minmax(210px, 1.3fr) 270px 30px; gap: 10px; padding-left: 18px; padding-right: 18px; }
+    }
+
     @media (max-width: 860px) {
       .agente, .dual { grid-template-columns: 1fr; }
       body { flex-direction: column; }
@@ -431,12 +464,12 @@
     </div>
 
     <div class="sync" id="sync-status">💾 Salvo só neste aparelho</div>
+    <div class="backup"><button class="sync-out" onclick="exportarBackup()">⬇ Exportar backup</button><button class="sync-out" onclick="document.getElementById('f-imp').click()">⬆ Importar</button><input type="file" id="f-imp" accept=".json" style="display:none" onchange="importarBackup(this)"></div>
 
     <ul class="nav-menu">
       <li><button onclick="mudarAba('gastos', event)" id="btn-tab-gastos">📊 Contas a Pagar</button></li>
       <li><button onclick="mudarAba('state', event)" id="btn-tab-state">🏛️ State & Ativos</button></li>
       <li><button onclick="mudarAba('recomendador', event)" id="btn-tab-recomendador">🎯 Agente Recomendador</button></li>
-      <li><button onclick="mudarAba('empresarial', event)" id="btn-tab-empresarial">🏢 Faturamento PJ</button></li>
     </ul>
   </aside>
 
@@ -474,9 +507,10 @@
           </div>
         </div>
         <div class="hero-side">
-          <div class="stat"><span>Renda mensal base</span><b id="m-renda">R$ 3.950,00</b></div>
+          <div class="stat"><span>Renda mensal base<small id="m-renda-nota" class="renda-nota"></small></span><input id="m-renda" class="ghost num renda-in" type="number" step="0.01" min="0" value="3950.00" onchange="setRenda(this.value)" title="Edite a renda: vale deste mês em diante"></div>
           <div class="stat bad"><span>Total a pagar</span><b id="m-total">R$ 0,00</b></div>
           <div class="stat ok"><span>Total liquidado</span><b id="m-pago">R$ 0,00</b></div>
+          <div class="stat"><span>Patrimônio líquido<small class="renda-nota">ativos − parcelas futuras</small></span><b id="m-pl">R$ 0,00</b></div>
         </div>
       </div>
 
@@ -496,6 +530,24 @@
         </div>
       </div>
 
+      <div class="dual">
+        <div class="analysis-card">
+          <div class="analysis-header">Plano de quitação</div>
+          <div class="toolbar"><label>Aporte extra por mês (R$) <input type="number" min="0" step="10" id="q-extra" style="width:110px" placeholder="0" onchange="renderizarDashboard()"></label></div>
+          <div id="q-out"></div>
+          <div class="nota">Simulação sem juros: o extra antecipa primeiro a dívida de menor saldo restante.</div>
+        </div>
+        <div class="analysis-card">
+          <div class="analysis-header">Reserva de emergência</div>
+          <div class="toolbar">
+            <label>Meta (meses de despesa) <input type="number" min="1" step="1" id="r-meses" style="width:70px" onchange="setMeta('reservaMeses',this.value)"></label>
+            <label>Guardado hoje (R$) <input type="number" min="0" step="0.01" id="r-atual" style="width:120px" onchange="setMeta('reservaAtual',this.value)"></label>
+          </div>
+          <div class="pbar" style="width:100%;height:10px;margin:4px 0 12px"><i id="r-bar" style="width:0"></i></div>
+          <div id="r-out"></div>
+        </div>
+      </div>
+
       <div class="form-container">
         <h4>+ Lançar Nova Conta</h4>
         <form onsubmit="adicionarConta(event)" class="inline-form">
@@ -508,6 +560,7 @@
             <option value="Variavel">Variáveis</option>
           </select>
           <input type="text" id="c-parcela" placeholder="Parcela (3/10, 10x...)" oninput="dicaParcela(this.value)">
+          <input type="number" min="1" max="31" id="c-venc" placeholder="Dia do venc. (1-31)">
           <input type="text" id="c-tags" list="dl-tags" placeholder="Etiquetas (vírgula)">
           <button type="submit" class="btn-action">Cadastrar</button>
         </form>
@@ -531,12 +584,13 @@
         </select>
         <span class="sp"></span>
         <label><input type="checkbox" checked onchange="filtro.agrupar=this.checked;renderTabela()"> Agrupar por categoria</label>
+        <label title="Linhas mais juntas: mais contas na tela"><input type="checkbox" id="chk-compacto" checked onchange="compacto=this.checked;localStorage.setItem('gd_compacto',compacto?'1':'0');renderTabela()"> Modo compacto</label>
         <label title="Ao editar ou excluir, aplica também nos meses seguintes"><input type="checkbox" id="chk-replicar" onchange="replicar=this.checked;localStorage.setItem('gd_replicar',replicar?'1':'')"> Replicar nos meses seguintes</label>
       </div>
 
       <div class="ledger">
         <div class="ledger-top">
-          <h3>Contas do mês</h3>
+          <h3>Contas do mês <span class="pend-sum" id="prog-pend"></span></h3>
           <div class="prog-wrap"><span id="prog-txt"></span><div class="pbar"><i id="prog-bar" style="width:0"></i></div></div>
         </div>
         <div id="tabela-contas"></div>
@@ -603,6 +657,19 @@
         <div class="vazio" id="st-evo-vazio" style="display:none">O histórico de fechamento é atualizado automaticamente ao buscar cotações.</div>
       </div>
 
+      <div class="dual">
+        <div class="analysis-card">
+          <div class="analysis-header">Alocação alvo</div>
+          <div id="al-out"></div>
+          <div class="nota">Edite o % alvo de cada classe; o agente indica onde aportar o valor livre do mês.</div>
+        </div>
+        <div class="analysis-card">
+          <div class="analysis-header">Meta de renda e P/VP</div>
+          <div class="toolbar"><label>Renda mensal desejada (R$) <input type="number" min="0" step="50" id="ra-in" style="width:120px" onchange="setMeta('rendaAlvo',this.value)"></label></div>
+          <div id="ra-out"></div>
+        </div>
+      </div>
+
       <!-- FORMULÁRIO DE CADASTRO DE ATIVOS EXPANDIDO -->
       <div class="dual">
         <div class="form-container" style="margin-bottom:0">
@@ -667,6 +734,7 @@
               <th class="num">Valorização</th>
               <th class="num">Rendimento / mês</th>
               <th class="num">DY / Taxa Líquida</th>
+              <th class="num">VP/cota · P/VP</th>
               <th>Ações</th>
             </tr>
           </thead>
@@ -711,32 +779,6 @@
         <div id="rec-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:18px;">
           <!-- Injetado por JS -->
         </div>
-      </div>
-    </section>
-
-    <!-- ABA 4: EMPRESARIAL -->
-    <section id="aba-empresarial" class="tab-content">
-      <header>
-        <div>
-          <h1>Painel Empresarial & NFs</h1>
-          <p>Acompanhamento corporativo de faturamento e notas fiscais.</p>
-        </div>
-      </header>
-
-      <div class="metrics-grid">
-        <div class="safra-card success">
-          <span class="card-label">Faturamento Acumulado PJ</span>
-          <div class="card-value">R$ 0,00</div>
-        </div>
-        <div class="safra-card warning">
-          <span class="card-label">DAS-MEI Mensal</span>
-          <div class="card-value">R$ 105,05</div>
-        </div>
-      </div>
-
-      <div class="analysis-card">
-        <div class="analysis-header">Gestão de Notas e Apuração Fiscal</div>
-        <div class="analysis-item"><strong>Status da Empresa:</strong> Regularizada e pronta para emissão de novas faturas neste ciclo.</div>
       </div>
     </section>
 
@@ -797,7 +839,26 @@
 
     let idBaixaAtual = null;
     let chartGastosInstance = null;
-    let rendaSalario = 3950.00;
+    /* Renda mensal editável: cada alteração vale daquele mês em diante, então meses passados mantêm a renda antiga */
+    let rendas = JSON.parse(localStorage.getItem('gd_local_rendas')) || {};
+    let metas = JSON.parse(localStorage.getItem('gd_local_metas')) || { reservaMeses: 6, reservaAtual: 0, rendaAlvo: 0, alvos: { 'FII': 40, 'Ação': 20, 'ETF': 0, 'Renda Fixa': 40 } };
+    const RENDA_PADRAO = 3950.00;
+    function livreDoMes() { const l = bancoMensal[getChaveMes(mesIdxAtual, anoAtual)] || []; return rendaDoMes() - l.reduce((t, i) => t + (i.status === 'Pago' ? parseFloat(i.valor_pago || 0) : parseFloat(i.valor) || 0), 0); }
+    function setMeta(k, v) { const n = parseFloat(String(v).replace(',', '.')); metas[k] = n >= 0 ? n : 0; salvarAutomatico(); renderizarDashboard(); renderizarState(); }
+    function setAlvo(c, v) { metas.alvos[c] = Math.max(0, parseFloat(v) || 0); salvarAutomatico(); renderizarState(); }
+    function chaveRenda() { const ks = Object.keys(rendas).map(Number).filter(k => k <= anoAtual * 12 + mesIdxAtual); return ks.length ? String(Math.max(...ks)) : null; }
+    function rendaDoMes() { const k = chaveRenda(); return k === null ? RENDA_PADRAO : (parseFloat(rendas[k]) || RENDA_PADRAO); }
+    function rendaNota() {
+      const k = chaveRenda(); if (k === null) return 'valor padrão · edite para mudar';
+      const i = +k;
+      return (i === anoAtual * 12 + mesIdxAtual ? 'definida neste mês' : 'desde ' + NORM_MESES[i % 12].slice(0, 3) + '/' + Math.floor(i / 12)) + ' · vale daqui em diante';
+    }
+    function setRenda(v) {
+      const n = parseFloat(String(v).replace(',', '.'));
+      if (!(n > 0)) return renderizarDashboard();
+      rendas[String(anoAtual * 12 + mesIdxAtual)] = n;
+      salvarAutomatico(); renderizarDashboard(); renderizarRecomendacoes();
+    }
 
     const dadosIniciaisPlanilha = [
       { id: 1, nome: "PUC", valor: 300.00, valor_pago: 300.00, categoria: "Fixa", parcela: "-", status: "Pago" },
@@ -855,12 +916,14 @@
       localStorage.setItem('gd_local_mensal', JSON.stringify(bancoMensal));
       localStorage.setItem('gd_local_ativos', JSON.stringify(ativos));
       localStorage.setItem('gd_local_snaps', JSON.stringify(snaps));
+      localStorage.setItem('gd_local_rendas', JSON.stringify(rendas));
+      localStorage.setItem('gd_local_metas', JSON.stringify(metas));
       remotoPendente = null;
       if (!docRef) return;
       sujo = true; statusNuvem('⏳ Salvando...');
       clearTimeout(timerNuvem);
       timerNuvem = setTimeout(() => {
-        docRef.set({ dados: JSON.stringify({ bancoMensal, ativos, snaps }), em: Date.now() })
+        docRef.set({ dados: JSON.stringify({ bancoMensal, ativos, snaps, rendas, metas }), em: Date.now() })
           .then(() => { sujo = false; statusNuvem(SYNC_OK, 'ok'); })
           .catch(() => statusNuvem('⚠️ Sem conexão — salvo só neste aparelho', 'erro'));
       }, 500);
@@ -872,7 +935,9 @@
 
     function aplicarRemoto(dados) {
       const d = JSON.parse(dados);
-      bancoMensal = d.bancoMensal || {}; ativos = d.ativos || []; snaps = d.snaps || [];
+      bancoMensal = d.bancoMensal || {}; ativos = d.ativos || []; snaps = d.snaps || []; rendas = d.rendas || rendas; metas = d.metas || metas;
+      localStorage.setItem('gd_local_rendas', JSON.stringify(rendas));
+      localStorage.setItem('gd_local_metas', JSON.stringify(metas));
       ativos.forEach(a => { if (a.corretora) a.corretora = formatarCorretora(a.corretora); });
       localStorage.setItem('gd_local_snaps', JSON.stringify(snaps));
       localStorage.setItem('gd_local_mensal', JSON.stringify(bancoMensal));
@@ -897,7 +962,7 @@
             salvarAutomatico(); primeira = false; return;
           }
           const dados = snap.data().dados;
-          if (dados !== JSON.stringify({ bancoMensal, ativos, snaps })) {
+          if (dados !== JSON.stringify({ bancoMensal, ativos, snaps, rendas, metas })) {
             if (primeira || !emCampo()) {
               aplicarRemoto(dados);
               if (!primeira) { statusNuvem('🔄 Atualizado de outro aparelho', 'ok'); setTimeout(() => statusNuvem(SYNC_OK, 'ok'), 2500); primeira = false; return; }
@@ -971,6 +1036,7 @@
     const CAT_LABEL = { Fixa: 'Contas Fixas', Cartao: 'Cartão de Crédito', Variavel: 'Variáveis', Outros: 'Outros / Pessoal' };
     let filtro = { busca: '', status: 'todas', cat: 'todas', ordem: 'padrao', agrupar: true };
     let replicar = !!localStorage.getItem('gd_replicar');
+    let compacto = localStorage.getItem('gd_compacto') !== '0';
 
     function parseParcela(s) {
       s = String(s || '').toLowerCase().trim();
@@ -1022,7 +1088,7 @@
     }
 
     function restaurarAbaAtiva() {
-      const abaSalva = localStorage.getItem('gd_aba_ativa') || 'gastos';
+      let abaSalva = localStorage.getItem('gd_aba_ativa') || 'gastos'; if (!document.getElementById('aba-' + abaSalva)) abaSalva = 'gastos';
       const btn = document.getElementById('btn-tab-' + abaSalva);
       mudarAba(abaSalva, btn ? { currentTarget: btn } : null);
     }
@@ -1044,9 +1110,21 @@
     const ICO_LIXO = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6"/></svg>';
     function toggleGrupo(cat) { fechados.has(cat) ? fechados.delete(cat) : fechados.add(cat); renderTabela(); }
 
+    function statusVenc(i) {
+      if (i.status === 'Pago') return null; const d = parseInt(i.venc); if (!d) return null;
+      const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+      const due = new Date(anoAtual, mesIdxAtual, Math.min(d, new Date(anoAtual, mesIdxAtual + 1, 0).getDate()));
+      const diff = Math.round((due - hoje) / 864e5);
+      if (diff < 0) return { cls: 'badge-atraso', txt: 'Atrasada há ' + (-diff) + 'd', diff };
+      if (diff === 0) return { cls: 'badge-venc', txt: 'Vence hoje', diff };
+      if (diff <= 7) return { cls: 'badge-venc', txt: 'Vence em ' + diff + 'd', diff };
+      return { cls: 'badge-pendente', txt: 'Pendente · dia ' + d, diff };
+    }
+    function dividaRestante(lista) { return lista.reduce((t, i) => { const p = parseParcela(i.parcela); return t + (p ? (parseFloat(i.valor) || 0) * (p.total - p.atual) : 0); }, 0); }
+
     function linhaConta(i) {
       const v = parseFloat(i.valor) || 0, vp = parseFloat(i.valor_pago || 0), paga = i.status === 'Pago';
-      const p = parseParcela(i.parcela), id = i.id, tags = i.etiquetas || [];
+      const p = parseParcela(i.parcela), id = i.id, tags = i.etiquetas || [], sv = statusVenc(i);
       let pinfo = '';
       if (p) {
         const pct = Math.round(p.atual / p.total * 100), rest = p.total - p.atual;
@@ -1060,7 +1138,7 @@
         </div>
         <div class="c-cat"><select class="ghost" onchange="editar('${id}','categoria',this.value)">${Object.entries(CAT_LABEL).map(([k, l]) => `<option value="${k}" ${k === i.categoria ? 'selected' : ''}>${l}</option>`).join('')}</select></div>
         <div class="c-par"><input class="ghost par" value="${i.parcela && i.parcela !== '-' ? esc(i.parcela) : ''}" placeholder="—" title="Aceita 3/10, 3 de 10, 10x" onchange="editar('${id}','parcela',this.value)">${pinfo}</div>
-        <div class="c-val"><input class="ghost num" type="number" step="0.01" min="0" value="${v.toFixed(2)}" onchange="editar('${id}','valor',this.value)"><span class="badge ${paga ? 'badge-pago' : 'badge-pendente'}">${paga ? 'Pago ' + brl(vp) : 'Pendente'}</span></div>
+        <div class="c-val"><input class="ghost venc" type="number" min="1" max="31" value="${i.venc || ''}" placeholder="dia" title="Dia do vencimento" onchange="editar('${id}','venc',this.value)"><input class="ghost num" type="number" step="0.01" min="0" value="${v.toFixed(2)}" onchange="editar('${id}','valor',this.value)"><span class="badge ${paga ? 'badge-pago' : sv ? sv.cls : 'badge-pendente'}">${paga ? 'Pago ' + brl(vp) : sv ? sv.txt : 'Pendente'}</span></div>
         <div class="c-acoes"><button class="btn-del" title="Excluir" onclick="excluirConta('${id}')">${ICO_LIXO}</button></div>
       </div>`;
     }
@@ -1082,8 +1160,8 @@
           Object.keys(CAT_LABEL).forEach(cat => {
             const g = lista.filter(i => i.categoria === cat);
             if (!g.length) return;
-            const sub = g.reduce((s, i) => s + (parseFloat(i.valor) || 0), 0), pg = g.filter(i => i.status === 'Pago').length;
-            html += `<section class="lgroup ${fechados.has(cat) ? 'fechado' : ''}"><button class="lgrp" onclick="toggleGrupo('${cat}')"><span class="chev">▾</span><i class="dot" style="background:${CAT_COR[cat]}"></i>${CAT_LABEL[cat]}<span class="gmeta">${pg}/${g.length} pagas</span><span class="gsum">${brl(sub)}</span></button><div class="lbody">${g.map(linhaConta).join('')}</div></section>`;
+            const sub = g.reduce((s, i) => s + (parseFloat(i.valor) || 0), 0), pg = g.filter(i => i.status === 'Pago').length, pen = g.filter(i => i.status !== 'Pago').reduce((t, i) => t + (parseFloat(i.valor) || 0), 0);
+            html += `<section class="lgroup ${fechados.has(cat) ? 'fechado' : ''}"><button class="lgrp" onclick="toggleGrupo('${cat}')"><span class="chev">▾</span><i class="dot" style="background:${CAT_COR[cat]}"></i>${CAT_LABEL[cat]}<span class="gmeta">${pg}/${g.length} pagas${pen > 0 ? ' · a pagar ' + brl(pen) : ''}</span><span class="gsum">${brl(sub)}</span></button><div class="lbody">${g.map(linhaConta).join('')}</div></section>`;
           });
         } else html += `<div class="lbody">${lista.map(linhaConta).join('')}</div>`;
       }
@@ -1093,6 +1171,9 @@
       Object.values(bancoMensal).forEach(l => l.forEach(i => (i.etiquetas || []).forEach(t => tags.add(t))));
       document.getElementById('dl-tags').innerHTML = [...tags].map(t => `<option value="${esc(t)}">`).join('');
       const pagas = todas.filter(i => i.status === 'Pago').length;
+      const aPagar = todas.filter(i => i.status !== 'Pago').reduce((t, i) => t + (parseFloat(i.valor) || 0), 0);
+      document.getElementById('prog-pend').textContent = aPagar > 0 ? 'a pagar ' + brl(aPagar) : 'tudo pago ✓';
+      document.querySelector('#aba-gastos .ledger').classList.toggle('compacto', compacto);
       document.getElementById('prog-txt').textContent = `${pagas} de ${todas.length} contas pagas`;
       document.getElementById('prog-bar').style.width = (todas.length ? pagas / todas.length * 100 : 0) + '%';
     }
@@ -1100,6 +1181,7 @@
     function renderizarDashboard() {
       document.getElementById('label-mes-ano').innerText = `${NORM_MESES[mesIdxAtual]} ${anoAtual}`;
       document.getElementById('chk-replicar').checked = replicar;
+      document.getElementById('chk-compacto').checked = compacto;
       inicializarMesSeNecessario(mesIdxAtual, anoAtual);
       const lista = bancoMensal[chaveAtual()] || [];
       let totalGasto = 0, totalPagoEfetivo = 0;
@@ -1110,13 +1192,13 @@
         if (cats[item.categoria] !== undefined) cats[item.categoria] += v;
         if (item.status === 'Pago') totalPagoEfetivo += parseFloat(item.valor_pago || 0);
       });
-      document.getElementById('m-renda').innerText = brl(rendaSalario);
+      { const el = document.getElementById('m-renda'); if (document.activeElement !== el) el.value = rendaDoMes().toFixed(2); document.getElementById('m-renda-nota').textContent = rendaNota(); }
       document.getElementById('m-total').innerText = brl(totalGasto);
       document.getElementById('m-pago').innerText = brl(totalPagoEfetivo);
       const pendV = lista.filter(i => i.status !== 'Pago').reduce((s, i) => s + (parseFloat(i.valor) || 0), 0);
-      const saldo = rendaSalario - totalPagoEfetivo, livre = rendaSalario - totalPagoEfetivo - pendV;
+      const saldo = rendaDoMes() - totalPagoEfetivo, livre = rendaDoMes() - totalPagoEfetivo - pendV;
       const elS = document.getElementById('m-saldo'); elS.innerText = brl(saldo); elS.classList.toggle('neg', saldo < 0);
-      const baseSeg = Math.max(rendaSalario, totalPagoEfetivo + pendV, 1);
+      const baseSeg = Math.max(rendaDoMes(), totalPagoEfetivo + pendV, 1);
       document.getElementById('seg-pago').style.width = (totalPagoEfetivo / baseSeg * 100) + '%';
       document.getElementById('seg-pend').style.width = (pendV / baseSeg * 100) + '%';
       document.getElementById('seg-livre').style.width = (Math.max(livre, 0) / baseSeg * 100) + '%';
@@ -1129,11 +1211,46 @@
       renderTabela();
       renderChartGastos(cats);
       gerarInsightsGastos(totalGasto, lista);
+      document.getElementById('m-pl').innerText = brl(soma(calcAtivos(), l => l.val) - dividaRestante(lista));
+      renderQuitacao(lista); renderReserva(totalGasto, livre);
+    }
+
+    function simQuit(D, extra) {
+      const d = D.map(x => ({ ...x })); let pool = 0, m = 0, ant = 0;
+      while (d.some(x => x.r > 0) && m < 600) {
+        m++; d.forEach(x => { if (x.r > 0) x.r--; }); pool += extra;
+        if (extra > 0) for (;;) {
+          const c = d.filter(x => x.r > 0).sort((a, b) => a.v * a.r - b.v * b.r)[0];
+          if (!c || c.v > pool + 1e-9) break;
+          const n = Math.min(c.r, Math.floor((pool + 1e-9) / c.v)); c.r -= n; pool -= n * c.v; ant += n;
+        }
+      }
+      return { m, ant };
+    }
+    function renderQuitacao(lista) {
+      const D = lista.map(i => { const p = parseParcela(i.parcela); return p && p.total > p.atual ? { n: i.nome, v: parseFloat(i.valor) || 0, r: p.total - p.atual } : null; }).filter(Boolean).sort((a, b) => a.v * a.r - b.v * b.r);
+      const box = document.getElementById('q-out');
+      if (!D.length) { box.innerHTML = '<div class="vazio">Nenhuma dívida parcelada neste mês.</div>'; return; }
+      const fim = r => { const k = idxAtual() + r; return NORM_MESES[k % 12].slice(0, 3) + '/' + Math.floor(k / 12); };
+      const extra = parseFloat(document.getElementById('q-extra').value) || 0, base = simQuit(D, 0), com = simQuit(D, extra);
+      let h = D.map(x => `<div class="hl"><span><b>${esc(x.n)}</b> · restam ${x.r}</span><span>quita em ${fim(x.r)}</span><b>libera ${brl(x.v)}/mês</b></div>`).join('');
+      h += `<div class="ins ok" style="margin-top:8px"><i></i><div>Sem extra, você fica livre das parcelas em <b>${fim(base.m)}</b> (${base.m} meses).${extra > 0 && com.m < base.m ? ` Com <b>${brl(extra)}</b>/mês extra: <b>${fim(com.m)}</b>, ${base.m - com.m} meses antes, antecipando ${com.ant} parcela(s).` : ''}</div></div>`;
+      box.innerHTML = h;
+    }
+    function renderReserva(gasto, livre) {
+      const alvo = (metas.reservaMeses || 0) * gasto, g = metas.reservaAtual || 0, falta = Math.max(0, alvo - g), cob = gasto > 0 ? g / gasto : 0;
+      const rm = document.getElementById('r-meses'), ra = document.getElementById('r-atual');
+      if (document.activeElement !== rm) rm.value = metas.reservaMeses; if (document.activeElement !== ra) ra.value = g || '';
+      document.getElementById('r-bar').style.width = (alvo > 0 ? Math.min(100, g / alvo * 100) : 0) + '%';
+      let h = `<div class="analysis-item">Meta: <strong>${brl(alvo)}</strong> (${metas.reservaMeses} meses × ${brl(gasto)}). Você tem <strong>${brl(g)}</strong> = <strong>${cob.toFixed(1).replace('.', ',')} meses</strong> de cobertura.</div>`;
+      if (falta > 0 && livre > 0) h += `<div class="analysis-item">Sugestão: direcione 50% do livre (<strong>${brl(livre / 2)}</strong>) à reserva e o resto a investimentos. Nesse ritmo faltam ~<strong>${Math.ceil(falta / (livre / 2))}</strong> mês(es).</div>`;
+      else if (falta <= 0 && alvo > 0) h += `<div class="analysis-item">Reserva completa. O livre do mês pode ir integralmente para investimentos.</div>`;
+      document.getElementById('r-out').innerHTML = h;
     }
 
     function gerarInsightsGastos(total, lista) {
       const box = document.getElementById('gastos-insights');
-      const comp = total / rendaSalario * 100;
+      const comp = total / rendaDoMes() * 100;
       let restante = 0; const ultimas = [], penultimas = [];
       lista.forEach(i => {
         const p = parseParcela(i.parcela); if (!p) return;
@@ -1148,6 +1265,9 @@
       if (quitadas.length) h += `<div class="analysis-item">🎉 Quitadas no mês anterior: <strong>${quitadas.map(i => esc(i.nome)).join(', ')}</strong> — liberaram ${brl(soma(quitadas))}/mês.</div>`;
       if (ultimas.length) h += `<div class="analysis-item">Última parcela agora: <strong>${ultimas.map(i => esc(i.nome)).join(', ')}</strong>. No próximo mês sobram ${brl(soma(ultimas))}.</div>`;
       if (penultimas.length) h += `<div class="analysis-item">Falta só 1 parcela depois desta: <strong>${penultimas.map(i => esc(i.nome)).join(', ')}</strong>.</div>`;
+      const sv = lista.map(i => ({ i, s: statusVenc(i) })).filter(x => x.s), atr = sv.filter(x => x.s.diff < 0), prox = sv.filter(x => x.s.diff >= 0 && x.s.diff <= 7);
+      if (atr.length) h = `<div class="analysis-item" style="border-color:var(--danger)">Atrasadas: <strong>${atr.map(x => esc(x.i.nome)).join(', ')}</strong> · ${brl(soma(atr.map(x => x.i)))} em aberto.</div>` + h;
+      if (prox.length) h += `<div class="analysis-item" style="border-color:var(--warning)">Vencem em até 7 dias: <strong>${prox.map(x => esc(x.i.nome)).join(', ')}</strong> · ${brl(soma(prox.map(x => x.i)))}.</div>`;
       box.innerHTML = h;
     }
 
@@ -1157,6 +1277,7 @@
       if (campo === 'valor') { val = parseFloat(String(val).replace(',', '.')); if (isNaN(val) || val < 0) return renderizarDashboard(); }
       if (campo === 'nome') { val = String(val).trim(); if (!val) return renderizarDashboard(); }
       if (campo === 'parcela') { const p = parseParcela(val); val = p ? p.atual + '-' + p.total : '-'; }
+      if (campo === 'venc') { val = parseInt(val); val = val >= 1 && val <= 31 ? val : ''; }
       it[campo] = val; it.serie = it.serie || uid();
       if (replicar) posteriores().forEach(o => {
         const l = bancoMensal[o.k], x = irmao(l, it, nomeAntigo); if (!x) return;
@@ -1186,7 +1307,7 @@
         id: uid(), serie: uid(),
         nome: document.getElementById('c-nome').value.trim(),
         valor: parseFloat(document.getElementById('c-valor').value),
-        valor_pago: 0, categoria: document.getElementById('c-cat').value,
+        valor_pago: 0, categoria: document.getElementById('c-cat').value, venc: parseInt(document.getElementById('c-venc').value) || '',
         parcela: p ? p.atual + '-' + p.total : '-',
         etiquetas: [...new Set(document.getElementById('c-tags').value.split(',').map(t => t.trim()).filter(Boolean))],
         status: 'Pendente'
@@ -1377,8 +1498,9 @@
           <td class="num ${l.semCot ? '' : sinal(l.pnl)}">${brl(l.pnl)}<br><small>${sgn(l.pnlP)}</small></td>
           <td class="num" style="color:var(--primary-gold-dark);font-weight:900;">${brl(l.prov)}${l.est ? '<span class="badge badge-est">est.</span>' : ''}</td>
           <td class="num">${pct(l.dyMensalLiquido, 2)} a.m.</td>
+          <td class="num"><input class="ghost num" type="number" step="0.01" value="${parseFloat(l.a.vp) > 0 ? l.a.vp : ''}" placeholder="VP" title="Valor patrimonial por cota (informe para ver o P/VP)" onchange="editarAtivo(${l.a.id},'vp',this.value)">${parseFloat(l.a.vp) > 0 ? '<br><small>P/VP ' + (l.c / parseFloat(l.a.vp)).toFixed(2).replace('.', ',') + '</small>' : ''}</td>
           <td><button class="btn-del" title="Remover" onclick="excluirAtivo(${l.a.id})">${ICO_LIXO}</button></td>
-        </tr>`).join('') : '<tr><td colspan="10" class="vazio">Nenhum ativo cadastrado. Adicione o primeiro acima.</td></tr>';
+        </tr>`).join('') : '<tr><td colspan="11" class="vazio">Nenhum ativo cadastrado. Adicione o primeiro acima.</td></tr>';
 
       document.getElementById('st-patrimonio').innerText = brl(patTotal);
       document.getElementById('st-dividendos').innerText = brl(divTotal);
@@ -1635,7 +1757,7 @@
     function renderizarRecomendacoes() {
       const listaContas = bancoMensal[chaveAtual()] || [];
       const totalGasto = listaContas.reduce((s, i) => s + (parseFloat(i.valor) || 0), 0);
-      const caixaLivre = rendaSalario - totalGasto;
+      const caixaLivre = rendaDoMes() - totalGasto;
       
       const L = calcAtivos();
       const patTotal = soma(L, l => l.val);
@@ -1734,6 +1856,47 @@
           plugins: { legend: { position: 'right', labels: { font: { weight: '700', size: 11 }, boxWidth: 10, padding: 14 } } } 
         }
       });
+    }
+
+    function renderMetasState() {
+      const L = calcAtivos(), pat = soma(L, l => l.val), cur = {}, livre = livreDoMes();
+      L.forEach(l => cur[l.classe] = (cur[l.classe] || 0) + l.val);
+      const cls = ['FII', 'Ação', 'ETF', 'Renda Fixa'], tot = soma(cls, c => metas.alvos[c] || 0);
+      const dif = c => (metas.alvos[c] || 0) - (pat > 0 ? (cur[c] || 0) / pat * 100 : 0);
+      let h = cls.map(c => { const at = pat > 0 ? (cur[c] || 0) / pat * 100 : 0, d = dif(c); return `<div class="hl"><span><b>${c}</b> · atual ${pct(at, 0)}</span><span>alvo <input class="ghost num" style="width:64px" type="number" min="0" max="100" value="${metas.alvos[c] || 0}" onchange="setAlvo('${c}',this.value)">%</span><b class="${Math.abs(d) < 2 ? '' : d > 0 ? 'neg' : 'pos'}">${d > 0 ? 'faltam ' : 'sobram '}${pct(Math.abs(d), 0)}</b></div>`; }).join('');
+      const alvoC = [...cls].sort((a, b) => dif(b) - dif(a))[0];
+      if (pat > 0 && dif(alvoC) >= 2) h += `<div class="ins warn" style="margin-top:8px"><i></i><div>Próximo aporte: <b>${alvoC}</b> está ${pct(dif(alvoC), 0)} abaixo do alvo${livre > 0 ? ` — use parte dos <b>${brl(livre)}</b> livres do mês` : ''}.</div></div>`;
+      if (Math.abs(tot - 100) > 0.5) h += `<div class="nota">Os alvos somam ${pct(tot, 0)}; ajuste para 100%.</div>`;
+      document.getElementById('al-out').innerHTML = h;
+      const ri = document.getElementById('ra-in'); if (document.activeElement !== ri) ri.value = metas.rendaAlvo || '';
+      const yM = pat > 0 ? soma(L, l => l.prov) / pat : 0; let r = '';
+      if (metas.rendaAlvo > 0 && yM > 0) {
+        const falta = metas.rendaAlvo / yM - pat;
+        r += falta <= 0 ? `<div class="analysis-item">Meta de renda já atingida no yield atual.</div>` : `<div class="analysis-item">Com o yield atual (${pct(yM * 100, 2)} a.m.), faltam <strong>${brl(falta)}</strong> de patrimônio${livre > 0 ? ` — aportando ${brl(livre)}/mês, ~<strong>${Math.ceil(falta / livre)}</strong> meses (sem contar valorização)` : ''}.</div>`;
+      }
+      const pv = L.filter(l => l.classe === 'FII' && parseFloat(l.a.vp) > 0).map(l => ({ c: l.a.codigo, x: l.c / parseFloat(l.a.vp) }));
+      r += pv.length ? pv.map(p => `<div class="hl"><span><b>${esc(p.c)}</b></span><span>P/VP ${p.x.toFixed(2).replace('.', ',')}</span><b class="${p.x < 0.9 ? 'pos' : p.x > 1.1 ? 'neg' : ''}">${p.x < 0.9 ? 'desconto' : p.x > 1.1 ? 'ágio' : 'justo'}</b></div>`).join('') : '<div class="nota">Informe o VP/cota na tabela para ver o P/VP dos FIIs.</div>';
+      document.getElementById('ra-out').innerHTML = r;
+    }
+    { const _rs = renderizarState; renderizarState = function () { _rs(); renderMetasState(); }; }
+
+    /* Backup manual */
+    function exportarBackup() {
+      const b = new Blob([JSON.stringify({ bancoMensal, ativos, snaps, rendas, metas, em: new Date().toISOString() }, null, 1)], { type: 'application/json' });
+      const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'caderneta-backup-' + new Date().toISOString().slice(0, 10) + '.json'; a.click(); URL.revokeObjectURL(a.href);
+    }
+    function importarBackup(inp) {
+      const f = inp.files[0]; if (!f) return; const r = new FileReader();
+      r.onload = () => {
+        try {
+          const d = JSON.parse(r.result); if (!d.bancoMensal || !d.ativos) throw 0;
+          if (!confirm('Substituir TODOS os dados atuais pelo backup?')) return;
+          bancoMensal = d.bancoMensal; ativos = d.ativos; snaps = d.snaps || []; rendas = d.rendas || {}; metas = d.metas || metas;
+          salvarAutomatico(); renderizarDashboard(); renderizarState(); renderizarRecomendacoes();
+        } catch (e) { alert('Arquivo de backup inválido.'); }
+        inp.value = '';
+      };
+      r.readAsText(f);
     }
 
     document.addEventListener('DOMContentLoaded', () => {
