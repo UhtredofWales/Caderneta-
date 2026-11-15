@@ -389,8 +389,24 @@
     .ledger.compacto .c-acoes { padding-top: 0; }
     .ledger.compacto .btn-del { padding: 3px; }
     @media (min-width: 861px) {
-      .ledger.compacto .lhead, .ledger.compacto .lrow { grid-template-columns: 26px minmax(230px, 2fr) 116px minmax(210px, 1.3fr) 270px 30px; gap: 10px; padding-left: 18px; padding-right: 18px; }
+      .ledger .lhead, .ledger .lrow { grid-template-columns: 28px minmax(170px, 1fr) 112px 220px 54px 104px 116px 32px; gap: 10px; align-items: center; padding-left: 18px; padding-right: 18px; }
+      .ledger .lhead .c { text-align: center; }
+      .ledger .lrow .chk { margin-top: 0; }
+      .ledger .lrow .c-val { display: contents; }
+      .ledger .lrow .c-val input.ghost.venc { width: 100%; text-align: center; }
+      .ledger .lrow .c-val input.ghost.num { width: 100%; }
+      .ledger .lrow .c-val span.badge { display: block; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .ledger .lrow .c-cat select.ghost { width: 100%; }
+      .ledger .lrow .c-par { display: flex; flex-wrap: nowrap; align-items: center; gap: 6px; min-width: 0; }
+      .ledger .lrow .c-par .ghost.par { width: 64px; flex: none; }
+      .ledger .lrow .c-par .pbar { margin: 0; width: 40px; height: 5px; flex: none; }
+      .ledger .lrow .c-par .pinfo { padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+      .ledger .lrow .c-acoes { padding: 0; text-align: center; }
     }
+    #aba-state table th, #aba-state table td { padding: 10px 12px; vertical-align: middle; }
+    #aba-state table td.num, #aba-state table th.num { white-space: nowrap; }
+    #aba-state table input.ghost.num { width: 100%; min-width: 84px; }
+
 
     @media (max-width: 860px) {
       .agente, .dual { grid-template-columns: 1fr; }
@@ -1155,7 +1171,7 @@
       let html = '';
       if (!lista.length) html = '<div class="vazio">Nenhuma conta encontrada. Ajuste os filtros ou lance uma conta acima.</div>';
       else {
-        html = '<div class="lhead"><span></span><span>Compromisso</span><span>Categoria</span><span>Parcela</span><span class="r">Valor</span><span></span></div>';
+        html = '<div class="lhead"><span></span><span>Compromisso</span><span>Categoria</span><span>Parcela</span><span class="c">Venc.</span><span class="r">Valor</span><span class="c">Situação</span><span></span></div>';
         if (f.agrupar) {
           Object.keys(CAT_LABEL).forEach(cat => {
             const g = lista.filter(i => i.categoria === cat);
