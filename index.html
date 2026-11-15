@@ -389,7 +389,9 @@
     .ledger.compacto .c-acoes { padding-top: 0; }
     .ledger.compacto .btn-del { padding: 3px; }
     @media (min-width: 861px) {
-      .ledger .lhead, .ledger .lrow { grid-template-columns: 28px minmax(170px, 1fr) 112px 220px 54px 104px 116px 32px; gap: 10px; align-items: center; padding-left: 18px; padding-right: 18px; }
+      .ledger .lhead, .ledger .lrow { grid-template-columns: 28px minmax(170px, 1fr) 156px 270px 54px 104px 124px 32px; gap: 10px; align-items: center; padding-left: 18px; padding-right: 18px; }
+      #aba-gastos .ledger { overflow-x: auto; }
+      #tabela-contas { min-width: 1030px; }
       .ledger .lhead .c { text-align: center; }
       .ledger .lrow .chk { margin-top: 0; }
       .ledger .lrow .c-val { display: contents; }
@@ -399,7 +401,7 @@
       .ledger .lrow .c-cat select.ghost { width: 100%; }
       .ledger .lrow .c-par { display: flex; flex-wrap: nowrap; align-items: center; gap: 6px; min-width: 0; }
       .ledger .lrow .c-par .ghost.par { width: 64px; flex: none; }
-      .ledger .lrow .c-par .pbar { margin: 0; width: 40px; height: 5px; flex: none; }
+      .ledger .lrow .c-par .pbar { margin: 0; width: 28px; height: 5px; flex: none; }
       .ledger .lrow .c-par .pinfo { padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
       .ledger .lrow .c-acoes { padding: 0; text-align: center; }
     }
